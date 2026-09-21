@@ -5,7 +5,9 @@
   "description": "Express REST API cho storefront đồ inox gia đình",
   "main": "server.js",
   "scripts": {
+    "predev": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/free-port.ps1",
     "dev": "node --watch server.js",
+    "prestart": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/free-port.ps1",
     "start": "node server.js",
     "test": "node --test",
     "deploy": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/deploy.ps1"

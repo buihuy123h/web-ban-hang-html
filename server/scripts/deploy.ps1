@@ -20,13 +20,7 @@ npm --prefix $clientDir run build
 if ($LASTEXITCODE -ne 0) { throw 'Frontend build failed - deploy aborted.' }
 
 Write-Host '== [3/4] Restart API server (port 3000) ==' -ForegroundColor Cyan
-$listening = Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue
-if ($listening) {
-  $listening | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object {
-    Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue
-  }
-  Start-Sleep -Seconds 1
-}
+& (Join-Path $PSScriptRoot 'free-port.ps1') -Port 3000
 Start-Process node -ArgumentList 'server.js' -WorkingDirectory $serverDir -WindowStyle Hidden
 
 Write-Host '== [4/4] Health check ==' -ForegroundColor Cyan

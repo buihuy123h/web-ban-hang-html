@@ -318,6 +318,16 @@ const startServer = (port = process.env.PORT || 3000) => {
       ? `  - Client build: đang serve từ ${CLIENT_DIST}`
       : '  - Client build: chưa có (chạy "npm run build" ở client để serve kèm).');
   });
+  // Báo lỗi listen thân thiện thay vì stack trace (EADDRINUSE: cổng bị chiếm).
+  server.on('error', (err) => {
+    if (err && err.code === 'EADDRINUSE') {
+      console.error(`[server] Không khởi động được: cổng ${port} đang bị tiến trình khác chiếm (EADDRINUSE).`);
+      console.error('         Gợi ý: chạy "npm run dev" (tự giải phóng cổng 3000), hoặc đổi cổng:  $env:PORT=3100; npm run dev');
+    } else {
+      console.error('[server] Lỗi lắng nghe:', err);
+    }
+    if (require.main === module) process.exit(1);
+  });
   return server;
 };
 

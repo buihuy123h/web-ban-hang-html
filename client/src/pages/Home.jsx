@@ -10,65 +10,67 @@ import '../App.css';
 import './Home.css';
 
 const categoryTiles = [
-  { key: 'noi-chao', title: 'Nồi và chảo', note: 'Đáy từ ba lớp, dùng được trên mọi loại bếp' },
-  { key: 'bat-dia', title: 'Bát đĩa', note: 'Nguyên khối, nhẹ tay và không bám dầu mỡ' },
-  { key: 'dung-cu', title: 'Dụng cụ bếp', note: 'Dao, thớt, ấm cho nhịp nấu hằng ngày' },
-  { key: 'luu-tru', title: 'Lưu trữ', note: 'Hộp, bình, rổ giữ trọn độ tươi' },
+  { key: 'ban-ghe', title: 'Bàn ghế & ghế nhựa', note: 'Ghế bành, ghế cao Duy Tân cho quán nhậu, tiệc ngoài trời' },
+  { key: 'noi-that', title: 'Nội thất phòng trọ', note: 'Giường tầng, tủ nhựa, bàn học — giá tốt cho người thuê trọ' },
+  { key: 'noi-chao', title: 'Nồi, chảo quán ăn', note: 'Nồi soup, chảo sâu lòng cho quán nấu nền mỗi ngày' },
+  { key: 'bat-dia', title: 'Bát đĩa & khay', note: 'Bát đĩa inox, khay phục vụ lớn cho quán và gia đình' },
+  { key: 'dung-cu', title: 'Dụng cụ bếp', note: 'Dao, thớt, muỗng nĩa — đủ việc sơ chế và phục vụ' },
+  { key: 'luu-tru', title: 'Kệ inox & lưu trữ', note: 'Kệ 4 tầng, hộp, rổ — sắp gọn kho và bếp quán' },
 ];
 
-const quickTerms = ['Nồi inox', 'Bình giữ nhiệt', 'Dao bếp', 'Hộp bảo quản'];
+const quickTerms = ['Ghế nhựa', 'Kệ inox', 'Giường tầng', 'Nồi chảo'];
 
 const trustItems = [
-  { icon: 'shield', title: 'Inox 304 được kiểm định', desc: 'Chứng nhận an toàn thực phẩm theo từng lô hàng nhập về.' },
-  { icon: 'refresh', title: 'Đổi trả trong 30 ngày', desc: 'Nếu sản phẩm chưa qua sử dụng và còn nguyên tem niêm phong.' },
-  { icon: 'truck', title: 'Giao nhanh nội thành 2 giờ', desc: 'TP. Hồ Chí Minh trong ngày, toàn quốc từ 2 đến 4 ngày.' },
+  { icon: 'shield', title: 'Kiểm tra kỹ trước khi bán', desc: 'Mỗi món được thử hoạt động, vệ sinh và chụp ảnh thật trước khi lên web.' },
+  { icon: 'refresh', title: 'Xem hàng trước khi chốt', desc: 'Ghé kho trực tiếp hoặc nhận video thử hàng qua Zalo khi ở xa.' },
+  { icon: 'truck', title: 'Gửi qua nhà xe toàn quốc', desc: 'Nội thành TP.HCM giao trong ngày, tỉnh khác gửi qua nhà xe giá rẻ.' },
 ];
 
 const standards = [
   {
-    num: '01', icon: 'shield', title: 'Kiểm định vật liệu',
-    desc: 'Mỗi lô hàng được kiểm tra chứng nhận inox 304: độ bền bề mặt, độ dày đáy và khả năng chịu nhiệt trước khi đưa vào danh mục.',
-    note: 'An toàn cho tiếp xúc thực phẩm', noteIcon: 'check',
+    num: '01', icon: 'refresh', title: 'Thu mua chắt lọc',
+    desc: 'Nguồn hàng từ quán xá, nhà trọ thanh lý. Chỉ giữ lại món còn dùng tốt, bỏ ngay món hư nặng không sửa được.',
+    note: 'Không bán hàng "trôi nổi" không rõ nguồn', noteIcon: 'check',
   },
   {
-    num: '02', icon: 'refresh', title: 'Chính sách minh bạch',
-    desc: 'Giá niêm yết rõ ràng, không phụ phí ẩn. Đổi trả trong 30 ngày và bảo hành lỗi sản xuất đến 24 tháng cho mọi vật dụng.',
-    note: 'Điều khoản ghi rõ trước khi mua', noteIcon: 'check',
+    num: '02', icon: 'shield', title: 'Kiểm tra & vệ sinh',
+    desc: 'Mỗi món được thử tại chỗ: ghế chịu tải, quạt chạy êm, nồi dùng được trên bếp. Sau đó vệ sinh sạch sẽ trước khi nhập kho.',
+    note: 'Ảnh thật — món nào vậy nấy', noteIcon: 'check',
   },
   {
-    num: '03', icon: 'truck', title: 'Giao hàng tận nơi',
-    desc: 'Nội thành giao trong vòng 2 giờ kèm kiểm tra hàng tại chỗ. Toàn quốc từ 2 đến 4 ngày, đóng gói chống va đập.',
-    note: 'Hẹn giờ giao linh hoạt', noteIcon: 'clock',
+    num: '03', icon: 'truck', title: 'Giá thanh lý, giao nhanh',
+    desc: 'Giá niêm yết rẻ nhất có thể, mua nhiều ib báo giá sỉ. Nội thành giao trong ngày, tỉnh khác gửi qua nhà xe.',
+    note: 'Hỗ trợ gửi hàng toàn quốc', noteIcon: 'clock',
   },
 ];
 
 const testimonials = [
   {
-    quote: 'Bộ nồi nhà mình dùng gần hai năm, đáy từ vẫn bắt nhiệt đều và bề mặt vẫn sáng như mới. Đắt hơn hàng ngoài chợ một chút nhưng quá đáng tiền.',
-    name: 'Chị Mai Lan',
+    quote: 'Mở quán nhậu cần ba chục ghế bành, nhắn ib một buổi là có hàng giao tận nơi. Ghế còn như mới, giá rẻ hơn mua mới gần nửa.',
+    name: 'Anh Tuấn',
     city: 'TP. Hồ Chí Minh',
-    bought: 'Bộ nồi inox 304, 5 món',
+    bought: 'Ghế nhựa bành lớn',
   },
   {
-    quote: 'Đặt lúc 9 giờ sáng, đến 11 giờ trưa đã nhận được hàng. Nhân viên gọi xác nhận rất nhẹ nhàng và không ép mua thêm gì cả.',
-    name: 'Anh Trung Kiên',
-    city: 'Hà Nội',
-    bought: 'Bình giữ nhiệt inox 2 lít',
+    quote: 'Cho con thuê trọ, lấy giường tầng ngang 1m ở đây. Khung sắt chắc, thợ giao lắp nhiệt tình, chốt nhanh gọn lẹ.',
+    name: 'Chị Hồng',
+    city: 'Gò Vấp',
+    bought: 'Giường tầng ngang 1 m',
   },
   {
-    quote: 'Bát đĩa inox không lo vỡ khi con nhỏ lỡ tay đánh rơi. Nhà mình đã thay dần gần hết đồ bếp bằng inox ở đây.',
-    name: 'Chị Thu Hà',
-    city: 'Đà Nẵng',
-    bought: 'Bộ 3 bát inox nguyên khối',
+    quote: 'Kệ inox 4 tầng gửi ra Vũng Tàu qua nhà xe, thùng đóng kỹ. Đồ đúng như hình, dùng cho quán phở rất ổn.',
+    name: 'Anh Huy',
+    city: 'Vũng Tàu',
+    bought: 'Kệ inox 4 tầng',
   },
 ];
 
 const faqs = [
-  { q: 'Nồi, chảo inox 304 có dùng được trên bếp từ không?', a: 'Có. Toàn bộ nồi, chảo trong danh mục có đáy từ ba lớp (inox – nhôm – inox), bắt nhiệt đều và dùng tốt trên mọi loại bếp từ, gas, hồng ngoại.' },
-  { q: 'Đơn hàng bao lâu thì nhận được?', a: 'Nội thành TP. Hồ Chí Minh giao trong vòng 2 giờ, kèm kiểm tra hàng tại chỗ. Các tỉnh thành khác từ 2 đến 4 ngày, đóng gói chống va đập.' },
-  { q: 'Mua rồi nhưng không vừa ý thì sao?', a: 'Bạn được đổi trả trong 30 ngày nếu sản phẩm chưa qua sử dụng và còn tem niêm phong. Hoàn tiền trong 48 giờ sau khi chúng tôi nhận lại hàng.' },
-  { q: 'Sản phẩm có được bảo hành không?', a: 'Mọi vật dụng đều bảo hành lỗi sản xuất đến 24 tháng. Thẻ bảo hành ghi rõ trên hóa đơn, không cần đăng ký thêm bước nào.' },
-  { q: 'Làm sao để inox luôn sáng như mới?', a: 'Rửa bằng nước ấm pha baking soda hoặc giấm loãng, lau khô ngay sau khi dùng. Tránh chà bằng bàn chải kim loại — bề mặt sẽ giữ sáng rất lâu.' },
+  { q: 'Đồ cũ ở đây có còn dùng tốt không?', a: 'Có. Mỗi món được kiểm tra hoạt động và vệ sinh trước khi bán. Món nào có lỗi gì chúng tôi ghi rõ trong mô tả — hình cũng là hình thật của món đó.' },
+  { q: 'Bạn có giao hàng đi tỉnh không?', a: 'Có. Hàng được gửi qua nhà xe — rẻ và nhanh, phí theo bến xe. Đóng gói kỹ, gửi kèm mã bến để bạn nhận hàng thuận tiện.' },
+  { q: 'Mua nhiều cho quán mới mở có được giá tốt hơn?', a: 'Có. Nhắn danh sách món cần qua Zalo hoặc Facebook, bên mình báo giá sỉ rẻ nhất. Đơn lớn có thể hỗ trợ giao tận quán trong nội thành.' },
+  { q: 'Có thể xem hàng trực tiếp không?', a: 'Được. Ghé kho tại 707 Tân Sơn, P. An Hội Tây, Gò Vấp từ 08:00 đến 21:00 mỗi ngày. Xem thoải mái, không mua cũng không sao.' },
+  { q: 'Nhận hàng rồi không ưng thì sao?', a: 'Bạn kiểm tra hàng trước khi nhận hoặc qua video. Nếu hàng không đúng mô tả, hỗ trợ đổi trong ngày hoặc hoàn tiền.' },
 ];
 
 const Home = () => {
@@ -95,10 +97,10 @@ const Home = () => {
 
   const copyPromo = async () => {
     try {
-      await navigator.clipboard.writeText('INOX10');
-      showToast('Đã sao chép mã INOX10');
+      await navigator.clipboard.writeText('QUANGHUY10');
+      showToast('Đã sao chép mã QUANGHUY10');
     } catch {
-      showToast('Mã ưu đãi của bạn: INOX10');
+      showToast('Mã ưu đãi của bạn: QUANGHUY10');
     }
   };
 
@@ -110,12 +112,12 @@ const Home = () => {
           <div className="hero-copy">
             <p className="hero-badge">
               <span className="dot" aria-hidden="true" />
-              Danh mục inox được kiểm định · 2026
+              Đồ cũ thanh lý · Gò Vấp, TP.HCM
             </p>
-            <h1 id="hero-title">Chọn một lần,<br />dùng thật lâu.</h1>
+            <h1 id="hero-title">Đồ cũ còn tốt,<br />giá thì như mới.</h1>
             <p className="hero-sub">
-              Vật dụng inox 304 được tuyển chọn cho căn bếp Việt — bền, an toàn và dễ vệ sinh,
-              giảm nhu cầu thay mới mỗi năm.
+              Ghế nhựa, kệ inox, giường tầng, nồi chảo... thanh lý từ quán xá và nhà trọ —
+              kiểm tra kỹ, giá rẻ nhất, gửi hàng qua nhà xe toàn quốc.
             </p>
 
             <form className="search-console" role="search" onSubmit={submitSearch}>
@@ -124,7 +126,7 @@ const Home = () => {
                 <span className="sr-only">Tìm sản phẩm</span>
                 <input
                   type="search"
-                  placeholder="Tìm nồi, chảo, dao, hộp đựng..."
+                  placeholder="Tìm ghế nhựa, kệ inox, giường tầng..."
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                 />
@@ -164,20 +166,20 @@ const Home = () => {
 
           <div className="hero-visual">
             <figure className="hero-photo">
-              <img src={heroImage} alt="Bộ nồi và dụng cụ bếp inox 304 trên bàn bếp" />
+              <img src={heroImage} alt="Kệ inox và đồ dùng nhà bếp tại kho Đồ Cũ Quang Huy" />
               <figcaption className="hero-seal">
                 <span className="seal-icon"><Icon name="shield" size={22} /></span>
                 <span>
-                  <strong>Inox 304 an toàn thực phẩm</strong>
-                  <small>Kiểm tra chứng nhận theo từng lô hàng</small>
+                  <strong>Hàng thật — hình thật</strong>
+                  <small>Đã kiểm tra &amp; vệ sinh trước khi bán</small>
                 </span>
               </figcaption>
             </figure>
             <div className="hero-widget">
-              <span className="hw-label">Vòng đời sử dụng</span>
-              <p className="hw-value">10+ năm</p>
-              <span className="hw-desc">trung bình cho mỗi vật dụng inox 304</span>
-              <p className="hw-note"><Icon name="refresh" size={14} /><span>Thay mới ít hơn, rác thải ít hơn</span></p>
+              <span className="hw-label">Hàng mới về</span>
+              <p className="hw-value">Mỗi tuần</p>
+              <span className="hw-desc">hàng thanh lý quán xá, nhà trọ về liên tục</span>
+              <p className="hw-note"><Icon name="refresh" size={14} /><span>Số lượng có hạn — nhanh tay kẻo lỡ</span></p>
             </div>
           </div>
         </div>
@@ -199,8 +201,8 @@ const Home = () => {
       <section className="category-band" aria-labelledby="categories-title">
         <div className="section-head">
           <p className="eyebrow">Danh mục tuyển chọn</p>
-          <h2 id="categories-title">Bắt đầu từ một góc bếp</h2>
-          <p>Bốn nhóm vật dụng lấp đầy nhịp nấu nướng và lưu trữ hằng ngày của căn bếp Việt.</p>
+          <h2 id="categories-title">Sáu nhóm đồ luôn sẵn có</h2>
+          <p>Từ ghế nhựa quán nhậu đến kệ inox nhà bếp — hàng thanh lý về liên tục mỗi tuần.</p>
         </div>
         <div className="category-tiles">
           {categoryTiles.map((tile) => {
@@ -233,8 +235,8 @@ const Home = () => {
         <div className="featured-head">
           <div className="section-head">
             <p className="eyebrow">Bán chạy nhất</p>
-            <h2 id="featured-title">Được gia đình Việt chọn nhiều nhất</h2>
-            <p>Bốn món được đặt hàng nhiều nhất tháng này — bộ sưu tập đầy đủ đang chờ ở trang sản phẩm.</p>
+            <h2 id="featured-title">Được khách chốt nhiều nhất</h2>
+            <p>Bốn món đang được chốt nhiều nhất — hàng thanh lý số lượng có hạn, ai nhanh tay người đó có.</p>
           </div>
           <Link to="/san-pham" className="btn btn-outline">Xem tất cả sản phẩm</Link>
         </div>
@@ -273,7 +275,7 @@ const Home = () => {
         <div className="section-head">
           <p className="eyebrow">Tiêu chuẩn tuyển chọn</p>
           <h2 id="standards-title">Mỗi món đồ qua ba vòng kiểm</h2>
-          <p>Chúng tôi giữ danh mục nhỏ để kiểm soát chất lượng — mọi vật dụng đều qua cùng một quy trình.</p>
+          <p>Mỗi món đều qua tay người thật: kiểm tra, vệ sinh, chụp ảnh thật trước khi lên web.</p>
         </div>
         <div className="standards-grid">
           {standards.map((item) => (
@@ -297,8 +299,8 @@ const Home = () => {
       <section className="testimonials" aria-labelledby="reviews-title">
         <div className="section-head">
           <p className="eyebrow">Cảm nhận thực tế</p>
-          <h2 id="reviews-title">Gia đình Việt nói gì</h2>
-          <p>Những phản hồi từ khách hàng đã mua và dùng mỗi ngày.</p>
+          <h2 id="reviews-title">Khách quen nói gì</h2>
+          <p>Những phản hồi thật từ người đã mua và dùng đồ ở kho.</p>
         </div>
         <div className="t-grid">
           {testimonials.map((t) => (
@@ -317,20 +319,20 @@ const Home = () => {
       {/* ===== SECTION 6: CÂU CHUYỆN NHÀ — dẫn sang /about ===== */}
       <section className="story-strip" aria-labelledby="story-title">
         <figure className="story-photo reveal">
-          <img src={categoryImages['dung-cu']} alt="Dụng cụ bếp inox 304 sắp gọn gàng trên kệ" />
+          <img src={categoryImages['luu-tru']} alt="Kệ inox và đồ dùng nhà bếp tại kho Đồ Cũ Quang Huy" />
           <figcaption className="story-sticker">
             <span className="story-dot" aria-hidden="true" />
-            Từ 2015 · hơn 50.000 gia đình
+            Hàng về mỗi tuần · số lượng có hạn
           </figcaption>
         </figure>
         <div className="story-copy">
           <p className="eyebrow">Chuyện nhà</p>
-          <h2 id="story-title">Chọn kỹ một chút, bếp nhẹ bớt một chút.</h2>
-          <p>Chúng tôi tin căn bếp đẹp bắt đầu từ những món đồ đúng — mỗi sản phẩm đều qua tay người thật và được kiểm tra thật trước khi đến với bạn.</p>
+          <h2 id="story-title">Đồ cũ còn dùng tốt, bỏ đi thì tiếc.</h2>
+          <p>Quán xá thanh lý, nhà trọ đổi đồ — còn nhiều món dùng rất ổn. Bên mình giữ lại, kiểm tra thật, bán với giá thật cho người cần.</p>
           <ul className="story-points">
-            <li><Icon name="check" size={15} />Xưởng inox 304 đối tác trực tiếp</li>
-            <li><Icon name="check" size={15} />Kiểm định an toàn thực phẩm theo lô</li>
-            <li><Icon name="check" size={15} />Đổi trả 30 ngày, bảo hành 24 tháng</li>
+            <li><Icon name="check" size={15} />Nguồn hàng thanh lý quán xá, nhà trọ</li>
+            <li><Icon name="check" size={15} />Kiểm tra &amp; vệ sinh từng món trước khi bán</li>
+            <li><Icon name="check" size={15} />Xem hàng tại chỗ hoặc qua video trước khi chốt</li>
           </ul>
           <div className="story-actions">
             <Link to="/about" className="btn btn-olive">Đọc câu chuyện của chúng tôi</Link>
@@ -344,7 +346,7 @@ const Home = () => {
         <div className="section-head">
           <p className="eyebrow">Giải đáp nhanh</p>
           <h2 id="faq-title">Câu hỏi hay gặp</h2>
-          <p>Những điều khách hàng hay hỏi trước khi chọn món đồ inox đầu tiên cho căn bếp.</p>
+          <p>Những điều khách hay hỏi trước khi chốt món đồ cũ đầu tiên.</p>
         </div>
         <div className="faq-list">
           {faqs.map((item, index) => (
@@ -373,12 +375,12 @@ const Home = () => {
         <div className="cta-glow" aria-hidden="true" />
         <div className="cta-content">
           <p className="cta-badge"><Icon name="spark" size={13} /><span>Ưu đãi cho đơn đầu tiên</span></p>
-          <h3>Giảm 10% với mã INOX10</h3>
-          <p>Sao chép mã và nhập lúc thanh toán — áp dụng cho toàn bộ vật dụng trong bộ sưu tập.</p>
+          <h3>Giảm 10% với mã QUANGHUY10</h3>
+          <p>Sao chép mã và nhập lúc thanh toán — áp dụng cho mọi món trong đơn.</p>
         </div>
         <div className="cta-actions">
           <button type="button" className="code-chip" onClick={copyPromo}>
-            <span className="code-value">INOX10</span>
+            <span className="code-value">QUANGHUY10</span>
             <span className="code-copy"><Icon name="copy" size={13} />Sao chép</span>
           </button>
           <Link to="/contact" className="btn btn-light">Nhận tư vấn</Link>

@@ -2,7 +2,7 @@
   "name": "server",
   "version": "1.1.0",
   "private": true,
-  "description": "Express REST API cho storefront đồ inox gia đình",
+  "description": "Express REST API cho storefront Đồ Cũ Quang Huy",
   "main": "server.js",
   "scripts": {
     "predev": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/free-port.ps1",

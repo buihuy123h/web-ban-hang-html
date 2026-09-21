@@ -13,7 +13,7 @@ const sortOptions = [
   { key: 'rating', label: 'Đánh giá cao' },
 ];
 
-const quickTerms = ['Nồi inox', 'Bình giữ nhiệt', 'Dao bếp', 'Hộp bảo quản'];
+const quickTerms = ['Ghế nhựa', 'Kệ inox', 'Giường tầng', 'Nồi chảo'];
 
 const Products = () => {
   const { products, categories, loading, error, reload } = useCatalog();

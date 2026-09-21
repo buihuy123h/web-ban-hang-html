@@ -185,7 +185,7 @@ app.get('/api/products/:id', (req, res) => {
 /* ===== API: Tạo đơn hàng ===== */
 const FREE_SHIP_THRESHOLD = 500000;
 const SHIPPING_FEES = { standard: 30000, express: 45000 };
-const PROMO_CODES = { INOX10: 0.1 };
+const PROMO_CODES = { QUANGHUY10: 0.1 };
 const MAX_ITEMS_PER_ORDER = 50;
 
 const validateOrder = (body) => {

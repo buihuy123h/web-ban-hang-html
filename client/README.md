@@ -1,6 +1,6 @@
-# 🍽️ Đồ Inox Gia Đình – Storefront (FE / BE tách riêng)
+# 🛒 Đồ Cũ Quang Huy – Storefront (FE / BE tách riêng)
 
-Storefront hiện đại cho đồ gia dụng inox (nồi, chảo, bát đĩa, dụng cụ bếp), **tách riêng Frontend và Backend**:
+Storefront hiện đại cho đồ cũ thanh lý (ghế nhựa, kệ inox, giường tầng, nồi chảo, đồ dùng quán ăn), **tách riêng Frontend và Backend**:
 
 - **`client/`** — Frontend: **React + Vite + React Router**, giỏ hàng đầy đủ, gọi REST API của backend.
 - **`server/`** — Backend: **Express REST API** (danh mục, sản phẩm, đơn hàng) + serve bản build client ở production.
@@ -106,10 +106,11 @@ Script tự dừng tiến trình cũ đang chiếm port 3000, khởi động l�
 
 ## ✨ Tính năng
 
-- **Trang chủ**: hero split với **search console**, photo card kèm seal kiểm định, trust strip, danh mục tile ảnh, tiêu chuẩn 01/02/03, banner khuyến mãi kèm nút sao chép mã INOX10
-- **Danh sách sản phẩm**: dữ liệu từ API, tìm kiếm realtime, lọc 5 danh mục, sắp xếp, trạng thái lọc đồng bộ lên URL (`?cat=`, `?q=`, `?sort=`)
+- **Trang chủ**: hero split với **search console**, photo card kèm seal kiểm tra, trust strip, danh mục tile ảnh (6 nhóm), tiêu chuẩn 01/02/03, banner khuyến mãi kèm nút sao chép mã QUANGHUY10
+- **Danh sách sản phẩm**: dữ liệu từ API, tìm kiếm realtime, lọc 6 danh mục, sắp xếp, trạng thái lọc đồng bộ lên URL (`?cat=`, `?q=`, `?sort=`)
 - **Chi tiết sản phẩm**: gallery nhiều góc, giá khuyến mãi & % giảm, thông số, sản phẩm liên quan, breadcrumb
-- **Giỏ hàng**: thêm/tăng giảm/xóa, mã INOX10, chọn vận chuyển & thanh toán, validate form, **đặt hàng gọi thẳng `POST /api/orders`** — backend tính tổng tiền chuẩn và lưu đơn, freeship đơn từ 500K, lưu localStorage
+- **Giỏ hàng**: thêm/tăng giảm/xóa, mã QUANGHUY10, chọn vận chuyển & thanh toán, validate form, **đặt hàng gọi thẳng `POST /api/orders`** — backend tính tổng tiền chuẩn và lưu đơn, freeship đơn từ 500K, lưu localStorage
+- **Liên hệ**: form có validate + **Google Maps nhúng** (không cần API key) + nút chỉ đường
 - **Đã lưu**: lưu sản phẩm xem sau, badge navbar
 - **Khác**: trang 404, toast, back-to-top, reveal-on-scroll, `prefers-reduced-motion`, responsive đầy đủ
 

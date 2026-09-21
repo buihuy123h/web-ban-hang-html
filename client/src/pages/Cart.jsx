@@ -39,9 +39,9 @@ const Cart = () => {
   };
 
   const applyPromo = () => {
-    if (promo.trim().toUpperCase() === 'INOX10') {
+    if (promo.trim().toUpperCase() === 'QUANGHUY10') {
       setPromoApplied(true);
-      showToast('Đã áp dụng mã INOX10');
+      showToast('Đã áp dụng mã QUANGHUY10');
     } else {
       setPromoApplied(false);
       showToast('Mã ưu đãi chưa đúng hoặc đã hết hiệu lực');
@@ -63,7 +63,7 @@ const Cart = () => {
         items: items.map(({ id, qty }) => ({ id, qty })),
         delivery,
         payment,
-        promoCode: promoApplied ? 'INOX10' : '',
+        promoCode: promoApplied ? 'QUANGHUY10' : '',
         customer: { name: form.name, phone: form.phone, address: form.address, note: form.note },
       });
       setOrderCode(order.code);
@@ -108,7 +108,7 @@ const Cart = () => {
       {items.length === 0 ? (
         <div className="empty-state">
           <h3>Giỏ hàng đang trống</h3>
-          <p>Khám phá những vật dụng inox được tuyển chọn cho căn bếp của bạn.</p>
+          <p>Khám phá đồ cũ thanh lý còn dùng tốt — ghế nhựa, kệ inox, giường tầng và nhiều món khác.</p>
           <Link to="/" className="btn btn-primary"><Icon name="cart" size={17} />Xem sản phẩm</Link>
         </div>
       ) : (
@@ -182,7 +182,7 @@ const Cart = () => {
               <input value={promo} onChange={(event) => { setPromo(event.target.value); setPromoApplied(false); }} placeholder="Mã ưu đãi" aria-label="Mã ưu đãi" autoComplete="off" />
               <button type="button" onClick={applyPromo}>Áp dụng</button>
             </div>
-            {promoApplied && <p className="promo-success"><Icon name="check" size={13} strokeWidth={2.4} />Mã INOX10 đang được áp dụng.</p>}
+            {promoApplied && <p className="promo-success"><Icon name="check" size={13} strokeWidth={2.4} />Mã QUANGHUY10 đang được áp dụng.</p>}
             <div className="sum-row"><span>Tạm tính</span><span>{formatPrice(cartTotal)}</span></div>
             <div className="sum-row"><span>Vận chuyển</span><span>{shipping === 0 ? 'Miễn phí' : formatPrice(shipping)}</span></div>
             {discount > 0 && <div className="sum-row discount"><span>Ưu đãi</span><span>−{formatPrice(discount)}</span></div>}

@@ -5,16 +5,16 @@ import '../App.css';
 import './Contact.css';
 
 const services = [
-  { icon: 'spark', title: 'Tư vấn chọn đồ', desc: 'Chọn đúng kích thước và chất liệu cho nhu cầu của bạn.' },
-  { icon: 'truck', title: 'Kiểm tra đơn hàng', desc: 'Cập nhật tình trạng giao nhận theo từng đơn.' },
-  { icon: 'shield', title: 'Bảo hành', desc: 'Tiếp nhận yêu cầu bảo hành trong 24 tháng.' },
-  { icon: 'refresh', title: 'Đổi trả', desc: 'Xử lý đổi trả trong 30 ngày theo điều khoản.' },
+  { icon: 'spark', title: 'Tư vấn & báo giá', desc: 'Gửi ảnh hoặc danh sách món cần, báo giá nhanh trong ít phút.' },
+  { icon: 'truck', title: 'Giao & gửi xe', desc: 'Nội thành giao trong ngày, tỉnh khác gửi qua nhà xe giá rẻ.' },
+  { icon: 'refresh', title: 'Thu mua & thanh lý', desc: 'Thu mua đồ cũ quán xá, nhà trọ — trả giá tốt, dọn sạch nơi giao.' },
+  { icon: 'shield', title: 'Kiểm tra tại chỗ', desc: 'Xem hàng trực tiếp hoặc nhận video thử hàng trước khi chốt.' },
 ];
 
 const channels = [
-  { icon: 'phone', label: 'Hotline', value: '1900 1234', href: 'tel:19001234', note: '08:00 đến 21:00 mỗi ngày' },
-  { icon: 'mail', label: 'Email', value: 'hello@doinox.vn', href: 'mailto:hello@doinox.vn', note: 'Phản hồi trong vòng 24 giờ' },
-  { icon: 'pin', label: 'Showroom', value: '123 Nguyễn Văn Cừ, Quận 1, TP.HCM', note: 'Mở cửa 08:00 đến 21:00' },
+  { icon: 'phone', label: 'Hotline / Zalo', value: '0374 034 430', href: 'tel:0374034430', note: 'Gọi hoặc Zalo 08:00 đến 21:00 mỗi ngày' },
+  { icon: 'spark', label: 'Facebook', value: 'facebook.com/ocuquanghuy', href: 'https://www.facebook.com/ocuquanghuy/', note: 'Xem hàng mới về mỗi tuần trên fanpage' },
+  { icon: 'pin', label: 'Showroom', value: '707 Tân Sơn, P. An Hội Tây, Gò Vấp, TP.HCM', note: 'Mở cửa 08:00 đến 21:00, có chỗ để xe' },
 ];
 
 const Contact = () => {
@@ -39,12 +39,12 @@ const Contact = () => {
   };
 
   return (
-    <div className="container">
+    <main className="container">
       <section className="page-hero">
         <div>
           <p className="eyebrow">Liên hệ &amp; hỗ trợ</p>
-          <h1>Cùng tìm món đồ phù hợp cho căn bếp của bạn.</h1>
-          <p>Đội ngũ của chúng tôi hỗ trợ chọn kích thước, chất liệu, kiểm tra đơn hàng và chính sách bảo hành.</p>
+          <h1>Cần đồ cũ giá tốt? Nhắn một tiếng, báo giá liền.</h1>
+          <p>Chúng tôi hỗ trợ chọn món, báo giá sỉ cho quán ăn — phòng trọ, kiểm tra đơn và gửi hàng qua nhà xe toàn quốc.</p>
         </div>
       </section>
 
@@ -112,7 +112,37 @@ const Contact = () => {
           ))}
         </aside>
       </div>
-    </div>
+
+      <section className="map-section" aria-labelledby="map-title">
+        <div className="map-info">
+          <span className="eyebrow">Đến tận nơi</span>
+          <h2 id="map-title">Ghé kho đồ cũ tại Gò Vấp</h2>
+          <p>Sẵn sàng cho bạn xem trực tiếp từng món trước khi chốt. Hàng về liên tục mỗi tuần, số lượng mỗi đợt có hạn — đến sớm kẻo lỡ món ưng ý.</p>
+          <ul className="map-points">
+            <li><Icon name="pin" size={15} />707 Tân Sơn, P. An Hội Tây, Gò Vấp, TP.HCM</li>
+            <li><Icon name="clock" size={15} />Mở cửa 08:00 đến 21:00 mỗi ngày</li>
+            <li><Icon name="truck" size={15} />Gửi hàng qua nhà xe toàn quốc</li>
+          </ul>
+          <a
+            className="btn btn-olive"
+            href="https://www.google.com/maps/dir/?api=1&destination=707%20T%C3%A2n%20S%C6%A1n%2C%20G%C3%B2%20V%E1%BA%A5p%2C%20TP.HCM"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <Icon name="pin" size={16} />
+            Chỉ đường trên Google Maps
+          </a>
+        </div>
+        <iframe
+          className="map-embed"
+          title="Bản đồ kho Đồ Cũ Quang Huy tại 707 Tân Sơn, Gò Vấp"
+          src="https://www.google.com/maps?q=707%20T%C3%A2n%20S%C6%A1n%2C%20ph%C6%B0%E1%BB%9Dng%20An%20H%E1%BB%99i%20T%C3%A2y%2C%20G%C3%B2%20V%E1%BA%A5p%2C%20TP.%20HCM&z=16&output=embed"
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          allowFullScreen
+        />
+      </section>
+    </main>
   );
 };
 

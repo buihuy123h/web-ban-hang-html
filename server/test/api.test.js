@@ -114,7 +114,7 @@ test('POST /api/orders → 201, tính đúng tiền theo giá server + mã đơn
     items: [{ id: first.id, qty: 2 }, { id: second.id, qty: 1 }],
     delivery: 'standard',
     payment: 'cod',
-    promoCode: 'INOX10',
+    promoCode: 'QUANGHUY10',
     customer: validCustomer,
   });
   assert.equal(res.status, 201);

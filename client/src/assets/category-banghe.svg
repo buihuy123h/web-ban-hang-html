@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-label="Ghế nhựa">
+  <rect width="800" height="600" fill="#EFEBDC"/>
+  <circle cx="640" cy="110" r="150" fill="#E3DEC9"/>
+  <g stroke="#283618" stroke-width="14" stroke-linecap="round" fill="none">
+    <!-- ghế lớn giữa -->
+    <path d="M300 170 L300 330 L300 340"/>
+    <path d="M430 170 L430 340"/>
+    <path d="M250 340 L480 340"/>
+    <path d="M262 340 L262 500"/>
+    <path d="M468 340 L468 500"/>
+    <path d="M300 400 L262 400 M430 400 L468 400"/>
+  </g>
+  <g stroke="#5F6F3E" stroke-width="11" stroke-linecap="round" fill="none">
+    <!-- ghế nhỏ trái -->
+    <path d="M120 250 L120 360"/>
+    <path d="M210 250 L210 360"/>
+    <path d="M92 360 L238 360"/>
+    <path d="M104 360 L104 470"/>
+    <path d="M226 360 L226 470"/>
+  </g>
+  <g stroke="#8A9464" stroke-width="9" stroke-linecap="round" fill="none">
+    <!-- ghế nhỏ phải -->
+    <path d="M560 260 L560 370"/>
+    <path d="M640 260 L640 370"/>
+    <path d="M536 370 L664 370"/>
+    <path d="M548 370 L548 470"/>
+    <path d="M652 370 L652 470"/>
+  </g>
+  <rect x="250" y="500" width="300" height="10" rx="5" fill="#283618" opacity=".18"/>
+</svg>

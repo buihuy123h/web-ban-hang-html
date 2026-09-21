@@ -16,3 +16,9 @@ server/data/orders.json
 # Hệ điều hành
 .DS_Store
 Thumbs.db
+
+tools/node_modules/
+tools/*.png
+tools/fb-*.txt
+tools/package-lock.json
+tools/*.log

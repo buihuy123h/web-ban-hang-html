@@ -8,7 +8,7 @@ import { request } from './client';
  *   items: [{ id, qty }],
  *   delivery: 'standard' | 'express',
  *   payment: 'cod' | 'transfer',
- *   promoCode: 'INOX10' | '',
+ *   promoCode: 'QUANGHUY10' | '',
  *   customer: { name, phone, address, note },
  * }
  * Trả về { order } với order.code là mã đơn hàng.

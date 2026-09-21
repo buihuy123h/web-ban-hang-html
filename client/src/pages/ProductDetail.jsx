@@ -12,9 +12,9 @@ import './ProductDetail.css';
 const views = [0, 1, 2];
 
 const trustRows = [
-  { icon: 'shield', label: 'Bảo hành 24 tháng' },
-  { icon: 'refresh', label: 'Đổi trả trong 30 ngày' },
-  { icon: 'truck', label: 'Giao nhanh nội thành 2 giờ' },
+  { icon: 'shield', label: 'Đã kiểm tra & vệ sinh kỹ' },
+  { icon: 'refresh', label: 'Xem hàng / video thử trước khi chốt' },
+  { icon: 'truck', label: 'Gửi qua nhà xe toàn quốc' },
 ];
 
 const ProductDetail = () => {
@@ -151,12 +151,12 @@ const ProductDetail = () => {
 
           <div className="delivery-note">
             <strong><Icon name="truck" size={16} />Giao hàng dự kiến</strong>
-            <span>Nội thành TP. Hồ Chí Minh trong 2 giờ · Toàn quốc từ 2 đến 4 ngày làm việc</span>
+            <span>Nội thành TP. Hồ Chí Minh giao trong ngày · Toàn quốc gửi qua nhà xe 1 đến 3 ngày</span>
           </div>
 
           <div className="product-disclosures">
-            <details><summary>Chất liệu và bảo quản</summary><p>Rửa bằng khăn mềm, lau khô sau khi dùng và tránh chất tẩy có tính mài mòn mạnh để giữ bề mặt inox sáng lâu.</p></details>
-            <details><summary>Đổi trả và bảo hành</summary><p>Đổi trả trong 30 ngày nếu sản phẩm chưa qua sử dụng. Bảo hành lỗi sản xuất trong 24 tháng.</p></details>
+            <details><summary>Tình trạng và bảo quản</summary><p>Mỗi món đồ cũ được kiểm tra hoạt động và vệ sinh trước khi bán. Bảo quản đơn giản: lau khô sau khi dùng, tránh để ngoài trời mưa nắng.</p></details>
+            <details><summary>Đổi trả và bảo hành</summary><p>Kiểm tra hàng tại chỗ hoặc qua video trước khi nhận. Nếu hàng không đúng mô tả, hỗ trợ đổi trong ngày hoặc hoàn tiền.</p></details>
           </div>
         </div>
       </section>
@@ -164,7 +164,7 @@ const ProductDetail = () => {
         <section className="related">
           <div className="section-head">
             <p className="eyebrow">Sản phẩm liên quan</p>
-            <h2>Cùng chất liệu, cùng độ bền</h2>
+            <h2>Đồ cùng kiểu, cùng giá tốt</h2>
           </div>
           <div className="product-grid">{related.map((item) => <ProductCard key={item.id} product={item} />)}</div>
         </section>

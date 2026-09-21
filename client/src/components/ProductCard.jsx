@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { formatPrice } from '../utils/format';
 import Icon from './Icon';
-import { getProductImage, getProductPosition } from '../data/productImages';
+import { getProductImage, getProductPosition, getProductBackgroundSize } from '../data/productImages';
 import './ProductCard.css';
 
 const badgeMap = { hot: 'Được chọn nhiều', sale: 'Giá tốt', new: 'Mới về' };
@@ -29,7 +29,7 @@ const ProductCard = ({ product }) => {
         <Link
           to={`/product/${product.id}`}
           className="p-media-link"
-          style={{ backgroundImage: `url(${getProductImage(product)})`, backgroundPosition: getProductPosition(product) }}
+          style={{ backgroundImage: `url("${getProductImage(product)}")`, backgroundSize: getProductBackgroundSize(product), backgroundPosition: getProductPosition(product) }}
           aria-label={`Xem chi tiết ${product.name}`}
         >
           {product.badge && (

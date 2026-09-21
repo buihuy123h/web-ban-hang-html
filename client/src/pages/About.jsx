@@ -6,58 +6,58 @@ import '../App.css';
 import './About.css';
 
 const stats = [
-  { icon: 'refresh', n: '10+', l: 'năm kinh nghiệm' },
-  { icon: 'cart', n: '50K+', l: 'gia đình đã lựa chọn' },
-  { icon: 'grid', n: '500+', l: 'thiết kế trong danh mục' },
-  { icon: 'truck', n: '63', l: 'tỉnh thành giao hàng' },
+  { icon: 'refresh', n: 'Hàng tuần', l: 'đợt hàng mới về kho' },
+  { icon: 'cart', n: '400+', l: 'người theo dõi trên Facebook' },
+  { icon: 'grid', n: '300+', l: 'món đồ luân chuyển mỗi tháng' },
+  { icon: 'truck', n: '63', l: 'tỉnh thành gửi qua nhà xe' },
 ];
 
 const promises = [
-  'Inox 304 kiểm định an toàn thực phẩm theo từng lô',
-  'Giá niêm yết rõ ràng, không phụ phí ẩn',
-  'Đổi trả 30 ngày, bảo hành lỗi sản xuất 24 tháng',
-  'Giao nhanh nội thành 2 giờ, toàn quốc 2–4 ngày',
+  'Hình thật, tình trạng thật — món nào vậy nấy',
+  'Giá thanh lý rõ ràng, mua nhiều báo giá sỉ',
+  'Kiểm tra hàng tại chỗ hoặc qua video trước khi nhận',
+  'Nội thành giao trong ngày, tỉnh khác gửi qua nhà xe',
 ];
 
 const values = [
-  { num: '01', t: 'Chất lượng có thể kiểm chứng', d: 'Mỗi sản phẩm được kiểm tra vật liệu, bề mặt và độ hoàn thiện trước khi xuất kho. Danh mục nhỏ giúp chúng tôi kiểm soát chặt từng món đồ.' },
-  { num: '02', t: 'Tư vấn vừa đủ', d: 'Chúng tôi giúp bạn chọn đúng kích thước và công năng, không tạo áp lực mua thêm. Món đồ phù hợp quan trọng hơn hóa đơn lớn hơn.' },
-  { num: '03', t: 'Vòng đời dài hơn', d: 'Inox bền, dễ vệ sinh và có thể tái chế, giảm nhu cầu thay mới thường xuyên. Một vật dụng dùng mười năm tốt hơn năm món dùng hai năm.' },
-  { num: '04', t: 'Thiết kế để dùng mỗi ngày', d: 'Hình thức gọn gàng đi cùng thao tác cầm nắm, làm sạch và lưu trữ thuận tiện cho nhịp bếp Việt.' },
+  { num: '01', t: 'Chất lượng có thể kiểm chứng', d: 'Mỗi món được thử tại chỗ: ghế chịu tải, quạt chạy êm, nồi dùng được trên bếp. Không đạt thì không lên web.' },
+  { num: '02', t: 'Tư vấn vừa đủ', d: 'Bạn mô tả nhu cầu, bên mình gợi ý món phù hợp và báo giá thật. Không ép mua thêm món nào.' },
+  { num: '03', t: 'Đồ cũ cũng phải sạch', d: 'Mọi món được vệ sinh, khử mùi trước khi giao. Đồ dùng ăn uống được cọ kỹ hơn nữa trước khi bàn giao.' },
+  { num: '04', t: 'Giá cho người mở quán', d: 'Trọng tâm là đồ dùng quán ăn và phòng trọ: mua càng nhiều giá càng tốt, hỗ trợ giao tận nơi trong nội thành.' },
 ];
 
 const timeline = [
-  { year: '2015', t: 'Cửa hàng đầu tiên mở tại TP. Hồ Chí Minh.' },
-  { year: '2018', t: 'Hợp tác trực tiếp với nhà máy inox 304.' },
-  { year: '2021', t: 'Bắt đầu giao hàng trên toàn quốc.' },
-  { year: '2026', t: 'Đồng hành cùng hơn 50.000 gia đình.' },
+  { year: 'Khởi đầu', t: 'Nhận thanh lý quán xá, nhà trọ quanh Gò Vấp.' },
+  { year: 'Mở rộng', t: 'Đủ đồ cho quán ăn, nhà hàng, trà sữa mới mở.' },
+  { year: 'Online', t: 'Bán qua Facebook, gửi hàng qua nhà xe toàn quốc.' },
+  { year: 'Nay', t: 'Kho 707 Tân Sơn — hàng về liên tục mỗi tuần.' },
 ];
 
 const process = [
-  { num: '01', icon: 'grid', t: 'Chọn xưởng', d: 'Ghé thăm và đánh giá nhà máy đối tác theo bộ tiêu chuẩn vật liệu inox 304 trước khi ký đơn hàng đầu tiên.' },
-  { num: '02', icon: 'shield', t: 'Kiểm định lô', d: 'Mỗi lô về đến kho được thử độ dày đáy, xử lý bề mặt và đối chiếu chứng nhận an toàn thực phẩm.' },
-  { num: '03', icon: 'bookmark', t: 'Đóng gói kỹ', d: 'Bọc mềm từng món, cố định góc thùng để chặng đường dài không làm trầy xước sản phẩm.' },
-  { num: '04', icon: 'truck', t: 'Giao & đồng hành', d: 'Giao đến tay bạn kèm hướng dẫn sử dụng, bảo hành lỗi sản xuất đến 24 tháng.' },
+  { num: '01', icon: 'grid', t: 'Thu mua chắt lọc', d: 'Duyệt từng đợt thanh lý từ quán xá, nhà trọ. Chỉ chọn món còn dùng tốt, giá mua hợp lý để bán ra cũng hợp lý.' },
+  { num: '02', icon: 'shield', t: 'Kiểm tra & vệ sinh', d: 'Thử hoạt động tại chỗ, vệ sinh sạch sẽ rồi chụp ảnh thật — món nào đăng đúng món đó.' },
+  { num: '03', icon: 'bookmark', t: 'Niêm yết & chốt đơn', d: 'Giá rõ ràng trên web và fanpage. Ở xa có thể xin video thử hàng trước khi chốt.' },
+  { num: '04', icon: 'truck', t: 'Đóng gói & gửi xe', d: 'Bọc kỹ, đóng thùng chắc. Nội thành giao trong ngày, tỉnh khác gửi qua nhà xe kèm mã bến.' },
 ];
 
 const team = [
-  { initial: 'M', name: 'Anh Minh', role: 'Đồng sáng lập · Vật liệu', note: 'Người trả lời câu hỏi khó nhất: "Món này dùng được 10 năm không?"' },
-  { initial: 'T', name: 'Chị Trâm', role: 'Đồng sáng lập · Trải nghiệm', note: 'Giữ tin nhắn của bạn luôn được trả lời nhẹ nhàng, không ép mua thêm.' },
-  { initial: 'H', name: 'Anh Hoàng', role: 'Vận hành kho', note: 'Tự tay kiểm từng món trước khi đóng thùng gửi đi.' },
-  { initial: 'L', name: 'Chị Lan', role: 'Chăm sóc sau bán hàng', note: 'Đồng hành đổi trả và bảo hành suốt vòng đời sản phẩm.' },
+  { initial: 'H', name: 'Anh Huy', role: 'Chủ shop · Báo giá', note: 'Người trả lời tin nhắn và chốt giá — nhanh, gọn, nhiệt tình.' },
+  { initial: 'L', name: 'Anh Lợi', role: 'Thu mua · Đi hàng', note: 'Duyệt từng đợt thanh lý, chọn ra món đáng tiền nhất.' },
+  { initial: 'V', name: 'Anh Vinh', role: 'Kiểm tra · Vệ sinh', note: 'Thử đồ tay trước, lau chùi sạch sẽ sau.' },
+  { initial: 'T', name: 'Chị Trang', role: 'Đơn hàng · Gửi xe', note: 'Đóng gói, ghi mã bến và theo đơn đến khi khách nhận hàng.' },
 ];
 
 const About = () => (
-  <div className="container">
+  <main className="container">
     <section className="page-hero">
       <div>
         <p className="eyebrow">Câu chuyện</p>
-        <h1>Một món đồ tốt xứng đáng có vòng đời dài.</h1>
-        <p>Từ năm 2015, chúng tôi chọn những vật dụng inox bền, an toàn và đủ tinh gọn để hiện diện trong căn bếp Việt mỗi ngày.</p>
+        <h1>Đồ cũ còn tốt xứng đáng có cơ hội thứ hai.</h1>
+        <p>Đồ Cũ Quang Huy thu mua và thanh lý đồ dùng cho quán ăn, phòng trọ, gia đình — kiểm tra kỹ, giá thật, gửi hàng toàn quốc từ Gò Vấp.</p>
         <div className="about-chips">
-          <span className="about-chip">Inox 304 kiểm định</span>
-          <span className="about-chip">Giao hàng 63 tỉnh thành</span>
-          <span className="about-chip">Đổi trả 30 ngày</span>
+          <span className="about-chip">Giá thanh lý tốt</span>
+          <span className="about-chip">Gửi hàng 63 tỉnh</span>
+          <span className="about-chip">Xem hàng trước khi nhận</span>
         </div>
       </div>
     </section>
@@ -118,7 +118,7 @@ const About = () => (
     <section className="about-process" aria-labelledby="process-title">
       <div className="section-head">
         <p className="eyebrow">Quy trình</p>
-        <h2 id="process-title">Từ nhà máy đến căn bếp của bạn</h2>
+        <h2 id="process-title">Từ nguồn thanh lý đến tay bạn</h2>
         <p>Cùng một quy trình cho mọi món đồ — không có ngoại lệ.</p>
       </div>
       <div className="process-grid">
@@ -137,7 +137,7 @@ const About = () => (
 
     <section className="about-journey">
       <p className="eyebrow">Hành trình</p>
-      <h2>Từ một cửa hàng nhỏ đến mọi căn bếp</h2>
+      <h2>Từ vài món thanh lý đến kho luôn đầy</h2>
       <div className="timeline">
         {timeline.map((item) => (
           <div className="tl-item" key={item.year}>
@@ -169,15 +169,15 @@ const About = () => (
     <section className="cta-banner">
       <div className="cta-glow" aria-hidden="true" />
       <div className="cta-content">
-        <p className="cta-badge"><Icon name="spark" size={13} /><span>Bắt đầu từ căn bếp của bạn</span></p>
-        <h3>Chọn một món đồ dùng thật lâu.</h3>
-        <p>Bộ sưu tập inox 304 của chúng tôi luôn sẵn sàng cho nhịp bếp hằng ngày của bạn.</p>
+        <p className="cta-badge"><Icon name="spark" size={13} /><span>Đợt hàng mới đã về kho</span></p>
+        <h3>Chọn một món đồ cũ còn thật tốt.</h3>
+        <p>Kho đồ cũ tại Gò Vấp luôn sẵn hàng cho quán và gia đình — ghé xem trực tiếp hoặc nhắn để được báo giá ngay.</p>
       </div>
       <div className="cta-actions">
         <Link to="/" className="btn btn-light">Xem bộ sưu tập</Link>
       </div>
     </section>
-  </div>
+  </main>
 );
 
 export default About;

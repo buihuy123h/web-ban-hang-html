@@ -19,9 +19,9 @@ const NavBar = () => {
   return (
     <header className={`site-header${scrolled ? ' scrolled' : ''}`}>
       <nav className="navbar" aria-label="Điều hướng chính">
-        <Link to="/" className="logo" aria-label="Đồ Inox Gia Đình, trang chủ">
-          <span className="logo-mark" aria-hidden="true">DI</span>
-          <span>Đồ Inox<br /><small>Gia Đình</small></span>
+        <Link to="/" className="logo" aria-label="Đồ Cũ Quang Huy, trang chủ">
+          <span className="logo-mark" aria-hidden="true">QH</span>
+          <span>Đồ Cũ<br /><small>Quang Huy</small></span>
         </Link>
         <ul className="nav-links">
           <li><NavLink to="/" end><Icon name="home" size={18} /><span className="nl-label">Trang chủ</span></NavLink></li>

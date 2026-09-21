@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Bản build
+dist/
+
+# Môi trường & log
+.env
+.env.*
+*.log
+*.err
+
+# Dữ liệu runtime — server tự tạo lại khi thiếu
+server/data/orders.json
+
+# Hệ điều hành
+.DS_Store
+Thumbs.db

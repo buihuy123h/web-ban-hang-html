@@ -1,0 +1,47 @@
+.footer {
+  margin-top: 48px; background: var(--inverse); color: var(--on-inverse-muted);
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+}
+.footer-inner {
+  width: min(100% - 96px, 1440px); margin: 0 auto; padding: 70px 0 52px;
+  display: grid; grid-template-columns: 2fr 1fr 1.2fr 1.35fr; gap: 48px;
+}
+.f-logo { margin-bottom: 14px; color: var(--on-inverse); font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; }
+.f-col p { max-width: 36ch; margin: 0; font-size: .8rem; line-height: 1.7; }
+.f-col h5 { margin: 0 0 18px; color: var(--on-inverse); font-size: .7rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.f-col a, .f-col span { display: flex; align-items: center; gap: 8px; margin-bottom: 11px; color: var(--on-inverse-muted); text-decoration: none; font-size: .78rem; line-height: 1.55; }
+.f-col a:hover { color: var(--on-inverse); }
+.f-col .icon { color: var(--on-inverse-accent); }
+.f-bottom {
+  width: min(100% - 96px, 1440px); margin: 0 auto; padding: 20px 0 28px;
+  display: flex; justify-content: space-between; gap: 20px;
+  border-top: 1px solid rgba(245, 244, 230, .13); font-size: .68rem;
+}
+
+/* ===== Đăng ký nhận tin ===== */
+.f-news { margin-top: 28px; max-width: 340px; }
+.f-news label { display: block; margin: 0 0 10px; color: var(--on-inverse-muted); font-size: .68rem; line-height: 1.6; }
+.f-news-row { display: grid; grid-template-columns: 1fr auto; }
+.f-news input {
+  min-width: 0; height: 42px; padding: 0 16px;
+  border: 1px solid rgba(245, 244, 230, .28); border-right: 0;
+  border-radius: var(--r-pill) 0 0 var(--r-pill);
+  background: rgba(245, 244, 230, .07); color: var(--on-inverse); outline: 0; font-size: .74rem;
+  transition: border-color .18s ease, background-color .18s ease;
+}
+.f-news input::placeholder { color: rgba(245, 244, 230, .42); }
+.f-news input:focus { border-color: rgba(245, 244, 230, .6); background: rgba(245, 244, 230, .1); }
+.f-news button {
+  min-height: 42px; padding: 0 16px; border: 0;
+  border-radius: 0 var(--r-pill) var(--r-pill) 0; background: #fff; color: var(--ink);
+  cursor: pointer; font-size: .68rem; font-weight: 600; transition: background-color .18s ease;
+}
+.f-news button:hover { background: var(--surface-low); }
+
+@media (max-width: 900px) {
+  .footer-inner { width: min(100% - 40px, 1440px); grid-template-columns: 1fr 1fr; gap: 36px 24px; }
+  .f-bottom { width: min(100% - 40px, 1440px); flex-direction: column; }
+}
+@media (max-width: 480px) {
+  .footer-inner { grid-template-columns: 1fr; }
+}

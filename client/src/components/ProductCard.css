@@ -1,0 +1,72 @@
+/* Thẻ sản phẩm theo cấu trúc tham khảo: mặt trắng, padding gọn, ảnh 4:3,
+   dải giá tonal ở đáy, hover nâng nhẹ + bóng ambient. */
+.p-card {
+  min-width: 0; display: flex; flex-direction: column; overflow: hidden;
+  padding: 10px; background: var(--surface);
+  border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--shadow-card);
+  transition: transform .22s ease, box-shadow .22s ease;
+}
+.p-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-ambient); }
+
+.p-media { position: relative; }
+.p-media-link {
+  position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden;
+  border-radius: var(--r-sm); background-repeat: no-repeat; background-size: 340% auto;
+  background-color: #e8e1cf; transition: transform .3s ease;
+}
+.p-card:hover .p-media-link { transform: translateY(-2px); }
+
+.p-flag {
+  position: absolute; top: 8px; left: 8px; z-index: 1;
+  display: inline-flex; align-items: center; gap: 5px; padding: 4px 8px;
+  border-radius: var(--r-pill); background: rgba(34, 44, 22, .9); color: var(--on-inverse);
+  font-size: .6rem; font-weight: 600;
+}
+.p-flag .icon { color: var(--on-inverse-accent); }
+.p-score {
+  position: absolute; top: 8px; right: 8px; z-index: 1;
+  display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px;
+  border-radius: var(--r-pill); background: rgba(255, 253, 246, .94); color: var(--primary);
+  font-size: .62rem; font-weight: 700;
+}
+.p-save {
+  position: absolute; right: 8px; bottom: 8px; z-index: 2;
+  width: 34px; height: 34px; display: grid; place-items: center;
+  border: 0; border-radius: 50%; cursor: pointer;
+  background: rgba(255, 253, 246, .94); color: var(--ink);
+  box-shadow: 0 6px 18px -8px rgba(86, 80, 48, .4);
+  transition: background-color .15s ease, color .15s ease;
+}
+.p-save:hover { background: #fff; }
+.p-save.saved { background: var(--primary); color: var(--on-primary); }
+
+.p-body { padding: 11px 2px 0; }
+.p-meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0 0 5px; color: var(--muted); font-size: .64rem; }
+.p-cat { letter-spacing: .05em; text-transform: uppercase; }
+.p-name { min-height: 2.72em; margin: 0; font-size: .88rem; font-weight: 600; line-height: 1.36; letter-spacing: -.01em; }
+.p-name a {
+  color: var(--ink); text-decoration: none;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  transition: color .15s ease;
+}
+.p-name a:hover { color: var(--primary); }
+
+/* Dải giá tonal — tách lớp sắc độ thay vì viền kín */
+.p-strip { margin: 12px -10px -10px; padding: 12px 12px 10px; background: var(--surface-low); border-radius: 0 0 var(--r-md) var(--r-md); }
+.p-price-row { display: flex; align-items: baseline; gap: 8px; }
+.p-price { font-family: var(--font-display); color: var(--primary); font-size: 1rem; font-weight: 700; }
+.p-old { color: #94907e; font-size: .68rem; text-decoration: line-through; }
+.p-off {
+  margin-left: auto; padding: 3px 7px; border-radius: var(--r-pill);
+  background: var(--accent-soft); color: var(--on-accent);
+  font-size: .6rem; font-weight: 700;
+}
+.p-add {
+  width: 100%; height: 38px; margin-top: 10px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  border: 0; border-radius: var(--r-pill); background: var(--primary); color: var(--on-primary);
+  cursor: pointer; font-size: .72rem; font-weight: 600;
+  transition: background-color .18s ease, transform .18s ease;
+}
+.p-add:hover { background: var(--primary-dark); transform: translateY(-1px); }
+.p-add:active { transform: translateY(1px); }

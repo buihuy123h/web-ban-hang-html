@@ -1,0 +1,70 @@
+:root {
+  font-family: 'Nunito', 'Be Vietnam Pro', sans-serif;
+  color: #283618;
+  background: #f7f4e9;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  /* Bảng màu "Earth" (Coolors trending): #606C38 #283618 #FEFAE0 #DDA15E #BC6C25
+     — diễn giải theo ngôn ngữ "Editorial Circular Commerce" (Warm Architectural
+     Minimalism): chiều sâu bằng tách lớp sắc độ (tonal layering) + hairline 1px,
+     olive là màu tương tác chính, graphite-olive cho CTA, đất nung chỉ dành cho
+     khuyến mãi. Một số giá trị được đậm hóa để đạt tương phản WCAG AA trên nền kem. */
+  --canvas: #f7f4e9;
+  --surface: #fffdf6;
+  --surface-low: #efe9d8;
+  --surface-high: #e9e2cc;
+  --surface-highest: #ddd4b4;
+  --ink: #283618;
+  --muted: #5f6553;
+  --line: #e4decb;
+  --line-strong: #cfc7a9;
+  --primary: #606c38;
+  --primary-dark: #4f5a2c;
+  --primary-soft: #e0e5c9;
+  --on-primary: #ffffff;
+  --accent: #a8581c;
+  --accent-soft: #f4e3d3;
+  --on-accent: #6e3a11;
+  --success: #356138;
+  --success-soft: #e2e9d2;
+  --inverse: #222c16;
+  --inverse-hover: #31411f;
+  --on-inverse: #f5f4e6;
+  --on-inverse-muted: rgba(245, 244, 230, .72);
+  --on-inverse-accent: #c4d19b;
+  --error: #b3261e;
+  --error-soft: #f7e2dd;
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 22px;
+  --r-xl: 28px;
+  --r-pill: 999px;
+  --font-display: 'Quicksand', 'Plus Jakarta Sans', sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Mono', 'SF Mono', Consolas, 'Courier New', monospace;
+  /* Bóng "sticker" ấm — tông nâu-olive thay vì xám đen, mềm và dễ thương hơn.
+     Card: nền tĩnh · Ambient: hover/phần tử nổi · Float: toast. */
+  --shadow-card: 0 1px 2px rgba(86, 80, 48, .05), 0 5px 18px -8px rgba(86, 80, 48, .1);
+  --shadow-ambient: 0 3px 8px rgba(86, 80, 48, .05), 0 18px 40px -14px rgba(86, 80, 48, .16);
+  --shadow-float: 0 22px 54px -18px rgba(53, 56, 30, .38);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; min-width: 320px; min-height: 100vh;
+  /* Chấm bi siêu nhẹ trên nền kem — kết cấu vải ấm cho tổng thể "xinh xắn" */
+  background:
+    radial-gradient(rgba(96, 108, 56, .05) 1.2px, transparent 1.3px) 0 0 / 26px 26px,
+    var(--canvas);
+}
+button, input, select, textarea { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+img { display: block; max-width: 100%; }
+::selection { background: #dfe4c2; color: var(--ink); }
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.icon { flex: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}

@@ -1,0 +1,226 @@
+{
+  "categories": [
+    { "key": "noi-chao", "label": "Nồi và chảo" },
+    { "key": "bat-dia", "label": "Bát đĩa" },
+    { "key": "dung-cu", "label": "Dụng cụ bếp" },
+    { "key": "luu-tru", "label": "Lưu trữ" }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "Bộ nồi inox 304, 5 món",
+      "category": "noi-chao",
+      "categoryLabel": "Nồi và chảo",
+      "price": 2890000,
+      "oldPrice": 3500000,
+      "rating": 4.9,
+      "sold": 1204,
+      "badge": "hot",
+      "description": "Bộ nồi đáy từ ba lớp bắt nhiệt nhanh, dùng được trên bếp từ, bếp gas và bếp hồng ngoại. Nắp kính cường lực giúp quan sát món ăn dễ dàng.",
+      "specs": [
+        "Inox 304 an toàn cho thực phẩm",
+        "Bề mặt dễ vệ sinh và chống bám mùi",
+        "Thiết kế phù hợp căn bếp Việt",
+        "Bảo hành chính hãng 24 tháng"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Chảo inox chống dính 28 cm",
+      "category": "noi-chao",
+      "categoryLabel": "Nồi và chảo",
+      "price": 690000,
+      "oldPrice": 850000,
+      "rating": 4.8,
+      "sold": 861,
+      "badge": "sale",
+      "description": "Chảo sâu lòng với lớp chống dính an toàn, tay cầm cách nhiệt chắc chắn và bề mặt vệ sinh nhanh.",
+      "specs": [
+        "Inox 304 an toàn cho thực phẩm",
+        "Bề mặt dễ vệ sinh và chống bám mùi",
+        "Thiết kế phù hợp căn bếp Việt",
+        "Bảo hành chính hãng 24 tháng"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Bộ 3 bát inox nguyên khối",
+      "category": "bat-dia",
+      "categoryLabel": "Bát đĩa",
+      "price": 320000,
+      "oldPrice": null,
+      "rating": 4.7,
+      "sold": 430,
+      "badge": "new",
+      "description": "Ba kích thước tiện dụng, không đường hàn và không bám dầu mỡ, phù hợp cho cả sơ chế lẫn phục vụ.",
+      "specs": [
+        "Inox 304 an toàn cho thực phẩm",
+        "Bề mặt dễ vệ sinh và chống bám mùi",
+        "Thiết kế phù hợp căn bếp Việt",
+        "Bảo hành chính hãng 24 tháng"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Bộ đĩa inox 6 chiếc",
+      "category": "bat-dia",
+      "categoryLabel": "Bát đĩa",
+      "price": 450000,
+      "oldPrice": 520000,
+      "rating": 4.8,
+      "sold": 612,
+      "badge": "sale",
+      "description": "Bộ đĩa inox với vành thấp thanh thoát, phù hợp bữa ăn hằng ngày và những dịp tiếp khách.",
+      "specs": [
+        "Inox 304 an toàn cho thực phẩm",
+        "Bề mặt dễ vệ sinh và chống bám mùi",
+        "Thiết kế phù hợp căn bếp Việt",
+        "Bảo hành chính hãng 24 tháng"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Ấm đun nước inox 2,5 lít",
+      "category": "dung-cu",
+      "categoryLabel": "Dụng cụ bếp",
+      "price": 385000,
+      "oldPrice": null,
+      "rating": 4.9,
+      "sold": 990,
+      "badge": "hot",
+      "description": "Ấm inox nguyên khối đun nhanh, có còi báo nước sôi và quai cầm cách nhiệt an toàn.",
+      "specs": [
+        "Inox 304 an toàn cho thực phẩm",
+        "Bề mặt dễ vệ sinh và chống bám mùi",
+        "Thiết kế phù hợp căn bếp Việt",
+        "Bảo hành chính hãng 24 tháng"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Bộ dao bếp inox 5 món",
+      "category": "dung-cu",
+      "categoryLabel": "Dụng cụ bếp",
+      "price": 750000,
+      "oldPrice": 900000,
+      "rating": 4.8,
+      "sold": 723,
+      "badge": "sale",
+      "description": "Bộ dao chuyên dụng với lưỡi sắc, cân bằng tốt và cán đúc nguyên khối cầm chắc tay.",
+      "specs": [
+        "Inox 304 an toàn cho thực phẩm",
+        "Bề mặt dễ vệ sinh và chống bám mùi",
+        "Thiết kế phù hợp căn bếp Việt",
+        "Bảo hành chính hãng 24 tháng"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Thớt inox chống khuẩn",
+      "category": "dung-cu",
+      "categoryLabel": "Dụng cụ bếp",
+      "price": 290000,
+      "oldPrice": null,
+      "rating": 4.6,
+      "sold": 315,
+      "badge": "new",
+      "description": "Thớt inox không bám mùi và không nứt nẻ, hai bề mặt dành cho thực phẩm sống và rau củ.",
+      "specs": [
+        "Inox 304 an toàn cho thực phẩm",
+        "Bề mặt dễ vệ sinh và chống bám mùi",
+        "Thiết kế phù hợp căn bếp Việt",
+        "Bảo hành chính hãng 24 tháng"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Bộ hộp inox bảo quản, 3 hộp",
+      "category": "luu-tru",
+      "categoryLabel": "Lưu trữ",
+      "price": 355000,
+      "oldPrice": null,
+      "rating": 4.9,
+      "sold": 1050,
+      "badge": "hot",
+      "description": "Ba hộp có kích thước khác nhau với nắp kín, dễ xếp chồng và phù hợp bảo quản thức ăn hằng ngày.",
+      "specs": [
+        "Inox 304 an toàn cho thực phẩm",
+        "Bề mặt dễ vệ sinh và chống bám mùi",
+        "Thiết kế phù hợp căn bếp Việt",
+        "Bảo hành chính hãng 24 tháng"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Bình giữ nhiệt inox 2 lít",
+      "category": "luu-tru",
+      "categoryLabel": "Lưu trữ",
+      "price": 420000,
+      "oldPrice": 480000,
+      "rating": 4.7,
+      "sold": 542,
+      "badge": "sale",
+      "description": "Bình hai lớp chân không giữ nóng 12 giờ, giữ lạnh 24 giờ và có vòi rót chống nhỏ giọt.",
+      "specs": [
+        "Inox 304 an toàn cho thực phẩm",
+        "Bề mặt dễ vệ sinh và chống bám mùi",
+        "Thiết kế phù hợp căn bếp Việt",
+        "Bảo hành chính hãng 24 tháng"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Bộ muỗng nĩa inox 6 món",
+      "category": "dung-cu",
+      "categoryLabel": "Dụng cụ bếp",
+      "price": 180000,
+      "oldPrice": null,
+      "rating": 4.6,
+      "sold": 288,
+      "badge": "new",
+      "description": "Bộ muỗng nĩa dày dặn với tay cầm cân đối, phù hợp sử dụng hằng ngày.",
+      "specs": [
+        "Inox 304 an toàn cho thực phẩm",
+        "Bề mặt dễ vệ sinh và chống bám mùi",
+        "Thiết kế phù hợp căn bếp Việt",
+        "Bảo hành chính hãng 24 tháng"
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Rổ inox thoát nước nhanh",
+      "category": "luu-tru",
+      "categoryLabel": "Lưu trữ",
+      "price": 250000,
+      "oldPrice": null,
+      "rating": 4.8,
+      "sold": 670,
+      "badge": "hot",
+      "description": "Rổ inox đục lỗ đều giúp thoát nước nhanh, có chân đế ổn định và dễ vệ sinh.",
+      "specs": [
+        "Inox 304 an toàn cho thực phẩm",
+        "Bề mặt dễ vệ sinh và chống bám mùi",
+        "Thiết kế phù hợp căn bếp Việt",
+        "Bảo hành chính hãng 24 tháng"
+      ]
+    },
+    {
+      "id": 12,
+      "name": "Khay phục vụ inox lớn",
+      "category": "bat-dia",
+      "categoryLabel": "Bát đĩa",
+      "price": 310000,
+      "oldPrice": null,
+      "rating": 4.7,
+      "sold": 356,
+      "badge": "new",
+      "description": "Khay phục vụ kích thước lớn, thành viền chống tràn và bề mặt xước mờ thanh lịch.",
+      "specs": [
+        "Inox 304 an toàn cho thực phẩm",
+        "Bề mặt dễ vệ sinh và chống bám mùi",
+        "Thiết kế phù hợp căn bếp Việt",
+        "Bảo hành chính hãng 24 tháng"
+      ]
+    }
+  ]
+}

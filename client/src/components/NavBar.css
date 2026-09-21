@@ -1,0 +1,77 @@
+.site-header { position: sticky; top: 0; z-index: 500; padding: 12px 0 10px; }
+/* "Đảo nổi" pill — thanh điều hướng trôi trên nền chấm bi thay vì dán sát cạnh */
+.navbar {
+  width: min(100% - 96px, 1440px); min-height: 62px; margin-inline: auto; padding: 0 12px 0 20px;
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 20px;
+  background: rgba(255, 253, 246, .92); border: 1px solid var(--line);
+  border-radius: var(--r-pill); box-shadow: var(--shadow-card);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+}
+.logo {
+  display: flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none;
+  font-family: var(--font-display); font-size: .88rem; font-weight: 700; line-height: 1.05;
+}
+.logo small { color: var(--muted); font-size: .67rem; font-weight: 500; letter-spacing: .05em; text-transform: uppercase; }
+.logo-mark {
+  width: 34px; height: 34px; display: grid; place-items: center;
+  background: var(--inverse); color: var(--on-inverse); border-radius: 50%;
+  font-size: .68rem; letter-spacing: -.03em;
+}
+
+/* Nav links — pill tonal theo trạng thái active (tách lớp sắc độ, không viền kín) */
+.nav-links { list-style: none; display: flex; gap: 4px; padding: 0; margin: 0; }
+.nav-links a {
+  display: inline-flex; align-items: center; gap: 7px; padding: 7px 14px;
+  border-radius: var(--r-pill); color: var(--muted); text-decoration: none;
+  font-size: .8rem; font-weight: 500; transition: color .15s ease, background-color .15s ease;
+}
+.nav-links a:hover { color: var(--ink); background: var(--surface-low); }
+.nav-links a.active { color: var(--primary-dark); background: var(--primary-soft); font-weight: 600; }
+.nav-links .icon { display: none; }
+.nav-cart-mobile { display: none; }
+.nav-count {
+  display: inline-grid; min-width: 17px; height: 17px; margin-left: 2px; place-items: center;
+  border-radius: 9px; background: var(--primary); color: var(--on-primary);
+  font-size: .58rem; font-weight: 600;
+}
+
+.cart-btn {
+  justify-self: end; display: inline-flex; align-items: center; gap: 10px;
+  min-height: 40px; padding: 0 13px 0 16px; border-radius: var(--r-pill);
+  background: var(--inverse); color: var(--on-inverse); text-decoration: none;
+  font-size: .78rem; font-weight: 600; transition: background-color .18s ease;
+}
+.cart-btn:hover { background: var(--inverse-hover); }
+.cart-btn strong {
+  display: grid; place-items: center; min-width: 24px; height: 24px; padding: 0 6px;
+  border-radius: 12px; background: var(--primary); color: var(--on-primary);
+  font-family: var(--font-mono); font-size: .64rem;
+}
+
+@media (max-width: 760px) {
+  .site-header { padding: 10px 0 8px; }
+  .navbar { width: min(100% - 24px, 1440px); min-height: 56px; grid-template-columns: 1fr auto; gap: 12px; }
+  .nav-links {
+    position: fixed; left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom)); z-index: 600;
+    display: flex; justify-content: space-around; gap: 0;
+    padding: 8px 6px;
+    background: rgba(255, 253, 246, .96); border: 1px solid var(--line);
+    border-radius: 22px; box-shadow: var(--shadow-ambient);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  }
+  .nav-links li { flex: 1; min-width: 0; }
+  .nav-links li a { flex-direction: column; gap: 4px; padding: 6px 2px; font-size: .58rem; text-align: center; }
+  .nav-links .nl-label { display: block; white-space: nowrap; }
+  .nav-links .icon { display: block; }
+  .nav-links a:hover { background: transparent; color: var(--ink); }
+  .nav-links a.active { background: var(--primary-soft); border-radius: var(--r-pill); color: var(--primary-dark); font-weight: 600; }
+  .nav-links a.active .icon { color: var(--primary); }
+  .nav-cart-mobile { display: flex; }
+  .cart-btn span { display: none; }
+  .cart-btn { padding: 0 10px; }
+  body { padding-bottom: 92px; }
+}
+
+/* Nâng nhẹ khi cuộn: viền + bóng đậm hơn để navbar tách khỏi nội dung trang */
+.navbar { transition: box-shadow .25s ease, border-color .25s ease; }
+.site-header.scrolled .navbar { box-shadow: var(--shadow-ambient); border-color: var(--line-strong); }

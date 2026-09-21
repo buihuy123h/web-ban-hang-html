@@ -1,0 +1,58 @@
+/* Dải thẻ dịch vụ — 4 mini card hairline */
+.service-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; padding: 56px 0 64px; }
+.service-card {
+  display: flex; align-items: flex-start; gap: 13px; padding: 20px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md);
+  box-shadow: var(--shadow-card); transition: transform .2s ease, box-shadow .2s ease;
+}
+.service-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-ambient); }
+.sc-icon { width: 40px; height: 40px; flex: none; display: grid; place-items: center; border-radius: 50%; background: var(--surface-high); color: var(--primary); }
+.service-card strong { display: block; font-family: var(--font-display); font-size: .84rem; }
+.service-card span { display: block; margin-top: 4px; color: var(--muted); font-size: .7rem; line-height: 1.55; }
+
+.contact-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 70px; padding-bottom: 80px; align-items: start; }
+.contact-form-wrap > .eyebrow { margin-bottom: 12px; }
+.contact-form-wrap > h2 { margin: 0; font-size: clamp(1.6rem, 3vw, 2.2rem); }
+.contact-form-wrap > p { margin: 12px 0 24px; color: var(--muted); line-height: 1.7; max-width: 56ch; }
+
+/* Form — nền panel trắng, field tonal, focus chuyển trắng + ring nét đôi */
+.contact-form { display: flex; flex-direction: column; gap: 20px; }
+.contact-form label { display: flex; flex-direction: column; gap: 8px; color: var(--ink); font-size: .68rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+.contact-form input, .contact-form textarea {
+  width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--r-sm);
+  background: var(--surface-low); color: var(--ink); outline: 0; resize: vertical;
+  font-size: .84rem; text-transform: none; letter-spacing: 0;
+  transition: background-color .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.contact-form input:focus, .contact-form textarea:focus { background: var(--surface); border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+.contact-form input[aria-invalid="true"], .contact-form textarea[aria-invalid="true"] { border-color: var(--error); }
+.contact-form .btn { align-self: flex-start; min-width: 170px; }
+.err { color: var(--error); font-style: normal; font-size: .68rem; text-transform: none; letter-spacing: 0; }
+
+.form-success { display: grid; justify-items: start; gap: 12px; padding: 10px 0; }
+.form-success .success-mark { width: 52px; height: 52px; display: grid; place-items: center; border-radius: 50%; background: var(--primary); color: var(--on-primary); }
+.form-success h3 { margin: 0; font-size: 1.6rem; }
+.form-success p { margin: 0; color: var(--muted); line-height: 1.7; }
+
+/* Kênh hỗ trợ trực tiếp */
+.contact-info > .eyebrow { margin-bottom: 8px; }
+.channel {
+  display: flex; align-items: flex-start; gap: 14px; padding: 22px 0;
+  border-bottom: 1px solid var(--line);
+}
+.contact-info .channel:first-of-type { border-top: 1px solid var(--line); }
+.ch-icon { width: 42px; height: 42px; flex: none; display: grid; place-items: center; border-radius: 50%; background: var(--surface-high); color: var(--primary); }
+.ch-label { display: block; color: var(--muted); font-size: .64rem; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; }
+.channel a, .channel p { display: block; margin: 5px 0 0; color: var(--ink); text-decoration: none; font-family: var(--font-display); font-size: .92rem; font-weight: 600; }
+.channel a:hover { color: var(--primary); }
+.channel small { display: block; margin-top: 3px; color: var(--muted); font-size: .7rem; line-height: 1.5; }
+
+@media (max-width: 1000px) { .service-cards { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 800px) {
+  .contact-grid { grid-template-columns: 1fr; gap: 44px; padding-bottom: 60px; }
+  .contact-form { padding: 24px 20px; }
+}
+@media (max-width: 560px) {
+  .service-cards { grid-template-columns: 1fr; }
+  .contact-form .btn { align-self: stretch; }
+}

@@ -1,0 +1,43 @@
+# Deploy pipeline: test backend -> build frontend -> restart API server -> health check.
+# Run:    powershell -NoProfile -ExecutionPolicy Bypass -File scripts\deploy.ps1
+# or from the server folder:  npm run deploy
+# Optional: -SkipTests
+param([switch]$SkipTests)
+$ErrorActionPreference = 'Stop'
+$serverDir = Split-Path -Parent $PSScriptRoot
+$clientDir = Join-Path (Split-Path -Parent $serverDir) 'client'
+
+Write-Host '== [1/4] Backend tests ==' -ForegroundColor Cyan
+if ($SkipTests) {
+  Write-Host 'Skipped (-SkipTests)'
+} else {
+  npm --prefix $serverDir test
+  if ($LASTEXITCODE -ne 0) { throw 'Backend tests failed - deploy aborted.' }
+}
+
+Write-Host '== [2/4] Frontend build ==' -ForegroundColor Cyan
+npm --prefix $clientDir run build
+if ($LASTEXITCODE -ne 0) { throw 'Frontend build failed - deploy aborted.' }
+
+Write-Host '== [3/4] Restart API server (port 3000) ==' -ForegroundColor Cyan
+$listening = Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue
+if ($listening) {
+  $listening | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object {
+    Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue
+  }
+  Start-Sleep -Seconds 1
+}
+Start-Process node -ArgumentList 'server.js' -WorkingDirectory $serverDir -WindowStyle Hidden
+
+Write-Host '== [4/4] Health check ==' -ForegroundColor Cyan
+$health = $null
+for ($i = 0; $i -lt 15; $i++) {
+  try {
+    $health = Invoke-RestMethod 'http://localhost:3000/api/health'
+    if ($health.ok) { break }
+  } catch { Start-Sleep -Seconds 1 }
+}
+if (-not $health -or -not $health.ok) { throw 'Health check failed after deploy.' }
+
+Write-Host ("OK: {0} v{1} is running at http://localhost:3000" -f $health.name, $health.version) -ForegroundColor Green
+

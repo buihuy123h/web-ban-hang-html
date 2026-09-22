@@ -1,6 +1,9 @@
 /* Smoke test UI: mở từng trang, bấm mọi nút trong main, bắt lỗi console/pageerror.
-   Chạy: node tools/smoke.js (cần server đang chạy tại BASE, mặc định http://localhost:3000) */
+   Chạy: npm run smoke (trong tools/ — cần server đang chạy tại BASE, mặc định http://localhost:3000) */
 const { chromium } = require('playwright');
+const path = require('path');
+// Ảnh chụp ghi vào tools/artifacts/ (gitignored).
+const OUT = path.join(__dirname, '..', 'artifacts');
 const BASE = process.env.BASE || 'http://localhost:3000';
 
 const results = [];
@@ -90,7 +93,7 @@ const note = (ok, msg) => { results.push({ ok, msg }); console.log(`${ok ? 'PASS
   await page.setViewportSize({ width: 1440, height: 900 });
   for (const r of ['/', '/san-pham', '/product/1', '/contact', '/cart', '/about']) {
     await visit(r);
-    await page.screenshot({ path: `shot${r === '/' ? '-home' : r.replaceAll('/', '-')}.png`, fullPage: true });
+    await page.screenshot({ path: path.join(OUT, `shot${r === '/' ? '-home' : r.replaceAll('/', '-')}.png`), fullPage: true });
   }
   note(true, 'Đã chụp ảnh mọi trang (tools/shot-*.png)');
 

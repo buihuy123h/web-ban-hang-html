@@ -30,7 +30,7 @@ const timeline = [
   { year: 'Khởi đầu', t: 'Nhận thanh lý quán xá, nhà trọ quanh Gò Vấp.' },
   { year: 'Mở rộng', t: 'Đủ đồ cho quán ăn, nhà hàng, trà sữa mới mở.' },
   { year: 'Online', t: 'Bán qua Facebook, gửi hàng qua nhà xe toàn quốc.' },
-  { year: 'Nay', t: 'Kho 707 Tân Sơn — hàng về liên tục mỗi tuần.' },
+  { year: 'Nay', t: 'Kho 707 Tân Sơn, Gò Vấp — thu mua liên tục, hàng mới về mỗi tuần.' },
 ];
 
 const process = [
@@ -53,9 +53,10 @@ const About = () => (
       <div>
         <p className="eyebrow">Câu chuyện</p>
         <h1>Đồ cũ còn tốt xứng đáng có cơ hội thứ hai.</h1>
-        <p>Đồ Cũ Quang Huy thu mua và thanh lý đồ dùng cho quán ăn, phòng trọ, gia đình — kiểm tra kỹ, giá thật, gửi hàng toàn quốc từ Gò Vấp.</p>
+        <p>Đồ Cũ Quang Huy chuyên mua và bán đồ cũ: đi thu mua từng đợt thanh lý quán xá, nhà trọ — rồi kiểm tra, vệ sinh và bán lại với giá thật cho người cần mở quán, thuê trọ. Kho tại Gò Vấp, gửi hàng qua nhà xe toàn quốc.</p>
         <div className="about-chips">
-          <span className="about-chip">Giá thanh lý tốt</span>
+          <span className="about-chip">Chuyên mua &amp; bán đồ cũ</span>
+          <span className="about-chip">Kho 707 Tân Sơn, Gò Vấp</span>
           <span className="about-chip">Gửi hàng 63 tỉnh</span>
           <span className="about-chip">Xem hàng trước khi nhận</span>
         </div>
@@ -74,24 +75,25 @@ const About = () => (
 
     <section className="about-story">
       <figure className="about-photo reveal">
-        <img src={categoryImages['luu-tru']} alt="Hộp và bình inox 304 dùng để lưu trữ trong bếp" />
+        <img src={categoryImages['luu-tru']} alt="Kệ inox và đồ dùng quán ăn tại kho Đồ Cũ Quang Huy, Gò Vấp" />
         <figcaption className="about-sticker">
           <span className="about-dot" aria-hidden="true" />
-          Từ 2015 · hơn 50.000 gia đình
+          Kho 707 Tân Sơn · Gò Vấp, TP.HCM
         </figcaption>
       </figure>
       <div className="about-copy">
         <p className="eyebrow">Chúng tôi là ai</p>
-        <h2>Nhà bán nhỏ, chọn kỹ từng món.</h2>
-        <p>Chúng tôi không bán mọi thứ — chỉ bán những gì đội ngũ tự dùng trong căn bếp của chính mình. Mỗi lô hàng đến đều được mở kiểm tra trước khi lên kệ.</p>
+        <h2>Mua tận nơi, bán bằng giá thật.</h2>
+        <p>Bên mình đi từng quán xá đóng cửa, nhà trọ trả phòng để thu mua đồ. Món nào còn dùng tốt được giữ lại, vệ sinh sạch rồi mới đăng bán — món nào hư nặng thì bỏ, không bán gửi ai. Mở quán, mở trọ cần gì cứ nhắn: ghế nhựa, kệ inox, giường tầng, nồi chảo... hầu hết có sẵn ở kho.</p>
         <ul className="about-promises">
           {promises.map((item) => (
             <li key={item}><Icon name="check" size={15} />{item}</li>
           ))}
         </ul>
         <div className="about-actions">
-          <Link to="/" className="btn btn-olive">Xem bộ sưu tập</Link>
+          <Link to="/san-pham" className="btn btn-olive">Xem hàng đang bán</Link>
           <Link to="/contact" className="text-link">Liên hệ đội tư vấn</Link>
+          <a href="https://www.facebook.com/profile.php?id=100090912844650" target="_blank" rel="noreferrer" className="text-link">Fanpage Facebook</a>
         </div>
       </div>
     </section>
@@ -100,7 +102,7 @@ const About = () => (
       <div className="about-intro">
         <p className="eyebrow">Giá trị cốt lõi</p>
         <h2>Điều chúng tôi giữ lại trong từng sản phẩm</h2>
-        <p>Không chạy theo số lượng. Chúng tôi ưu tiên vật liệu đúng chuẩn, cấu trúc dễ hiểu và dịch vụ minh bạch.</p>
+        <p>Không đếm số món bán được — chỉ cần bạn lấy về dùng thật, dùng bền, rồi quay lại mua tiếp. Đó là cách một shop đồ cũ sống lâu.</p>
       </div>
       <div className="value-list">
         {values.map((value) => (

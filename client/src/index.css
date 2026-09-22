@@ -1,5 +1,5 @@
 :root {
-  font-family: 'Nunito', 'Be Vietnam Pro', sans-serif;
+  font-family: 'Nunito', sans-serif;
   color: #283618;
   background: #f7f4e9;
   font-synthesis: none;
@@ -39,7 +39,7 @@
   --r-lg: 22px;
   --r-xl: 28px;
   --r-pill: 999px;
-  --font-display: 'Quicksand', 'Plus Jakarta Sans', sans-serif;
+  --font-display: 'Quicksand', sans-serif;
   --font-mono: ui-monospace, 'Cascadia Mono', 'SF Mono', Consolas, 'Courier New', monospace;
   /* Bóng "sticker" ấm — tông nâu-olive thay vì xám đen, mềm và dễ thương hơn.
      Card: nền tĩnh · Ambient: hover/phần tử nổi · Float: toast. */

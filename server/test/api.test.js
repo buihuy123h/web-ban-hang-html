@@ -7,7 +7,10 @@
 const { test, before, after } = require('node:test');
 const assert = require('node:assert/strict');
 const http = require('node:http');
-const { app, products } = require('../server.js');
+const fs = require('node:fs');
+const path = require('node:path');
+const { app, products, categories } = require('../server.js');
+const { precompress } = require('../scripts/precompress');
 
 let server;
 let base;
@@ -211,5 +214,87 @@ test('Phản hồi JSON lớn được nén gzip', async () => {
       }
     }).on('error', reject);
   });
+});
+
+test('GET /api/products → có ETag; If-None-Match khớp → 304, sai → 200', async () => {
+  const first = await get('/api/products');
+  const etag = first.headers.get('etag');
+  assert.ok(etag, 'phản hồi lớn phải có ETag');
+
+  const revalidate = await fetch(`${base}/api/products`, { headers: { 'If-None-Match': etag } });
+  assert.equal(revalidate.status, 304);
+  await revalidate.body?.cancel?.();
+
+  const miss = await get('/api/products'); // fetch thường, không If-None-Match
+  assert.equal(miss.status, 200);
+});
+
+test('Client build: bundle JS nén sẵn Brotli/Gzip + cache immutable', async () => {
+  const distDir = path.resolve(__dirname, '..', '..', 'client', 'dist');
+  const assetsDir = path.join(distDir, 'assets');
+  if (!fs.existsSync(assetsDir)) return; // Chưa build client → bỏ qua nhánh này.
+
+  // Đảm bảo có bản nén (deploy/start thường tạo trước đó).
+  const jsFile = fs.readdirSync(assetsDir).find((f) => f.endsWith('.js') && !f.endsWith('.js.br') && !f.endsWith('.js.gz'));
+  assert.ok(jsFile, 'client/dist phải có bundle .js');
+  precompress(distDir);
+
+  const rawGet = (p, headers) => new Promise((resolve, reject) => {
+    http.get(`${base}${p}`, { headers }, (res) => {
+      const chunks = [];
+      res.on('data', (c) => chunks.push(c));
+      res.on('end', () => resolve({ status: res.statusCode, headers: res.headers, body: Buffer.concat(chunks) }));
+    }).on('error', reject);
+  });
+
+  const br = await rawGet(`/assets/${jsFile}`, { 'Accept-Encoding': 'br' });
+  assert.equal(br.status, 200);
+  assert.equal(br.headers['content-encoding'], 'br');
+  assert.equal(br.headers['content-type'], 'text/javascript; charset=utf-8');
+  assert.equal(br.headers['cache-control'], 'public, max-age=31536000, immutable');
+
+  const gz = await rawGet(`/assets/${jsFile}`, { 'Accept-Encoding': 'gzip' });
+  assert.equal(gz.headers['content-encoding'], 'gzip');
+
+  const plain = await rawGet(`/assets/${jsFile}`, { 'Accept-Encoding': 'identity' });
+  assert.equal(plain.headers['content-encoding'], undefined);
+  assert.ok(br.body.length < plain.body.length, 'bản nén phải nhỏ hơn bản gốc');
+});
+
+/* ===== Ảnh: DB ↔ file trên đĩa phải khớp để không 404 ảnh khi deploy ===== */
+const IMAGES_DIR = path.resolve(__dirname, '..', 'public', 'images');
+
+test('GET /images/catalog/noi-chao.jpg → 200, đúng loại file, cache immutable', async () => {
+  const res = await fetch(`${base}/images/catalog/noi-chao.jpg`);
+  assert.equal(res.status, 200);
+  assert.match(res.headers.get('content-type') || '', /^image\/jpeg/);
+  assert.match(res.headers.get('cache-control') || '', /immutable/);
+  await res.body?.cancel?.();
+});
+
+test('Ảnh khai báo trong DB phải có file thật; thiếu ảnh riêng → danh mục phải có ảnh dự phòng', async () => {
+  const fileFor = (ref) => {
+    assert.ok(ref.startsWith('/images/'), `ảnh trong DB phải là đường dẫn "/images/..." (nhận: ${ref})`);
+    return path.join(IMAGES_DIR, ...ref.replace(/^\/images\/?/, '').split('/'));
+  };
+  const categoryPhoto = new Map(categories.filter((c) => c.image).map((c) => [c.key, c.image]));
+  for (const product of products) {
+    assert.ok('image' in product && Array.isArray(product.images), `#${product.id} "${product.name}" thiếu trường ảnh (image/images)`);
+    for (const ref of [...(product.image ? [product.image] : []), ...product.images]) {
+      assert.ok(fs.existsSync(fileFor(ref)), `#${product.id} "${product.name}" khai báo ảnh ${ref} nhưng thiếu file`);
+    }
+    if (!product.image) {
+      assert.ok(
+        categoryPhoto.has(product.category) && fs.existsSync(fileFor(categoryPhoto.get(product.category))),
+        `#${product.id} không có ảnh riêng → danh mục ${product.category} phải có ảnh dự phòng (trường image + file thật)`,
+      );
+    }
+  }
+});
+
+test('Ảnh không tồn tại → 404 thật, không trả trang HTML của SPA', async () => {
+  const res = await fetch(`${base}/images/products/khong-ton-tai.jpg`);
+  assert.equal(res.status, 404);
+  assert.doesNotMatch(res.headers.get('content-type') || '', /html/i);
 });
 

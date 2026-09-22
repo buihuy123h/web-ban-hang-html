@@ -1,0 +1,112 @@
+/* ===== Nút liên hệ nổi — Gọi / Zalo / Messenger / TikTok =====
+   Neo góc phải-dưới: desktop nằm dưới nút back-to-top,
+   mobile được đẩy lên trên thanh điều hướng dưới. */
+.contact-fab {
+  position: fixed; right: 24px; bottom: 24px; z-index: 410;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 14px;
+}
+
+/* Danh sách kênh — xòe lên trên nút chính, lệch nhịp từng nút */
+.cf-menu {
+  margin: 0; padding: 0; list-style: none;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 10px;
+}
+.cf-item {
+  display: flex;
+  opacity: 0; visibility: hidden; transform: translateY(14px) scale(.92);
+  transform-origin: 100% 100%;
+  transition: opacity .2s ease, transform .2s ease, visibility 0s linear .22s;
+}
+.contact-fab.open .cf-item {
+  opacity: 1; visibility: visible; transform: none;
+  transition-delay:
+    calc(var(--cf-delay, 0) * 45ms),
+    calc(var(--cf-delay, 0) * 45ms),
+    calc(var(--cf-delay, 0) * 45ms);
+}
+
+/* Nút kênh: bong bóng màu thương hiệu + nhãn pill bên trái */
+.cf-link {
+  display: inline-flex; flex-direction: row-reverse; align-items: center; gap: 10px;
+  text-decoration: none; color: var(--ink);
+}
+.cf-bubble {
+  width: 46px; height: 46px; flex: none; display: grid; place-items: center;
+  border-radius: 50%; color: #fff; box-shadow: var(--shadow-ambient);
+  transition: transform .18s ease;
+}
+.cf-bubble .icon { display: block; }
+.cf-label {
+  padding: 9px 14px; border: 1px solid var(--line); border-radius: var(--r-pill);
+  background: var(--surface); box-shadow: var(--shadow-card);
+  font-size: .76rem; font-weight: 700; white-space: nowrap;
+  transition: color .15s ease, border-color .15s ease;
+}
+
+/* Tông màu thương hiệu từng kênh */
+.cf-phone { --tone: var(--primary-dark); }
+.cf-phone .cf-bubble { background: linear-gradient(160deg, var(--primary), var(--primary-dark)); }
+.cf-zalo { --tone: #0068ff; }
+.cf-zalo .cf-bubble { background: linear-gradient(160deg, #3a90ff, #0068ff); }
+.cf-messenger { --tone: #a033ff; }
+.cf-messenger .cf-bubble { background: radial-gradient(circle at 12% 92%, #00b2ff, #7638fa 45%, #ff5280 78%, #ff7061 100%); }
+.cf-tiktok { --tone: #111114; }
+.cf-tiktok .cf-bubble { background: linear-gradient(160deg, #2a2a32, #0d0d12); }
+.cf-link:hover .cf-bubble,
+.cf-link:focus-visible .cf-bubble { transform: scale(1.1); }
+.cf-link:hover .cf-label,
+.cf-link:focus-visible .cf-label { color: var(--tone, var(--primary-dark)); border-color: currentColor; }
+
+/* Hàng nút chính: nhãn mời + nút tròn */
+.cf-toggle-row { display: flex; align-items: center; gap: 12px; }
+.cf-hint {
+  padding: 9px 15px; border-radius: var(--r-pill);
+  background: var(--inverse); color: var(--on-inverse);
+  font-size: .74rem; font-weight: 700; letter-spacing: .02em; white-space: nowrap;
+  box-shadow: var(--shadow-float);
+  transition: opacity .2s ease, transform .2s ease, visibility 0s linear .2s;
+}
+.contact-fab.open .cf-hint { opacity: 0; visibility: hidden; transform: translateY(6px); }
+
+.cf-toggle {
+  position: relative; width: 60px; height: 60px; flex: none;
+  display: grid; place-items: center; border: 0; border-radius: 50%;
+  background: linear-gradient(160deg, var(--primary), var(--primary-dark));
+  color: var(--on-primary); cursor: pointer; box-shadow: var(--shadow-float);
+  transition: transform .2s ease;
+}
+.cf-toggle:hover { transform: translateY(-2px); }
+.cf-toggle:active { transform: scale(.94); }
+
+/* Hai icon chồng nhau: bong bóng chat ↔ dấu X */
+.cf-ic {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  transition: opacity .18s ease, transform .3s cubic-bezier(.34, 1.56, .64, 1);
+}
+.cf-ic-close { opacity: 0; transform: rotate(-70deg) scale(.4); }
+.contact-fab.open .cf-ic-chat { opacity: 0; transform: rotate(70deg) scale(.4); }
+.contact-fab.open .cf-ic-close { opacity: 1; transform: none; }
+
+/* Vòng sóng mời nhấp — chỉ chạy khi menu đang đóng */
+.cf-ping { position: absolute; inset: 0; border-radius: 50%; pointer-events: none; }
+.contact-fab:not(.open) .cf-ping { animation: cf-ping 2.6s cubic-bezier(0, 0, .2, 1) infinite; }
+@keyframes cf-ping {
+  0% { box-shadow: 0 0 0 0 rgba(96, 108, 56, .42); }
+  70%, 100% { box-shadow: 0 0 0 18px rgba(96, 108, 56, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cf-ping { animation: none !important; }
+}
+
+/* Mobile: né thanh điều hướng dưới, thu nhỏ nhẹ */
+@media (max-width: 900px) {
+  .contact-fab { right: 14px; bottom: calc(86px + env(safe-area-inset-bottom)); gap: 12px; }
+  .cf-hint { display: none; }
+  .cf-toggle { width: 54px; height: 54px; }
+  .cf-bubble { width: 42px; height: 42px; }
+  .cf-label { font-size: .72rem; padding: 8px 12px; }
+}
+
+/* Menu đang mở xòe lên đúng vùng nút back-to-top → ẩn tạm nút đó
+   cho gọn mắt (menu đóng lại là nút hiện ra như cũ). */
+body:has(.contact-fab.open) .back-to-top { opacity: 0; pointer-events: none; }

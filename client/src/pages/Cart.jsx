@@ -4,7 +4,7 @@ import { useCart } from '../context/CartContext';
 import { formatPrice } from '../utils/format';
 import { createOrder } from '../api/orders';
 import Icon from '../components/Icon';
-import heroImage from '../assets/inox-editorial-hero.png';
+import { getProductImage } from '../data/productImages';
 import '../App.css';
 import './Cart.css';
 
@@ -118,7 +118,7 @@ const Cart = () => {
               <h2 id="cart-items-title">Sản phẩm</h2>
               {items.map((item, index) => (
                 <article className="cart-item" key={item.id}>
-                  <img className="ci-thumb" src={heroImage} alt="" style={{ objectPosition: itemPositions[index % itemPositions.length] }} />
+                  <img className="ci-thumb" src={getProductImage(item)} alt="" style={{ objectPosition: itemPositions[index % itemPositions.length] }} />
                   <div className="ci-info">
                     <Link to={`/product/${item.id}`} className="ci-name">{item.name}</Link>
                     <div className="ci-price">{formatPrice(item.price)}</div>

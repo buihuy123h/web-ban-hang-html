@@ -28,14 +28,14 @@ Một cửa hàng đồ inox được trình bày như catalogue tuyển chọn:
 ## Brand Commitments
 
 - Tên hiện có: Đồ Inox Gia Đình.
-- Thiết kế phải kế thừa thư mục tham chiếu `stitch_v_ng_i_marketplace_ux`: Editorial Circular Commerce, nền stone ấm, cobalt tiết chế, lưới thoáng và bo góc nhỏ.
+- Thiết kế phải kế thừa thư mục tham chiếu `client/docs/design-reference/`: Editorial Circular Commerce, nền stone ấm, cobalt tiết chế, lưới thoáng và bo góc nhỏ.
 - Ngôn ngữ chính: tiếng Việt.
 
 ## Evidence on Hand
 
 - Danh mục và dữ liệu sản phẩm tại `server/data/products.json` (backend cung cấp qua REST API `/api/products`).
-- Thiết kế tham chiếu tại `stitch_v_ng_i_marketplace_ux/DESIGN.md`, `code.html` và `screen.png`.
-- Ảnh catalogue được tạo riêng cho dự án tại `src/assets/inox-editorial-hero.png`.
+- Thiết kế tham chiếu tại `client/docs/design-reference/` (mỗi trang có `DESIGN.md`/`code.html`/`screen.png`).
+- Ảnh catalogue phục vụ từ backend tại `server/public/images/` (`catalog/` + `products/`).
 
 ## Product Principles
 

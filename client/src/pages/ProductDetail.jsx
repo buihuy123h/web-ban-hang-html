@@ -5,11 +5,11 @@ import { useCart } from '../context/CartContext';
 import { formatPrice } from '../utils/format';
 import ProductCard from '../components/ProductCard';
 import Icon from '../components/Icon';
-import { getProductImage, getProductPosition } from '../data/productImages';
+import { categoryImages, getProductGallery, getProductPosition, getViewImage, handleImgError } from '../data/productImages';
 import '../App.css';
 import './ProductDetail.css';
 
-const views = [0, 1, 2];
+const FALLBACK_VIEWS = [0, 1, 2];
 
 const trustRows = [
   { icon: 'shield', label: 'Đã kiểm tra & vệ sinh kỹ' },
@@ -73,6 +73,9 @@ const ProductDetail = () => {
   const saved = isSaved(product.id);
   const discount = product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : null;
   const related = products.filter((item) => item.category === product.category && item.id !== product.id).slice(0, 4);
+  // Có gallery ảnh riêng trong DB → đúng số ảnh đó; chưa có → 3 "góc xem" từ ảnh chính.
+  const gallery = getProductGallery(product);
+  const views = gallery.length ? gallery.map((_, index) => index) : FALLBACK_VIEWS;
   const handleAdd = () => {
     addToCart(product, qty);
     showToast(`Đã thêm ${qty} sản phẩm vào giỏ`);
@@ -87,9 +90,10 @@ const ProductDetail = () => {
         <div className="detail-gallery">
           <div className="detail-media">
             <img
-              src={getProductImage(product)}
+              src={getViewImage(product, view)}
               alt={product.name}
               style={{ objectPosition: getProductPosition(product, view) }}
+              onError={(event) => handleImgError(event, categoryImages[product.category])}
               decoding="async"
             />
             {discount && <span className="d-discount">−{discount}%</span>}
@@ -97,7 +101,7 @@ const ProductDetail = () => {
           <div className="gallery-views" aria-label="Chọn góc ảnh">
             {views.map((viewIndex, index) => (
               <button type="button" key={viewIndex} className={view === index ? 'active' : ''} onClick={() => setView(index)} aria-pressed={view === index} aria-label={`Xem góc ảnh ${index + 1}`}>
-                <img src={getProductImage(product)} alt="" loading="lazy" decoding="async" style={{ objectPosition: getProductPosition(product, viewIndex) }} />
+                <img src={getViewImage(product, viewIndex)} alt="" loading="lazy" decoding="async" style={{ objectPosition: getProductPosition(product, viewIndex) }} onError={(event) => handleImgError(event, categoryImages[product.category])} />
                 <span>Góc {index + 1}</span>
               </button>
             ))}

@@ -1,0 +1,20 @@
+{
+  "name": "do-cu-quang-huy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Storefront Đồ Cũ Quang Huy — orchestrator gộp FE (client/) + BE (server/): 1 lệnh build/test/deploy từ gốc repo, dùng cho cả CI/CD.",
+  "scripts": {
+    "setup": "npm --prefix client install && npm --prefix server install && npm --prefix tools install",
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev",
+    "build": "npm --prefix client run build && node server/scripts/precompress.js",
+    "start": "npm --prefix server start",
+    "test": "npm --prefix server test",
+    "verify": "npm test && npm run build",
+    "deploy": "npm --prefix server run deploy",
+    "smoke": "npm --prefix tools run smoke"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

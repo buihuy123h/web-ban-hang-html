@@ -1,4 +1,4 @@
-/* Debug nhanh style thẻ sản phẩm. Chạy: node tools/debug-style.js */
+/* Debug nhanh style thẻ sản phẩm. Chạy: npm run debug:style (trong tools/) */
 const { chromium } = require('playwright');
 
 (async () => {

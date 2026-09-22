@@ -1,15 +1,22 @@
 {
   "name": "tools",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "private": true,
+  "description": "Bộ kiểm thử UI (Playwright) cho storefront Đồ Cũ Quang Huy — chạy trong tools/, output vào artifacts/",
   "type": "commonjs",
+  "scripts": {
+    "smoke": "node scripts/smoke.js",
+    "shoot": "node scripts/shoot-pages.js",
+    "check:spa": "node scripts/check-spa.mjs",
+    "check:trust": "node scripts/check-trust.js",
+    "check:visual": "node scripts/check-visual.js",
+    "check:perf": "node scripts/verify-perf.mjs",
+    "verify:changes": "node scripts/verify-changes.js",
+    "verify:fab": "node scripts/verify-fab.js",
+    "probe:reveal": "node scripts/probe-reveal.js",
+    "scan:fb": "node scripts/fb-scan.js",
+    "debug:style": "node scripts/debug-style.js"
+  },
   "dependencies": {
     "playwright": "^1.63.0"
   }

@@ -10,33 +10,35 @@ Ngôn ngữ thiết kế: **Editorial Circular Commerce — Earth Edition** — 
 ## 🗂️ Cấu trúc
 
 ```
-├── .github/workflows/ci.yml       # CI: test backend + build frontend (GitHub Actions)
+├── package.json                   # 🎛 Orchestrator gốc: build/test/verify/deploy cả FE + BE
+├── .github/workflows/
+│   ├── ci.yml                     # CI: test BE + build FE (+ smoke Playwright chạy thủ công)
+│   └── deploy.yml                 # CD: push tag v* → đóng gói release deploy-ready
 ├── .gitignore
 ├── client/                        # FRONTEND (React + Vite)
 │   ├── package.json
-│   ├── vite.config.js             # Proxy /api → http://localhost:3000 khi dev
+│   ├── vite.config.js             # Proxy /api → :3000 khi dev + tách vendor chunk khi build
 │   ├── index.html
-│   ├── docs/                      # Tài liệu thiết kế (DESIGN, PRODUCT, figma, audit UI, thiết kế gốc stitch)
+│   ├── docs/                      # Tài liệu thiết kế (DESIGN, PRODUCT, figma, audit, design-reference/)
 │   └── src/
-│       ├── api/                   # Lớp gọi REST API
-│       │   ├── client.js          #   fetch wrapper + xử lý lỗi (ApiError)
-│       │   ├── catalog.js         #   categories, products, product/:id
-│       │   └── orders.js          #   POST /api/orders (đặt hàng)
-│       ├── context/
-│       │   ├── CatalogContext.jsx # Lấy sản phẩm từ API 1 lần, chia sẻ toàn app
-│       │   └── CartContext.jsx    # Giỏ hàng + đã lưu, localStorage, toast
-│       ├── data/productImages.js  # Ảnh danh mục (asset của FE)
-│       ├── components/            # NavBar, Footer, ProductCard, Toast, ScrollToTop
+│       ├── api/                   # Lớp gọi REST API (client.js, catalog.js, orders.js)
+│       ├── context/               # CatalogContext (dữ liệu) + CartContext (giỏ hàng, đã lưu)
+│       ├── data/productImages.js  # Bản đồ ảnh danh mục (ảnh phục vụ từ BE /images)
+│       ├── components/            # NavBar, Footer, ProductCard, ContactFab, Toast, ScrollToTop
 │       ├── pages/                 # Home, Products, ProductDetail, Cart, Saved, About, Contact, NotFound
 │       └── main.jsx / App.jsx / *.css
-└── server/                        # BACKEND (Express API)
-    ├── package.json
-    ├── server.js                  # REST API + serve client/dist (production)
-    ├── scripts/deploy.ps1         # Deploy 1 lệnh: test → build → restart → health check
-    ├── test/api.test.js           # 16 test API (node:test có sẵn của Node, 0 dependency)
-    └── data/
-        ├── products.json          # 12 sản phẩm + 4 danh mục (nguồn dữ liệu duy nhất)
-        └── orders.json            # Đơn hàng (dữ liệu runtime, không commit)
+├── server/                        # BACKEND (Express API)
+│   ├── package.json
+│   ├── server.js                  # REST API + serve client/dist + precompress + cache RAM
+│   ├── scripts/                   # deploy.ps1, free-port.ps1, precompress.js
+│   ├── test/api.test.js           # 21 test API (node:test có sẵn của Node, 0 dependency)
+│   ├── data/products.json         # Nguồn dữ liệu duy nhất (sản phẩm + danh mục)
+│   ├── database/                  # SQL + seed dữ liệu
+│   ├── docs/DATABASE.md           # Tổ chức database & ảnh khi lên mạng
+│   └── public/images/             # Ảnh thật: catalog/ + products/ (serve tại /images, cache 30 ngày)
+└── tools/                         # Kiểm thử UI Playwright (xem tools/README.md)
+    ├── scripts/                   # Mã nguồn các script kiểm thử
+    └── artifacts/                 # Ảnh chụp khi chạy (gitignored)
 ```
 
 ## 🔌 REST API
@@ -78,26 +80,33 @@ cd server
 npm start
 ```
 
-> Tài liệu thiết kế (DESIGN.md, PRODUCT.md, figma, audit UI, thiết kế gốc stitch) nằm tại `client/docs/`.
+> Tài liệu thiết kế (DESIGN.md, PRODUCT.md, figma, audit UI, tham chiếu `design-reference/`) nằm tại `client/docs/`.
 
 ## 🔄 CI/CD
 
-**CI — GitHub Actions (`.github/workflows/ci.yml`):** mỗi push / pull request chạy 2 job song song:
-- `backend` — `npm ci` + `npm test` (16 test API viết bằng `node:test` có sẵn của Node, không cần cài gì thêm)
-- `frontend` — `npm ci` + `npm run build`, bản build được lưu thành artifact `client-dist`
+**CI — GitHub Actions (`.github/workflows/ci.yml`):** mỗi push (main) / pull request chạy 2 job song song:
+- `backend` — `npm ci` + `npm test` (21 test API viết bằng `node:test` có sẵn của Node, không cần cài gì thêm)
+- `frontend` — `npm ci` + `npm run build` + **precompress Brotli/Gzip** → artifact `client-dist` **deploy-ready** (lấy về là chạy được, không cần nén thêm trên server)
+- `smoke` — smoke test UI thật bằng Playwright (chỉ chạy khi bấm *Run workflow* — không làm chậm CI thường)
+- Tối ưu: `concurrency` hủy run cũ khi push liên tiếp, `permissions: contents: read`, cache npm theo lockfile từng package.
+
+**CD — GitHub Actions (`.github/workflows/deploy.yml`):** push tag `v*` (hoặc *Run workflow*) → test → build → đóng gói `.tar.gz` gồm `server/` + `client-dist/` (đã nén sẵn) thành artifact. Tải về, copy lên máy chủ:
+
+```bash
+tar -xzf do-cu-quang-huy-v*.tar.gz -C /opt/shop && cd /opt/shop/server
+npm ci --omit=dev && npm start        # API + client build tại :3000
+```
 
 **Test backend tại máy:**
 
 ```bash
-cd server
-npm test   # health, danh mục, lọc/tìm/sắp xếp, đặt hàng, validate, security headers, gzip…
+npm test          # từ gốc repo — hoặc: cd server && npm test
 ```
 
-**CD — deploy tại máy chỉ với 1 lệnh:**
+**Deploy tại máy chỉ với 1 lệnh (Windows):**
 
 ```bash
-cd server
-npm run deploy   # = scripts/deploy.ps1: test backend → build frontend → restart server → health check
+npm run deploy    # từ gốc repo — = scripts/deploy.ps1: test → build → precompress → restart → health check
 ```
 
 Script tự dừng tiến trình cũ đang chiếm port 3000, khởi động lại `node server.js` ở chế độ nền, và chỉ báo thành công sau khi `/api/health` trả `ok`. Thêm `-SkipTests` nếu muốn bỏ qua bước test.
@@ -128,6 +137,6 @@ Script tự dừng tiến trình cũ đang chiếm port 3000, khởi động l�
 | `--accent` | `#a8581c` | Khuyến mãi, giảm giá (đất nung) |
 | `--success` | `#356138` | Trạng thái tốt |
 | `--line` | `#e4decb` | Hairline, viền |
-| Font | Plus Jakarta Sans (display) + Be Vietnam Pro (body) + mono hệ thống | Toàn site, hỗ trợ tiếng Việt |
+| Font | Quicksand (display) + Nunito (body) + mono hệ thống | Toàn site, hỗ trợ tiếng Việt |
 
 Bảng màu kế thừa palette **"Earth" trending trên Coolors** (`#606C38` · `#283618` · `#FEFAE0` · `#DDA15E` · `#BC6C25`), tinh chỉnh đậm hơn để đạt tương phản WCAG AA.

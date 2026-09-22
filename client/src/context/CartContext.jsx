@@ -41,7 +41,7 @@ export const CartProvider = ({ children }) => {
     setItems((prev) => {
       const found = prev.find((item) => item.id === product.id);
       if (found) return prev.map((item) => item.id === product.id ? { ...item, qty: item.qty + safeQty } : item);
-      return [...prev, { id: product.id, name: product.name, price: product.price, qty: safeQty }];
+      return [...prev, { id: product.id, name: product.name, price: product.price, category: product.category, image: product.image || null, qty: safeQty }];
     });
   }, []);
   const updateQty = useCallback((id, delta) => {

@@ -1,0 +1,59 @@
+name: Release (CD)
+
+# Đóng gói bản phát hành deploy-ready: server + client build (đã nén sẵn) + ảnh.
+# - Tự chạy khi push tag v* (vd: git tag v1.3.0 && git push --tags)
+# - Hoặc bấm "Run workflow" thủ công
+# Artifact tải về, copy lên máy chủ, chạy: cd server && npm ci --omit=dev && npm start
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  package:
+    name: Test → Build → Đóng gói
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: |
+            client/package-lock.json
+            server/package-lock.json
+
+      - name: Test backend (chặn release nếu test đỏ)
+        run: |
+          npm ci --prefix server
+          npm --prefix server test
+
+      - name: Build frontend + nén sẵn Brotli/Gzip
+        run: |
+          npm ci --prefix client
+          npm --prefix client run build
+          node server/scripts/precompress.js
+
+      - name: Đóng gói release/
+        run: |
+          mkdir -p release
+          cp -r server release/server
+          rm -rf release/server/node_modules release/server/data/orders.json
+          cp -r client/dist release/client-dist
+          cp README.md release/
+          tar -czf "do-cu-quang-huy-${GITHUB_REF_NAME}.tar.gz" -C release .
+
+      - name: Lưu bản phát hành (artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: do-cu-quang-huy-${{ github.ref_name }}
+          path: do-cu-quang-huy-*.tar.gz
+          retention-days: 30

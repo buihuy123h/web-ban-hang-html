@@ -1,7 +1,10 @@
 /* Quét Facebook page "Đồ Cũ Quang Huy" khi chưa đăng nhập: text + ảnh chụp.
-   Chạy: node tools/fb-scan.js */
+   Chạy: npm run scan:fb (trong tools/ — output vào artifacts/) */
 const { chromium } = require('playwright');
 const fs = require('fs');
+const path = require('path');
+// File dump ghi vào tools/artifacts/ (gitignored).
+const OUT = path.join(__dirname, '..', 'artifacts');
 
 const dump = async (page, url, name) => {
   try {
@@ -25,8 +28,8 @@ const dump = async (page, url, name) => {
       await page.waitForTimeout(1600);
     }
     const text = await page.evaluate(() => document.body.innerText);
-    fs.writeFileSync(`fb-${name}.txt`, text, 'utf8');
-    await page.screenshot({ path: `fb-${name}.png` });
+    fs.writeFileSync(path.join(OUT, `fb-${name}.txt`), text, 'utf8');
+    await page.screenshot({ path: path.join(OUT, `fb-${name}.png`) });
     console.log(`${name}: ${text.length} chars → fb-${name}.txt / .png`);
     return text;
   } catch (e) {

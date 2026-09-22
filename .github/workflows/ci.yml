@@ -4,6 +4,16 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+
+# Push liên tiếp trên cùng nhánh → chỉ chạy CI mới nhất, hủy run cũ đang dở (tiết kiệm phút build).
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+# Nguyên tắc least-privilege: CI chỉ cần đọc code.
+permissions:
+  contents: read
 
 jobs:
   backend:
@@ -28,7 +38,7 @@ jobs:
         run: npm test
 
   frontend:
-    name: Frontend — build
+    name: Frontend — build production
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -48,9 +58,65 @@ jobs:
       - name: Build production
         run: npm run build
 
-      - name: Lưu bản build (artifact)
+      # Nén sẵn Brotli/Gzip trong CI → artifact lấy về là deploy được ngay,
+      # không cần nén thêm trên máy chủ (giống y hệt bước deploy cục bộ).
+      - name: Nén sẵn Brotli/Gzip
+        run: node ../server/scripts/precompress.js
+
+      - name: Lưu bản build (artifact, deploy-ready)
         uses: actions/upload-artifact@v4
         with:
           name: client-dist
           path: client/dist
           retention-days: 7
+
+  # Smoke test UI thật (Playwright): chỉ chạy khi bấm "Run workflow" trên GitHub
+  # — không làm chậm CI thường của push/PR, vẫn có đường kiểm thử E2E khi cần.
+  smoke:
+    name: Smoke UI — Playwright
+    if: github.event_name == 'workflow_dispatch'
+    needs: [backend, frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Cài dependencies (server + client + tools)
+        run: |
+          npm ci --prefix server
+          npm ci --prefix client
+          npm ci --prefix tools
+
+      - name: Cài trình duyệt Chromium
+        working-directory: tools
+        run: npx playwright install --with-deps chromium
+
+      - name: Build frontend + nén sẵn
+        run: |
+          npm run build --prefix client
+          node server/scripts/precompress.js
+
+      - name: Khởi động server production
+        run: |
+          node server/server.js &
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:3000/api/health >/dev/null && break
+            sleep 1
+          done
+          curl -sf http://localhost:3000/api/health
+
+      - name: Chạy smoke test UI
+        working-directory: tools
+        run: npm run smoke
+
+      - name: Lưu ảnh chụp khi thất bại
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-artifacts
+          path: tools/artifacts
+          retention-days: 7
+

@@ -1,18 +1,45 @@
 .saved-page { min-height: 65dvh; }
-.saved-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; margin: 22px 0 54px; padding-bottom: 30px; border-bottom: 1px solid var(--line); }
+.saved-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; margin: 22px 0 44px; padding-bottom: 26px; border-bottom: 1px solid var(--line); }
 .saved-heading .eyebrow { margin-bottom: 12px; }
-.saved-heading h1 { margin: 0; font-size: clamp(2.6rem, 6vw, 5rem); line-height: 1; }
-.saved-heading p { max-width: 55ch; margin: 18px 0 0; color: var(--muted); line-height: 1.7; }
-.saved-heading > span { flex: none; padding-bottom: 12px; color: var(--muted); font-family: var(--font-mono); font-size: .72rem; }
-
-.saved-empty {
-  min-height: 340px; display: flex; align-items: center; justify-content: space-between;
-  gap: 40px; padding: 48px; border-radius: var(--r-lg); background: var(--surface-low);
+.saved-heading h1 { margin: 0; font-size: clamp(2.4rem, 5vw, 4.2rem); line-height: 1; }
+.saved-heading p { max-width: 55ch; margin: 16px 0 0; color: var(--muted); line-height: 1.7; }
+.saved-side { display: grid; gap: 14px; justify-items: end; flex: none; padding-bottom: 8px; }
+.saved-count {
+  display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px;
+  border-radius: var(--r-pill); background: var(--surface-high); color: var(--ink);
+  font-family: var(--font-mono); font-size: .72rem; font-weight: 500;
 }
-.saved-empty h2 { margin: 0; font-size: clamp(2rem, 4vw, 3.2rem); }
-.saved-empty p { max-width: 50ch; color: var(--muted); line-height: 1.7; }
+.saved-count .icon { color: var(--primary); }
+.saved-actions { display: flex; align-items: center; gap: 18px; }
+
+/* Empty state — icon tròn + chip danh mục + CTA */
+.saved-empty {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 36px;
+  padding: 44px 48px; border-radius: var(--r-lg);
+  background: radial-gradient(rgba(96, 108, 56, .09) 1.5px, transparent 1.6px) 0 0 / 24px 24px, var(--surface-low);
+  box-shadow: inset 0 1px 0 rgba(255, 253, 246, .7), inset 0 -1px 0 rgba(24, 27, 18, .06);
+}
+.saved-empty-icon { width: 72px; height: 72px; display: grid; place-items: center; border-radius: 50%; background: var(--primary-soft); color: var(--primary-dark); }
+.saved-empty h2 { margin: 0; font-size: clamp(1.7rem, 3.4vw, 2.6rem); }
+.saved-empty-copy p { max-width: 52ch; margin: 12px 0 0; color: var(--muted); line-height: 1.7; }
+.saved-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.saved-chip {
+  padding: 7px 14px; border: 1px solid var(--line); border-radius: var(--r-pill);
+  background: var(--surface); color: var(--ink); font-size: .74rem; font-weight: 500;
+  transition: border-color .15s ease, background-color .15s ease;
+}
+.saved-chip:hover { border-color: var(--line-strong); background: var(--surface-high); }
+.saved-empty-cta { display: grid; gap: 14px; justify-items: center; }
+
+/* Gợi ý sản phẩm bán chạy khi danh sách trống */
+.saved-suggest { margin-top: 64px; }
+.saved-suggest-head { display: grid; gap: 8px; margin-bottom: 24px; }
+.saved-suggest-head h2 { margin: 0; font-size: clamp(1.6rem, 3vw, 2.4rem); }
+.saved-suggest-head p { margin: 0; color: var(--muted); font-size: .9rem; }
 
 @media (max-width: 700px) {
   .saved-heading, .saved-empty { align-items: flex-start; flex-direction: column; }
-  .saved-empty { padding: 30px 24px; }
+  .saved-empty { grid-template-columns: 1fr; gap: 22px; padding: 30px 24px; }
+  .saved-side { justify-items: start; padding-bottom: 0; }
+  .saved-empty-cta { justify-items: start; }
 }

@@ -4,8 +4,7 @@ import { useCatalog } from '../context/CatalogContext';
 import ProductCard from '../components/ProductCard';
 import Icon from '../components/Icon';
 import { useCart } from '../context/CartContext';
-import heroImage from '../assets/inox-editorial-hero.png';
-import { categoryImages, categoryImagePositions } from '../data/productImages';
+import { categoryImages, categoryImagePositions, HERO_IMAGE } from '../data/productImages';
 import '../App.css';
 import './Home.css';
 
@@ -116,8 +115,8 @@ const Home = () => {
             </p>
             <h1 id="hero-title">Đồ cũ còn tốt,<br />giá thì như mới.</h1>
             <p className="hero-sub">
-              Ghế nhựa, kệ inox, giường tầng, nồi chảo... thanh lý từ quán xá và nhà trọ —
-              kiểm tra kỹ, giá rẻ nhất, gửi hàng qua nhà xe toàn quốc.
+              Chuyên mua và bán đồ cũ thanh lý: ghế nhựa, kệ inox, giường tầng, nồi chảo...
+              thu từ quán xá, nhà trọ — kiểm tra kỹ từng món, giá rẻ nhất, gửi qua nhà xe toàn quốc.
             </p>
 
             <form className="search-console" role="search" onSubmit={submitSearch}>
@@ -166,7 +165,7 @@ const Home = () => {
 
           <div className="hero-visual">
             <figure className="hero-photo">
-              <img src={heroImage} alt="Kệ inox và đồ dùng nhà bếp tại kho Đồ Cũ Quang Huy" />
+              <img src={HERO_IMAGE} alt="Kệ inox và đồ dùng nhà bếp tại kho Đồ Cũ Quang Huy" width={1774} height={887} fetchpriority="high" decoding="async" />
               <figcaption className="hero-seal">
                 <span className="seal-icon"><Icon name="shield" size={22} /></span>
                 <span>
@@ -328,11 +327,12 @@ const Home = () => {
         <div className="story-copy">
           <p className="eyebrow">Chuyện nhà</p>
           <h2 id="story-title">Đồ cũ còn dùng tốt, bỏ đi thì tiếc.</h2>
-          <p>Quán xá thanh lý, nhà trọ đổi đồ — còn nhiều món dùng rất ổn. Bên mình giữ lại, kiểm tra thật, bán với giá thật cho người cần.</p>
+          <p>Quán xá thanh lý, nhà trọ trả phòng — bên mình đi thu mua từng đợt, chọn lại món còn dùng ổn, bán bằng giá thật cho người đang cần mở quán, thuê trọ.</p>
           <ul className="story-points">
-            <li><Icon name="check" size={15} />Nguồn hàng thanh lý quán xá, nhà trọ</li>
+            <li><Icon name="check" size={15} />Chuyên mua &amp; bán — nguồn hàng thanh lý quán xá, nhà trọ</li>
             <li><Icon name="check" size={15} />Kiểm tra &amp; vệ sinh từng món trước khi bán</li>
             <li><Icon name="check" size={15} />Xem hàng tại chỗ hoặc qua video trước khi chốt</li>
+            <li><Icon name="check" size={15} />Gửi hàng qua nhà xe khắp 63 tỉnh</li>
           </ul>
           <div className="story-actions">
             <Link to="/about" className="btn btn-olive">Đọc câu chuyện của chúng tôi</Link>

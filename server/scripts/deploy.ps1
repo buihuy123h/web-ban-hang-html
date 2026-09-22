@@ -7,7 +7,7 @@ $ErrorActionPreference = 'Stop'
 $serverDir = Split-Path -Parent $PSScriptRoot
 $clientDir = Join-Path (Split-Path -Parent $serverDir) 'client'
 
-Write-Host '== [1/4] Backend tests ==' -ForegroundColor Cyan
+Write-Host '== [1/5] Backend tests ==' -ForegroundColor Cyan
 if ($SkipTests) {
   Write-Host 'Skipped (-SkipTests)'
 } else {
@@ -15,15 +15,19 @@ if ($SkipTests) {
   if ($LASTEXITCODE -ne 0) { throw 'Backend tests failed - deploy aborted.' }
 }
 
-Write-Host '== [2/4] Frontend build ==' -ForegroundColor Cyan
+Write-Host '== [2/5] Frontend build ==' -ForegroundColor Cyan
 npm --prefix $clientDir run build
 if ($LASTEXITCODE -ne 0) { throw 'Frontend build failed - deploy aborted.' }
 
-Write-Host '== [3/4] Restart API server (port 3000) ==' -ForegroundColor Cyan
+Write-Host '== [3/5] Precompress static assets (Brotli + Gzip) ==' -ForegroundColor Cyan
+npm --prefix $serverDir run precompress
+if ($LASTEXITCODE -ne 0) { throw 'Precompress failed - deploy aborted.' }
+
+Write-Host '== [4/5] Restart API server (port 3000) ==' -ForegroundColor Cyan
 & (Join-Path $PSScriptRoot 'free-port.ps1') -Port 3000
 Start-Process node -ArgumentList 'server.js' -WorkingDirectory $serverDir -WindowStyle Hidden
 
-Write-Host '== [4/4] Health check ==' -ForegroundColor Cyan
+Write-Host '== [5/5] Health check ==' -ForegroundColor Cyan
 $health = $null
 for ($i = 0; $i -lt 15; $i++) {
   try {

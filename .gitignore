@@ -13,12 +13,14 @@ dist/
 # Dữ liệu runtime — server tự tạo lại khi thiếu
 server/data/orders.json
 
+# Artifacts kiểm thử (ảnh chụp, dump) — script trong tools/ tự tạo lại khi chạy
+tools/artifacts/*
+!tools/artifacts/.gitkeep
+
 # Hệ điều hành
 .DS_Store
 Thumbs.db
 
-tools/node_modules/
-tools/*.png
-tools/fb-*.txt
-tools/package-lock.json
-tools/*.log
+
+# Screenshot QA chụp ở root (cur-*.png)
+/cur-*.png

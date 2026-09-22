@@ -12,8 +12,12 @@ const services = [
 ];
 
 const channels = [
-  { icon: 'phone', label: 'Hotline / Zalo', value: '0374 034 430', href: 'tel:0374034430', note: 'Gọi hoặc Zalo 08:00 đến 21:00 mỗi ngày' },
-  { icon: 'spark', label: 'Facebook', value: 'facebook.com/ocuquanghuy', href: 'https://www.facebook.com/ocuquanghuy/', note: 'Xem hàng mới về mỗi tuần trên fanpage' },
+  { icon: 'phone', label: 'Gọi điện', value: '0374 034 430', href: 'tel:0374034430', note: 'Gọi trực tiếp từ 08:00 đến 21:00 mỗi ngày' },
+  { icon: 'zalo', label: 'Zalo', value: '0374 034 430', href: 'https://zalo.me/0374034430', note: 'Nhắn tin Zalo — báo giá nhanh trong ít phút' },
+  { icon: 'messenger', label: 'Messenger', value: 'Chat với shop', href: 'https://m.me/100090912844650', note: 'Nhắn tin Facebook, xem hàng mới về mỗi tuần' },
+  { icon: 'facebook', label: 'Facebook', value: 'Đồ Cũ Quang Huy · Fanpage', href: 'https://www.facebook.com/profile.php?id=100090912844650', note: 'Theo dõi fanpage để không lỡ đợt hàng mới' },
+  { icon: 'tiktok', label: 'TikTok', value: '@cquanghuy8', href: 'https://www.tiktok.com/@cquanghuy8', note: 'Video hàng mới về trong kho mỗi tuần' },
+  { icon: 'tiktok', label: 'TikTok', value: '@nguyn.loi49', href: 'https://www.tiktok.com/@nguyn.loi49', note: 'Kênh phụ — quay hàng thật, chốt giá nhanh' },
   { icon: 'pin', label: 'Showroom', value: '707 Tân Sơn, P. An Hội Tây, Gò Vấp, TP.HCM', note: 'Mở cửa 08:00 đến 21:00, có chỗ để xe' },
 ];
 
@@ -99,7 +103,7 @@ const Contact = () => {
         <aside className="contact-info" aria-label="Kênh hỗ trợ trực tiếp">
           <span className="eyebrow">Kênh hỗ trợ trực tiếp</span>
           {channels.map((channel) => (
-            <div className="channel" key={channel.label}>
+            <div className="channel" key={`${channel.label}-${channel.value}`}>
               <span className="ch-icon"><Icon name={channel.icon} size={19} /></span>
               <div>
                 <span className="ch-label">{channel.label}</span>

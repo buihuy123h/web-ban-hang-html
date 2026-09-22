@@ -2,8 +2,10 @@
  * BACKEND — Express REST API
  * - API danh mục / sản phẩm / đơn hàng cho client (React + Vite).
  * - Production: serve bản build client (client/dist) + SPA fallback.
- * - Bảo mật & hiệu năng: security headers, rate limit, gzip JSON, cache tĩnh,
- *   request log, graceful shutdown — không cần thêm dependency ngoài Express.
+ * - Bảo mật & hiệu năng: security headers, rate limit, gzip + ETag/304 cho JSON,
+ *   nén sẵn (precompress) Brotli/Gzip + cache RAM cho file tĩnh, cache headers,
+ *   ghi đơn bất đồng bộ nguyên tử, request log, graceful shutdown —
+ *   không cần thêm dependency ngoài Express.
  */
 'use strict';
 
@@ -11,8 +13,13 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const zlib = require('zlib');
+const crypto = require('crypto');
+const { precompress } = require('./scripts/precompress');
 
 const app = express();
+// Chạy sau reverse proxy (Nginx/Cloudflare…) thì đặt TRUST_PROXY (vd: 1 hoặc "loopback")
+// để req.ip lấy đúng IP client từ X-Forwarded-For → rate limit không gộp nhầm mọi khách vào 1 IP.
+if (process.env.TRUST_PROXY) app.set('trust proxy', process.env.TRUST_PROXY);
 const CLIENT_DIST = path.resolve(__dirname, '..', 'client', 'dist');
 const IS_TEST = process.env.NODE_ENV === 'test' || process.env.npm_lifecycle_event === 'test';
 const PKG = require('./package.json');
@@ -21,10 +28,13 @@ const PKG = require('./package.json');
 const DATA_DIR = path.join(__dirname, 'data');
 const PRODUCTS_FILE = path.join(DATA_DIR, 'products.json');
 const ORDERS_FILE = path.join(DATA_DIR, 'orders.json');
+// Ảnh thật (danh mục + sản phẩm) phục vụ tại /images/* — DB chỉ lưu đường dẫn tương đối.
+const IMAGES_DIR = path.join(__dirname, 'public', 'images');
 
 // Tự tạo dữ liệu rỗng nếu thiếu (máy CI, bản sao mới).
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 if (!fs.existsSync(ORDERS_FILE)) fs.writeFileSync(ORDERS_FILE, '[]');
+if (!fs.existsSync(IMAGES_DIR)) fs.mkdirSync(IMAGES_DIR, { recursive: true });
 
 const readJson = (file, fallback) => {
   try {
@@ -38,13 +48,93 @@ const catalog = readJson(PRODUCTS_FILE, { categories: [], products: [] });
 const categories = Array.isArray(catalog.categories) ? catalog.categories : [];
 const products = Array.isArray(catalog.products) ? catalog.products : [];
 
-const readOrders = () => readJson(ORDERS_FILE, []);
-const saveOrders = (orders) => {
-  try {
-    fs.writeFileSync(ORDERS_FILE, JSON.stringify(orders, null, 2));
-  } catch {
-    /* Không ghi được file — đơn vẫn trả về client, chỉ mất lưu bền. */
+/* ===== Ảnh: chuẩn hoá trường image/images + kiểm tra file khi khởi động =====
+ * Nguyên tắc chống lỗi ảnh sau khi lên mạng (chi tiết: server/docs/DATABASE.md):
+ *  1) DB chỉ lưu ĐƯỜNG DẪN TƯƠNG ĐỐI "/images/..." — không lưu URL có domain, nên đổi
+ *     tên miền hay deploy sang máy khác ảnh vẫn chạy, không phải sửa dữ liệu.
+ *  2) File ảnh nằm trong server/public/images (catalog/ = danh mục & hero,
+ *     products/ = ảnh riêng từng món) → khi deploy copy kèm thư mục này.
+ *  3) Thiếu file server chỉ CẢNH BÁO (không chết) — FE tự fallback về ảnh danh mục.
+ */
+const imageFileFor = (ref) => {
+  if (typeof ref !== 'string' || !ref.startsWith('/images/')) return null;
+  const target = path.resolve(IMAGES_DIR, `.${ref.slice('/images'.length)}`);
+  return target.startsWith(IMAGES_DIR + path.sep) ? target : null;
+};
+
+const imageProblems = [];
+const checkImageRef = (label, ref) => {
+  const file = imageFileFor(ref);
+  if (!file) {
+    imageProblems.push(`${label}: đường dẫn "${ref}" phải có dạng "/images/..."`);
+    return;
   }
+  if (!fs.existsSync(file)) imageProblems.push(`${label}: không tìm thấy file ${ref}`);
+};
+
+for (const product of products) {
+  // Dữ liệu cũ chưa có trường ảnh → tự điền rỗng để API luôn trả đủ image/images.
+  if (!product.image) product.image = null;
+  if (!Array.isArray(product.images)) product.images = [];
+  const refs = [...(product.image ? [product.image] : []), ...product.images];
+  refs.forEach((ref, index) => checkImageRef(`Sản phẩm #${product.id} "${product.name}"${index ? ` (ảnh phụ ${index})` : ''}`, ref));
+}
+for (const category of categories) {
+  if (category.image) checkImageRef(`Danh mục ${category.key}`, category.image);
+}
+if (imageProblems.length && !IS_TEST) {
+  console.warn(`[images] ${imageProblems.length} ảnh khai báo trong data/products.json thiếu file:`);
+  for (const line of imageProblems) console.warn(`  - ${line}`);
+  console.warn('  → FE sẽ tự fallback về ảnh danh mục. Chép file ảnh vào server/public/images/ rồi restart.');
+}
+
+// Chỉ mục O(1) theo id — tra cứu chi tiết sản phẩm / ghép đơn không phải quét mảng mỗi lần.
+const productById = new Map(products.map((p) => [Number(p.id), p]));
+
+/* ===== Lưu đơn hàng: cache RAM + ghi bất đồng bộ nguyên tử (tmp → rename) =====
+ * - Đọc file 1 lần, sau đó mọi thao tác đều trên RAM → POST /api/orders không bị chặn I/O.
+ * - Ghi qua file tạm rồi rename: nếu tiến trình chết giữa chừng, orders.json không bao giờ
+ *   bị ghi dở (trước đây writeFileSync trực tiếp có thể để lại JSON hỏng).
+ * - Nhiều đơn về gần như đồng thời → gộp thành 1 lần ghi (dirty flag), không đè nhau.
+ */
+let ordersCache = null;
+let ordersCodeSet = null;
+let writingOrders = false;
+let ordersDirty = false;
+
+const loadOrders = () => {
+  if (!ordersCache) {
+    ordersCache = readJson(ORDERS_FILE, []);
+    if (!Array.isArray(ordersCache)) ordersCache = [];
+    ordersCodeSet = new Set(ordersCache.map((o) => o && o.code).filter(Boolean));
+  }
+  return ordersCache;
+};
+
+const persistOrders = () => {
+  if (writingOrders) {
+    ordersDirty = true; // Đang ghi dở → ghi nốt lần nữa sau khi xong.
+    return;
+  }
+  writingOrders = true;
+  ordersDirty = false;
+  const snapshot = JSON.stringify(ordersCache, null, 2);
+  const tmpFile = `${ORDERS_FILE}.tmp`;
+  fs.writeFile(tmpFile, snapshot, (err) => {
+    if (err) {
+      writingOrders = false;
+      console.error('[orders] Không ghi được file tạm — đơn vẫn trả về client, chỉ mất lưu bền:', err.message);
+      return;
+    }
+    fs.rename(tmpFile, ORDERS_FILE, (renameErr) => {
+      writingOrders = false;
+      if (renameErr) {
+        console.error('[orders] Không thay được file đơn hàng:', renameErr.message);
+        return;
+      }
+      if (ordersDirty) persistOrders();
+    });
+  });
 };
 
 /* ===== Request log gọn (tắt khi chạy test) ===== */
@@ -79,17 +169,40 @@ app.use((req, res, next) => {
   return next();
 });
 
-/* ===== Gzip cho phản hồi JSON của API ===== */
+/* ===== Gzip + ETag/304 cho phản hồi JSON của API =====
+ * - Body ≥ 1KB: nén gzip (cache kết quả theo nội dung → request sau không phải nén lại).
+ * - Gắn ETag theo nội dung; client gửi If-None-Match khớp → 304 không thân thể
+ *   (tiết kiệm cả băng thông lẫn CPU nén). Body nhỏ hơn 1KB: express tự lo ETag/304.
+ */
+const gzipCache = new Map(); // key: JSON gốc → { packed, etag } (giới hạn số mục bên dưới)
+const GZIP_CACHE_MAX = 64;
+
+const makeEtag = (body) => `"${body.length.toString(16)}-${crypto.createHash('sha1').update(body).digest('hex').slice(0, 16)}"`;
+
 app.use((req, res, next) => {
   if (!String(req.headers['accept-encoding'] || '').includes('gzip')) return next();
   const originalJson = res.json.bind(res);
   res.json = (payload) => {
     const body = Buffer.from(JSON.stringify(payload));
     if (body.length < 1024) return originalJson(payload);
+
+    const etag = makeEtag(body);
+    res.setHeader('ETag', etag);
+    const ifNoneMatch = req.headers['if-none-match'];
+    if (ifNoneMatch && ifNoneMatch.split(',').some((tag) => tag.trim() === etag)) {
+      return res.status(304).end();
+    }
+
+    let entry = gzipCache.get(etag); // Key theo ETag (hash nội dung) — key theo Buffer sẽ so tham chiếu → cache không bao giờ trúng.
+    if (!entry) {
+      entry = { packed: zlib.gzipSync(body) };
+      if (gzipCache.size >= GZIP_CACHE_MAX) gzipCache.delete(gzipCache.keys().next().value);
+      gzipCache.set(etag, entry);
+    }
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     res.setHeader('Content-Encoding', 'gzip');
     res.setHeader('Vary', 'Accept-Encoding');
-    return res.end(zlib.gzipSync(body));
+    return res.end(entry.packed);
   };
   return next();
 });
@@ -172,13 +285,15 @@ app.get('/api/products', (req, res) => {
 
 /* ===== API: Chi tiết sản phẩm + sản phẩm liên quan ===== */
 app.get('/api/products/:id', (req, res) => {
-  const product = products.find((item) => item.id === Number(req.params.id));
+  const product = productById.get(Number(req.params.id));
   if (!product) {
     return res.status(404).json({ error: 'Không tìm thấy sản phẩm' });
   }
   const related = products
     .filter((item) => item.category === product.category && item.id !== product.id)
     .slice(0, 4);
+  // Nội dung chỉ thay đổi khi thay products.json → cho trình duyệt cache 60s.
+  res.set('Cache-Control', 'public, max-age=60');
   return res.json({ product, related });
 });
 
@@ -224,7 +339,7 @@ app.post('/api/orders', (req, res) => {
 
   const items = [];
   for (const [id, qty] of merged) {
-    const product = products.find((item) => item.id === id);
+    const product = productById.get(id);
     if (!product) {
       return res.status(400).json({ error: `Sản phẩm không tồn tại (id: ${id}).` });
     }
@@ -240,9 +355,18 @@ app.post('/api/orders', (req, res) => {
   const total = Math.max(0, subtotal + shippingFee - discount);
   const customer = body.customer;
 
+  const orders = loadOrders();
+
+  // Sinh mã duy nhất (đối chiếu cả các đơn cũ) — tránh trùng khi 2 đơn cùng giây.
+  let code;
+  do {
+    code = `DI${String(Date.now()).slice(-6)}${String(Math.floor(Math.random() * 90) + 10)}`;
+  } while (ordersCodeSet.has(code));
+  ordersCodeSet.add(code);
+
   const order = {
-    // DI + 8 chữ số: 6 số cuối timestamp + 2 số ngẫu nhiên → tránh trùng mã khi 2 đơn cùng giây.
-    code: `DI${String(Date.now()).slice(-6)}${String(Math.floor(Math.random() * 90) + 10)}`,
+    // DI + 8 chữ số: 6 số cuối timestamp + 2 số ngẫu nhiên.
+    code,
     items,
     delivery,
     payment: body.payment,
@@ -260,9 +384,8 @@ app.post('/api/orders', (req, res) => {
     createdAt: new Date().toISOString(),
   };
 
-  const orders = readOrders();
   orders.push(order);
-  saveOrders(orders);
+  persistOrders();
 
   return res.status(201).json({ order });
 });
@@ -272,20 +395,148 @@ app.use('/api', (req, res) => {
   res.status(404).json({ error: 'Không tìm thấy API route.' });
 });
 
-/* ===== Production: serve client build + SPA fallback (kèm cache headers) ===== */
+/* ===== Ảnh DB (/images/*): file tĩnh, cache 30 ngày immutable =====
+ * Tên file ảnh không đổi (thay ảnh = thêm file mới + sửa đường dẫn trong DB) nên cache
+ * dài là an toàn: trình duyệt không tải lại ảnh đã xem → tiết kiệm băng thông, tải nhanh.
+ */
+app.use('/images', express.static(IMAGES_DIR, {
+  maxAge: '30d',
+  immutable: true,
+  dotfiles: 'ignore',
+}));
+
+/* ===== Production: serve client build + SPA fallback ===== */
 if (fs.existsSync(CLIENT_DIST)) {
+  /* --- 1) File văn bản đã nén sẵn (.br/.gz) + cache RAM ---
+   * Bundle JS/CSS của Vite đi trên mạng nhỏ hơn 3-4 lần; phục vụ từ bộ nhớ nên
+   * không đụng đĩa sau lần đọc đầu → phản hồi nhanh và ổn cả khi nhiều người truy cập. */
+  const MIME = {
+    '.html': 'text/html; charset=utf-8',
+    '.js': 'text/javascript; charset=utf-8',
+    '.mjs': 'text/javascript; charset=utf-8',
+    '.css': 'text/css; charset=utf-8',
+    '.json': 'application/json; charset=utf-8',
+    '.map': 'application/json; charset=utf-8',
+    '.svg': 'image/svg+xml',
+    '.txt': 'text/plain; charset=utf-8',
+    '.xml': 'application/xml; charset=utf-8',
+    '.webmanifest': 'application/manifest+json',
+    '.woff': 'font/woff',
+    '.woff2': 'font/woff2',
+    '.ico': 'image/x-icon',
+  };
+  const STATIC_CACHE_MAX = 100;
+  const staticCache = new Map(); // key: đường dẫn file nén → { buffer, mtimeMs }
+
+  const readCached = (file) => {
+    const mtime = fs.statSync(file).mtimeMs;
+    let entry = staticCache.get(file);
+    if (!entry || entry.mtimeMs !== mtime) {
+      entry = { buffer: fs.readFileSync(file), mtimeMs: mtime };
+      if (staticCache.size >= STATIC_CACHE_MAX) staticCache.delete(staticCache.keys().next().value);
+      staticCache.set(file, entry);
+    }
+    return entry.buffer;
+  };
+
+  const cacheControlFor = (filePath) => {
+    // Vite đặt hash vào tên file trong /assets → cache 1 năm là an toàn.
+    if (/[\\/]assets[\\/]/.test(filePath)) return 'public, max-age=31536000, immutable';
+    if (filePath.endsWith('.html')) return 'no-cache';
+    return undefined;
+  };
+
+  const acceptsEncoding = (req, name) =>
+    new RegExp(`(?:^|,)\\s*${name}\\s*(?:;|,|$)`, 'i').test(String(req.headers['accept-encoding'] || ''));
+
+  app.use((req, res, next) => {
+    if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+    let pathname;
+    try {
+      pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
+    } catch {
+      return next();
+    }
+    const filePath = path.normalize(path.join(CLIENT_DIST, pathname));
+    // Chặn path traversal: đường dẫn phải nằm trong client/dist.
+    if (filePath !== CLIENT_DIST && !filePath.startsWith(CLIENT_DIST + path.sep)) return next();
+    const ext = path.extname(filePath).toLowerCase();
+    if (!MIME[ext]) return next(); // Ảnh & loại lạ → express.static lo (stream từ đĩa).
+
+    let stat;
+    try {
+      stat = fs.statSync(filePath);
+    } catch {
+      return next();
+    }
+    if (!stat.isFile()) return next();
+
+    // Ưu tiên Brotli (gọn hơn gzip ~15-20%), lùi về gzip, rồi mới tới bản gốc.
+    let encoding = null;
+    let serveFile = filePath;
+    if (acceptsEncoding(req, 'br') && fs.existsSync(`${filePath}.br`)) {
+      encoding = 'br';
+      serveFile = `${filePath}.br`;
+    } else if (acceptsEncoding(req, 'gzip') && fs.existsSync(`${filePath}.gz`)) {
+      encoding = 'gzip';
+      serveFile = `${filePath}.gz`;
+    }
+
+    let body;
+    try {
+      body = readCached(serveFile);
+    } catch {
+      return next(); // Đọc hỏng thì trả thẳng qua express.static cho lành.
+    }
+
+    const cacheControl = cacheControlFor(filePath);
+    const etag = `"${stat.size.toString(16)}-${Math.round(stat.mtimeMs).toString(16)}${encoding ? `-${encoding}` : ''}"`;
+    res.setHeader('Content-Type', MIME[ext]);
+    res.setHeader('ETag', etag);
+    if (cacheControl) res.setHeader('Cache-Control', cacheControl);
+    res.setHeader('Vary', 'Accept-Encoding');
+    if (encoding) res.setHeader('Content-Encoding', encoding);
+    if ((req.headers['if-none-match'] || '').split(',').some((tag) => tag.trim() === etag)) {
+      return res.status(304).end();
+    }
+    res.setHeader('Content-Length', String(body.length));
+    if (req.method === 'HEAD') return res.end();
+    return res.end(body);
+  });
+
+  // Lần đầu chạy thật (không phải test): tự nén sẵn nếu client build chưa có bản .br/.gz.
+  if (!IS_TEST && require.main === module) {
+    const hasAnyBr = (function find(dir) {
+      for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+        const full = path.join(dir, e.name);
+        if (e.isDirectory()) {
+          if (find(full)) return true;
+        } else if (e.name.endsWith('.br')) {
+          return true;
+        }
+      }
+      return false;
+    })(CLIENT_DIST);
+    if (!hasAnyBr) {
+      const r = precompress(CLIENT_DIST);
+      console.log(`[precompress] Đã nén sẵn ${r.created} bản (Brotli + Gzip) cho client build.`);
+    }
+  }
+
+  /* --- 2) Phần còn lại (ảnh, video…): express.static giữ nguyên --- */
   app.use(express.static(CLIENT_DIST, {
     index: 'index.html',
     setHeaders(res, filePath) {
-      // Vite đặt hash vào tên file trong /assets → cache 1 năm là an toàn.
-      if (/[\\/]assets[\\/]/.test(filePath)) {
-        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
-      } else if (filePath.endsWith('.html')) {
-        res.setHeader('Cache-Control', 'no-cache');
-      }
+      const cacheControl = cacheControlFor(filePath);
+      if (cacheControl) res.setHeader('Cache-Control', cacheControl);
     },
   }));
   app.get('*', (req, res) => {
+    // /images, /assets thiếu file → 404 thật. Trả index.html sẽ khiến <img> decode HTML
+    // (ảnh lỗi âm thầm, rất khó debug khi deploy).
+    if (req.path.startsWith('/images/') || req.path.startsWith('/assets/')) {
+      return res.status(404).end('Not found');
+    }
     res.setHeader('Cache-Control', 'no-cache');
     res.sendFile(path.join(CLIENT_DIST, 'index.html'));
   });
@@ -314,10 +565,16 @@ const startServer = (port = process.env.PORT || 3000) => {
     console.log(`API server đang chạy tại http://localhost:${port}`);
     console.log(`  - API:      http://localhost:${port}/api/health`);
     console.log(`  - Sản phẩm: ${products.length} · Danh mục: ${categories.length}`);
+    console.log(`  - Ảnh: ${IMAGES_DIR} (phục vụ tại /images, cache 30 ngày)`);
     console.log(hasClient
       ? `  - Client build: đang serve từ ${CLIENT_DIST}`
       : '  - Client build: chưa có (chạy "npm run build" ở client để serve kèm).');
   });
+  // Keep-alive dài hơn mặc định 5s → trình duyệt tái dùng kết nối, ít bắt tay TCP lại.
+  // Nên nhỏ hơn idle timeout của proxy phía trước (Nginx/Cloudflare thường 60-75s).
+  server.keepAliveTimeout = 65_000;
+  server.headersTimeout = 66_000; // Phải lớn hơn keepAliveTimeout.
+  server.requestTimeout = 30_000; // Cắt request gửi quá chậm (slowloris), nhả socket sớm.
   // Báo lỗi listen thân thiện thay vì stack trace (EADDRINUSE: cổng bị chiếm).
   server.on('error', (err) => {
     if (err && err.code === 'EADDRINUSE') {

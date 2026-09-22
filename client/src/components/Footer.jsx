@@ -43,8 +43,11 @@ const Footer = () => {
         </div>
         <div className="f-col">
           <h5>Hỗ trợ</h5>
-          <a href="tel:0374034430"><Icon name="phone" size={14} />0374 034 430 · Zalo</a>
-          <a href="https://www.facebook.com/ocuquanghuy/" target="_blank" rel="noreferrer"><Icon name="spark" size={14} />facebook.com/ocuquanghuy</a>
+          <a href="tel:0374034430"><Icon name="phone" size={14} />Gọi 0374 034 430</a>
+          <a href="https://zalo.me/0374034430" target="_blank" rel="noreferrer"><Icon name="zalo" size={14} />Nhắn tin Zalo</a>
+          <a href="https://m.me/100090912844650" target="_blank" rel="noreferrer"><Icon name="messenger" size={14} />Nhắn tin Messenger</a>
+          <a href="https://www.facebook.com/profile.php?id=100090912844650" target="_blank" rel="noreferrer"><Icon name="facebook" size={14} />Facebook · Đồ Cũ Quang Huy</a>
+          <a href="https://www.tiktok.com/@cquanghuy8" target="_blank" rel="noreferrer"><Icon name="tiktok" size={14} />TikTok · @cquanghuy8</a>
           <span>Kiểm tra hàng trước khi nhận</span>
           <span>Gửi qua nhà xe toàn quốc</span>
         </div>

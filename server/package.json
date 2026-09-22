@@ -1,6 +1,6 @@
 {
   "name": "server",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "description": "Express REST API cho storefront Đồ Cũ Quang Huy",
   "main": "server.js",
@@ -9,6 +9,7 @@
     "dev": "node --watch server.js",
     "prestart": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/free-port.ps1",
     "start": "node server.js",
+    "precompress": "node scripts/precompress.js",
     "test": "node --test",
     "deploy": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/deploy.ps1"
   },

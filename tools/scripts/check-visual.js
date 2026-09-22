@@ -1,5 +1,8 @@
-/* Kiểm tra trực quan: Google Maps iframe + ảnh SVG danh mục mới. Chạy: node tools/check-visual.js */
+/* Kiểm tra trực quan: Google Maps iframe + ảnh SVG danh mục mới. Chạy: npm run check:visual (trong tools/) */
 const { chromium } = require('playwright');
+const path = require('path');
+// Mọi ảnh chụp ghi vào tools/artifacts/ (gitignored).
+const OUT = path.join(__dirname, '..', 'artifacts');
 
 (async () => {
   const browser = await chromium.launch({ headless: true });
@@ -15,13 +18,13 @@ const { chromium } = require('playwright');
   console.log('map iframe count:', mapCount, '| box:', JSON.stringify(box), '| src:', src ? src.slice(0, 60) + '...' : null);
   // Lỗi load iframe?
   page.on('requestfailed', (r) => console.log('REQFAIL:', r.url().slice(0, 90), r.failure()?.errorText));
-  await page.locator('.map-section').screenshot({ path: 'map-area.png' });
+  await page.locator('.map-section').screenshot({ path: path.join(OUT, 'map-area.png') });
   console.log('map-area.png saved');
 
   // 2) SVG danh mục mới trên thẻ sản phẩm
   await page.goto('http://localhost:3000/san-pham?cat=ban-ghe', { waitUntil: 'networkidle', timeout: 30000 });
   await page.waitForTimeout(1200);
-  await page.locator('.p-card').first().screenshot({ path: 'svg-card.png' });
+  await page.locator('.p-card').first().screenshot({ path: path.join(OUT, 'svg-card.png') });
   const bg = await page.$eval('.p-card .p-media-link', (el) => getComputedStyle(el).backgroundImage.slice(0, 90));
   console.log('card background:', bg);
   await browser.close();

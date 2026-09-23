@@ -39,6 +39,12 @@ const cacheControlFor = (filePath) => {
 
 /* Gắn middleware serve client build vào app — chỉ khi đã có bản build. */
 const setupClientServing = (app) => {
+  /* Ảnh thiếu file → 404 thật (không rơi vào trang 404 HTML mặc định của Express).
+   * Đăng ký LUÔN, kể cả khi chưa có client/dist (job CI test API không build client;
+   * bản deploy thiếu build cũng vậy) → hành xử nhất quán ở mọi môi trường.
+   * Đứng sau express.static(IMAGES_DIR) trong app.js nên ảnh thật vẫn phục vụ bình thường. */
+  app.use('/images', (req, res) => res.status(404).end('Not found'));
+
   if (!fs.existsSync(CLIENT_DIST)) return;
 
   const STATIC_CACHE_MAX = 100;
@@ -121,8 +127,11 @@ const setupClientServing = (app) => {
       if (cacheControl) res.setHeader('Cache-Control', cacheControl);
     },
   }));
+  /* SPA fallback: mọi route còn lại trả index.html. /images đã bị guard 404 chặn
+   * ngay đầu setupClientServing (đăng ký luôn, kể cả chưa build) nên ở đây chỉ còn
+   * giữ nhánh /assets thiếu file → 404 thật (đứng sau static dist). */
   app.get('*', (req, res) => {
-    if (req.path.startsWith('/images/') || req.path.startsWith('/assets/')) {
+    if (req.path.startsWith('/assets/')) {
       return res.status(404).end('Not found');
     }
     res.setHeader('Cache-Control', 'no-cache');

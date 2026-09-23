@@ -24,12 +24,16 @@ const withEnv = (overrides, action) => {
 };
 
 test('DB config dùng Windows Authentication và timeout hữu hạn', () => {
-  const before = { ...process.env };
-  try {
-    process.env.DB_SERVER = '.\\SQLEXPRESS';
-    process.env.DB_NAME = 'DoCuQuangHuy';
-    process.env.DB_DRIVER = 'msnodesqlv8';
-    process.env.DB_TRUSTED_CONNECTION = 'true';
+  /* withEnv cô lập test khỏi môi trường chạy: GitHub Actions tự set CI=true trên
+   * mọi runner — test cũ đọc lọt biến này nên đỏ trên CI dù xanh ở local.
+   * Ép về ngữ cảnh máy dev: không CI, không production, không credential SQL sót lại. */
+  withEnv({
+    DB_AUTH_MODE: 'windows', DB_SERVER: '.\\SQLEXPRESS', DB_NAME: 'DoCuQuangHuy',
+    DB_DRIVER: 'msnodesqlv8', DB_TRUSTED_CONNECTION: 'true',
+    DB_USER: null, DB_PASSWORD: null, DB_PORT: null, DB_ODBC_DRIVER: null,
+    DB_TRUST_SERVER_CERTIFICATE: null, DB_ALLOW_SELF_SIGNED_CI: null,
+    CI: 'false', NODE_ENV: 'development',
+  }, () => {
     const config = createConfig();
     assert.equal(config.server, '.');
     assert.equal(config.options.instanceName, 'SQLEXPRESS');
@@ -38,9 +42,7 @@ test('DB config dùng Windows Authentication và timeout hữu hạn', () => {
     assert.equal(config.options.trustedConnection, true);
     assert.equal(config.requestTimeout, 15000);
     assert.ok(config.pool.max > 0);
-  } finally {
-    process.env = before;
-  }
+  });
 });
 
 test('DB config SQL Authentication không nạp adapter Windows và giữ password trong driver config', () => {

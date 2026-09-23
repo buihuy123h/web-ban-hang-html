@@ -1,0 +1,7 @@
+# Crew "Đồ Cũ Quang Huy" — Python 3.10–3.13
+# Cài vào venv riêng (không đụng npm của repo):
+#   python -m venv crew/.venv
+#   crew/.venv/Scripts/pip install -r crew/requirements.txt
+crewai>=1.0.0,<3.0.0
+crewai-tools>=0.14.0
+python-dotenv>=1.0.0

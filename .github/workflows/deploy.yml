@@ -1,9 +1,7 @@
 name: Release (CD)
 
-# Đóng gói bản phát hành deploy-ready: server + client build (đã nén sẵn) + ảnh.
-# - Tự chạy khi push tag v* (vd: git tag v1.3.0 && git push --tags)
-# - Hoặc bấm "Run workflow" thủ công
-# Artifact tải về, copy lên máy chủ, chạy: cd server && npm ci --omit=dev && npm start
+# Đóng gói artifact deploy-ready. Workflow này chưa tự deploy vì repo chưa khai báo
+# máy chủ/service manager; quy trình triển khai và rollback nằm trong runbook đi kèm.
 on:
   push:
     tags: ['v*']
@@ -17,43 +15,219 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  package:
-    name: Test → Build → Đóng gói
+  preflight:
+    name: Kiểm tra secret release
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - name: Kiểm tra cấu hình SQL CI
+        env:
+          CI_SQL_ADMIN_PASSWORD: ${{ secrets.CI_SQL_ADMIN_PASSWORD }}
+        run: |
+          if [ -z "$CI_SQL_ADMIN_PASSWORD" ]; then
+            echo "::error::Thiếu GitHub Actions secret CI_SQL_ADMIN_PASSWORD."
+            exit 1
+          fi
 
-      - uses: actions/setup-node@v4
+  integration:
+    name: SQL integration + Smoke UI
+    needs: preflight
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      mssql:
+        image: mcr.microsoft.com/mssql/server@sha256:bf438d7104f861f5e1e1ba14b063d60a5bd883964b3c9b3b3c0064536177baa5 # SQL Server 2022 CU22 GDR1
+        env:
+          ACCEPT_EULA: Y
+          MSSQL_PID: Developer
+          MSSQL_SA_PASSWORD: ${{ secrets.CI_SQL_ADMIN_PASSWORD }}
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$MSSQL_SA_PASSWORD\" -C -Q \"SELECT 1\" -b"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 18
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          node-version: 20
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+
+      - name: Cài dependencies
+        run: |
+          npm ci --prefix server
+          npm ci --prefix client
+          npm ci --prefix tools
+
+      - name: Cài Chromium
+        working-directory: tools
+        run: npx playwright install --with-deps chromium
+
+      - name: Build frontend + nén sẵn
+        run: |
+          npm run build --prefix client
+          node server/scripts/precompress.js
+
+      - name: Tạo credential runtime tạm
+        shell: bash
+        run: |
+          runtime_password="Ci1!$(openssl rand -hex 24)"
+          echo "::add-mask::$runtime_password"
+          echo "DB_PASSWORD=$runtime_password" >> "$GITHUB_ENV"
+
+      - name: Khởi tạo database CI và tài khoản tối thiểu quyền
+        env:
+          CI: 'true'
+          DB_AUTH_MODE: sql
+          DB_SERVER: 127.0.0.1
+          DB_PORT: '1433'
+          DB_NAME: DoCuQuangHuy
+          DB_USER: ci_app_runtime
+          DB_ENCRYPT: 'true'
+          DB_TRUST_SERVER_CERTIFICATE: 'true'
+          DB_ALLOW_SELF_SIGNED_CI: 'true'
+          CI_SQL_ADMIN_USER: sa
+          CI_SQL_ADMIN_PASSWORD: ${{ secrets.CI_SQL_ADMIN_PASSWORD }}
+        run: node server/database/bootstrap-ci.js
+
+      - name: Khởi động server production-like
+        env:
+          CI: 'true'
+          NODE_ENV: production
+          TRUST_PROXY: '0'
+          DB_AUTH_MODE: sql
+          DB_SERVER: 127.0.0.1
+          DB_PORT: '1433'
+          DB_NAME: DoCuQuangHuy
+          DB_USER: ci_app_runtime
+          DB_ENCRYPT: 'true'
+          DB_TRUST_SERVER_CERTIFICATE: 'true'
+          DB_ALLOW_SELF_SIGNED_CI: 'true'
+        run: |
+          node server/index.js > server-smoke.log 2>&1 &
+          echo $! > server-smoke.pid
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:3000/api/health >/dev/null && break
+            if ! kill -0 "$(cat server-smoke.pid)" 2>/dev/null; then
+              sed -E 's/(password|token|secret)=[^ ]+/\1=[REDACTED]/Ig' server-smoke.log
+              exit 1
+            fi
+            sleep 1
+          done
+          curl -sf http://localhost:3000/api/health
+
+      - name: Kiểm tra API và quyền SQL thật
+        env:
+          CI: 'true'
+          DB_AUTH_MODE: sql
+          DB_SERVER: 127.0.0.1
+          DB_PORT: '1433'
+          DB_NAME: DoCuQuangHuy
+          DB_USER: ci_app_runtime
+          DB_ENCRYPT: 'true'
+          DB_TRUST_SERVER_CERTIFICATE: 'true'
+          DB_ALLOW_SELF_SIGNED_CI: 'true'
+          BASE: http://localhost:3000
+        run: node tools/scripts/verify-sql-ci.js
+
+      - name: Chạy smoke test UI
+        working-directory: tools
+        run: npm run smoke
+
+      - name: Dừng server
+        if: always()
+        run: |
+          if [ -f server-smoke.pid ]; then
+            kill "$(cat server-smoke.pid)" 2>/dev/null || true
+          fi
+
+      - name: Lưu evidence khi thất bại
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: release-smoke-artifacts
+          path: |
+            tools/artifacts
+            server-smoke.log
+          retention-days: 7
+
+  package:
+    name: Test → Audit → Build → Đóng gói
+    needs: integration
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
           cache: npm
           cache-dependency-path: |
             client/package-lock.json
             server/package-lock.json
 
-      - name: Test backend (chặn release nếu test đỏ)
+      - name: Cài dependency và chạy test
         run: |
           npm ci --prefix server
+          npm ci --prefix client
           npm --prefix server test
+
+      - name: Audit dependency production (chặn high/critical)
+        run: |
+          npm audit --omit=dev --audit-level=high --prefix server
+          npm audit --omit=dev --audit-level=high --prefix client
 
       - name: Build frontend + nén sẵn Brotli/Gzip
         run: |
-          npm ci --prefix client
           npm --prefix client run build
           node server/scripts/precompress.js
 
-      - name: Đóng gói release/
+      - name: Chuẩn hóa mã phiên bản
+        shell: bash
         run: |
-          mkdir -p release
-          cp -r server release/server
-          rm -rf release/server/node_modules release/server/data/orders.json
-          cp -r client/dist release/client-dist
-          cp README.md release/
-          tar -czf "do-cu-quang-huy-${GITHUB_REF_NAME}.tar.gz" -C release .
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            release_id="$GITHUB_REF_NAME"
+          else
+            release_id="manual-${GITHUB_SHA:0:12}"
+          fi
+          if ! [[ "$release_id" =~ ^[A-Za-z0-9._-]+$ ]]; then
+            echo "::error::Tên phiên bản không hợp lệ."
+            exit 1
+          fi
+          echo "RELEASE_ID=$release_id" >> "$GITHUB_ENV"
 
-      - name: Lưu bản phát hành (artifact)
-        uses: actions/upload-artifact@v4
+      - name: Đóng gói allowlist runtime
+        shell: bash
+        run: |
+          mkdir -p release/server release/client/dist release/server/data release/server/database release/server/scripts
+          cp server/index.js server/app.js server/config.js server/package.json server/package-lock.json release/server/
+          cp -r server/controllers server/lib server/middleware server/models server/routes server/public release/server/
+          cp server/data/chat-knowledge.json release/server/data/
+          cp -r server/database/migrations release/server/database/
+          cp server/database/least-privilege.sql release/server/database/
+          cp server/scripts/precompress.js release/server/scripts/
+          cp -r client/dist/. release/client/dist/
+          cp README.md server/docs/PRODUCTION-RUNBOOK.md release/
+          if find release -type f \( -name '.env*' -o -name '*.map' -o -name 'products.json' -o -path '*/test/*' \) | grep -q .; then
+            echo "::error::Artifact chứa file bị cấm."
+            exit 1
+          fi
+          archive="do-cu-quang-huy-${RELEASE_ID}.tar.gz"
+          tar -czf "$archive" -C release .
+          sha256sum "$archive" > "$archive.sha256"
+
+      - name: Lưu bản phát hành và checksum
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: do-cu-quang-huy-${{ github.ref_name }}
-          path: do-cu-quang-huy-*.tar.gz
+          name: do-cu-quang-huy-${{ env.RELEASE_ID }}
+          path: |
+            do-cu-quang-huy-*.tar.gz
+            do-cu-quang-huy-*.tar.gz.sha256
           retention-days: 30

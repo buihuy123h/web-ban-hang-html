@@ -2,12 +2,12 @@
 /* =====================================================================
    ĐỒ CŨ QUANG HUY — CSDL SQL Server: cấu trúc + dữ liệu mẫu
    Sinh tự động từ dữ liệu JSON trong thư mục server/data bằng generate-seed.cjs
-   CSDL: DoCuQuangHuy  |  Sinh lúc: 2026-09-22T06:24:21.779Z
+   CSDL: DoCuQuangHuy  |  Sinh lúc: 2026-09-22T06:47:21.410Z
 
    NỘI DUNG:
      1. Tạo CSDL nếu chưa có (collation tiếng Việt)
      2. 7 bảng: Categories, Products, ProductImages, ProductSpecs,
-        PromoCodes, Orders, OrderItems — khóa ngoại, CHECK, index
+        PromoCodes, Orders, OrderItems — khóa ngoại, CHECK, index, ràng buộc chuẩn BCNF
      3. Kiểu bảng dbo.OrderItemType + thủ tục usp_TaoDonHang (tạo đơn
         an toàn: giá lấy từ DB, miễn phí ship từ 500.000đ, mã giảm giá)
      4. 2 VIEW: vw_SanPham, vw_DonHangChiTiet
@@ -77,7 +77,7 @@ CREATE TABLE dbo.Products (
     CONSTRAINT FK_Products_Categories FOREIGN KEY (CategoryKey)
         REFERENCES dbo.Categories (CategoryKey),
     CONSTRAINT CK_Products_Price    CHECK (Price >= 0),
-    CONSTRAINT CK_Products_OldPrice CHECK (OldPrice IS NULL OR OldPrice >= 0),
+    CONSTRAINT CK_Products_OldPrice CHECK (OldPrice IS NULL OR OldPrice > Price),   -- giá gốc phải cao hơn giá bán (đơn đang giảm giá)
     CONSTRAINT CK_Products_Rating   CHECK (Rating BETWEEN 0 AND 5),
     CONSTRAINT CK_Products_Sold     CHECK (Sold >= 0),
     CONSTRAINT CK_Products_Badge    CHECK (Badge IN (N'hot', N'sale', N'new'))
@@ -85,12 +85,13 @@ CREATE TABLE dbo.Products (
 GO
 
 /* Gallery ảnh (từ mảng images) — SP không có ảnh thật thì không có dòng,
-   FE tự fallback về ảnh danh mục (client/src/data/productImages.js) */
+   FE tự fallback về ảnh danh mục (client/src/data/productImages.js).
+   Chuẩn BCNF: "ảnh chính" = dòng SortOrder = 1 — KHÔNG lưu cờ IsPrimary riêng
+   vì cờ đó suy ra được 100% từ SortOrder (thuộc tính dư thừa, dễ lệch nhau). */
 CREATE TABLE dbo.ProductImages (
     ProductId INT           NOT NULL,
     SortOrder INT           NOT NULL,   -- 1 = ảnh chính
     Url       NVARCHAR(200) NOT NULL,   -- /images/products/... (không lưu URL domain)
-    IsPrimary BIT NOT NULL DEFAULT 0,
     CONSTRAINT PK_ProductImages PRIMARY KEY (ProductId, SortOrder),
     CONSTRAINT FK_ProductImages_Products FOREIGN KEY (ProductId)
         REFERENCES dbo.Products (ProductId) ON DELETE CASCADE
@@ -129,7 +130,10 @@ CREATE TABLE dbo.Orders (
     Subtotal        DECIMAL(12,0) NOT NULL,
     ShippingFee     DECIMAL(12,0) NOT NULL,
     Discount        DECIMAL(12,0) NOT NULL,
-    Total           DECIMAL(12,0) NOT NULL,   -- = Subtotal - Discount + ShippingFee
+    /* Chuẩn BCNF: Total là giá trị SUY DIỄN (Subtotal - Discount + ShippingFee) —
+       dùng cột computed PERSISTED thay vì lưu cứng, SQL Server tự tính nên
+       không bao giờ xảy ra lệch số khi UPDATE một trong ba cột nguồn. */
+    Total AS (CAST(Subtotal - Discount + ShippingFee AS DECIMAL(12,0))) PERSISTED,
     CustomerName    NVARCHAR(80)  NOT NULL,
     CustomerPhone   NVARCHAR(10)  NOT NULL,
     CustomerAddress NVARCHAR(300) NOT NULL,
@@ -158,7 +162,10 @@ CREATE TABLE dbo.OrderItems (
         REFERENCES dbo.Orders (OrderId) ON DELETE CASCADE,
     CONSTRAINT FK_OrderItems_Products FOREIGN KEY (ProductId)
         REFERENCES dbo.Products (ProductId),
-    CONSTRAINT CK_OrderItems_Qty CHECK (Qty BETWEEN 1 AND 99)
+    CONSTRAINT CK_OrderItems_Qty CHECK (Qty BETWEEN 1 AND 99),
+    /* Một đơn không có 2 dòng cùng sản phẩm (usp_TaoDonHang đã gộp dòng trùng) —
+       ép bằng UNIQUE ở mức CSDL để mọi đường ghi đều tuân thủ, không lệ thuộc app. */
+    CONSTRAINT UQ_OrderItems_Order_Product UNIQUE (OrderId, ProductId)
 );
 GO
 
@@ -224,6 +231,9 @@ BEGIN
         INSERT INTO @Merged (ProductId, Qty)
         SELECT ProductId, SUM(Qty) FROM @Items GROUP BY ProductId;
 
+        IF EXISTS (SELECT 1 FROM @Merged WHERE Qty > 99)
+            THROW 50007, N'Số lượng mỗi món phải từ 1 đến 99.', 1;
+
         IF (SELECT COUNT(*) FROM @Merged) > 50
             THROW 50008, N'Tối đa 50 món mỗi đơn.', 1;
 
@@ -238,8 +248,8 @@ BEGIN
 
         DECLARE @ShippingFee DECIMAL(12,0) =
             CASE WHEN @DeliveryMethod = N'express' THEN 45000 ELSE 30000 END;
-        IF @Subtotal >= 500000
-            SET @ShippingFee = 0;   -- miễn phí vận chuyển
+        IF @DeliveryMethod = N'standard' AND @Subtotal >= 500000
+            SET @ShippingFee = 0;   -- chỉ giao tiêu chuẩn được miễn phí
 
         DECLARE @Discount DECIMAL(12,0) = 0;
         DECLARE @AppliedPromo NVARCHAR(20) = NULL;
@@ -255,7 +265,7 @@ BEGIN
             END
         END
 
-        DECLARE @Total DECIMAL(12,0) = @Subtotal - @Discount + @ShippingFee;
+        DECLARE @Total DECIMAL(12,0) = @Subtotal - @Discount + @ShippingFee;   -- chỉ để trả về caller (cột Total của bảng tự tính)
 
         /* Mã đơn DI + 8 chữ số, sinh đến khi duy nhất */
         DECLARE @Code NVARCHAR(20);
@@ -267,11 +277,12 @@ BEGIN
             IF NOT EXISTS (SELECT 1 FROM dbo.Orders WHERE OrderCode = @Code) BREAK;
         END
 
+        /* Không liệt kê Total trong INSERT — cột computed tự tính từ 3 cột nguồn. */
         INSERT INTO dbo.Orders (OrderCode, DeliveryMethod, PaymentMethod, PromoCode,
-                                Subtotal, ShippingFee, Discount, Total,
+                                Subtotal, ShippingFee, Discount,
                                 CustomerName, CustomerPhone, CustomerAddress, Note, CreatedAt)
         VALUES (@Code, @DeliveryMethod, @PaymentMethod, @AppliedPromo,
-                @Subtotal, @ShippingFee, @Discount, @Total,
+                @Subtotal, @ShippingFee, @Discount,
                 @CustomerName, @CustomerPhone, @CustomerAddress, @Note, SYSUTCDATETIME());
 
         DECLARE @OrderId INT = SCOPE_IDENTITY();
@@ -284,9 +295,14 @@ BEGIN
 
         COMMIT TRANSACTION;
 
-        SELECT @OrderId AS OrderId, @Code AS OrderCode,
-               @Subtotal AS Subtotal, @ShippingFee AS ShippingFee,
-               @Discount AS Discount, @Total AS Total;
+        SELECT o.OrderId, o.OrderCode, o.DeliveryMethod, o.PaymentMethod,
+               o.PromoCode, o.Subtotal, o.ShippingFee, o.Discount, o.Total,
+               o.CustomerName, o.CustomerPhone, o.CustomerAddress, o.Note, o.CreatedAt
+        FROM dbo.Orders AS o WHERE o.OrderId = @OrderId;
+
+        SELECT oi.ProductId, oi.ProductName, oi.UnitPrice, oi.Qty
+        FROM dbo.OrderItems AS oi WHERE oi.OrderId = @OrderId
+        ORDER BY oi.OrderItemId ASC;
     END TRY
     BEGIN CATCH
         IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;
@@ -512,9 +528,10 @@ INSERT dbo.ProductSpecs (ProductId, SortOrder, SpecText) VALUES
 
 GO
 
-/* Gallery ảnh — chỉ sản phẩm có ảnh thật mới có dòng (hiện tại: SP #19) */
-INSERT dbo.ProductImages (ProductId, SortOrder, Url, IsPrimary) VALUES
-    (19, 1, N'/images/products/ke-inox-4-tang.jpg', 1);
+/* Gallery ảnh — chỉ sản phẩm có ảnh thật mới có dòng (hiện tại: SP #19).
+   SortOrder 1 = ảnh chính (không cần cờ IsPrimary — xem chú thích ở bảng). */
+INSERT dbo.ProductImages (ProductId, SortOrder, Url) VALUES
+    (19, 1, N'/images/products/ke-inox-4-tang.jpg');
 GO
 
 /* ================== 7. ĐƠN HÀNG MẪU (từ orders.json) ==================
@@ -522,8 +539,8 @@ GO
    hiện tại của sản phẩm (đúng theo dữ liệu gốc của dự án). */
 /* Đơn #1 — DI970382 (2 món + mã INOX10, miễn phí ship) */
 SET IDENTITY_INSERT dbo.Orders ON;
-INSERT dbo.Orders (OrderId, OrderCode, DeliveryMethod, PaymentMethod, PromoCode, Subtotal, ShippingFee, Discount, Total, CustomerName, CustomerPhone, CustomerAddress, Note, CreatedAt)
-VALUES (1, N'DI970382', N'standard', N'cod', N'INOX10', 3530000, 0, 353000, 3177000,
+INSERT dbo.Orders (OrderId, OrderCode, DeliveryMethod, PaymentMethod, PromoCode, Subtotal, ShippingFee, Discount, CustomerName, CustomerPhone, CustomerAddress, Note, CreatedAt)
+VALUES (1, N'DI970382', N'standard', N'cod', N'INOX10', 3530000, 0, 353000,
        N'Nguyen Van A', N'0901234567', N'123 Nguyen Hue, Q1, TP.HCM', NULL, CONVERT(DATETIME2(3), '2026-09-21T12:16:10.383', 126));
 SET IDENTITY_INSERT dbo.Orders OFF;
 INSERT dbo.OrderItems (OrderId, ProductId, ProductName, UnitPrice, Qty) VALUES
@@ -532,8 +549,8 @@ INSERT dbo.OrderItems (OrderId, ProductId, ProductName, UnitPrice, Qty) VALUES
 
 /* Đơn #2 — DI08592855 (1 món, không mã, miễn phí ship) */
 SET IDENTITY_INSERT dbo.Orders ON;
-INSERT dbo.Orders (OrderId, OrderCode, DeliveryMethod, PaymentMethod, PromoCode, Subtotal, ShippingFee, Discount, Total, CustomerName, CustomerPhone, CustomerAddress, Note, CreatedAt)
-VALUES (2, N'DI08592855', N'standard', N'cod', NULL, 8670000, 0, 0, 8670000,
+INSERT dbo.Orders (OrderId, OrderCode, DeliveryMethod, PaymentMethod, PromoCode, Subtotal, ShippingFee, Discount, CustomerName, CustomerPhone, CustomerAddress, Note, CreatedAt)
+VALUES (2, N'DI08592855', N'standard', N'cod', NULL, 8670000, 0, 0,
        N'Nguyễn Test', N'0901234567', N'12 Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh', NULL, CONVERT(DATETIME2(3), '2026-09-21T12:51:25.928', 126));
 SET IDENTITY_INSERT dbo.Orders OFF;
 INSERT dbo.OrderItems (OrderId, ProductId, ProductName, UnitPrice, Qty) VALUES
@@ -541,8 +558,8 @@ INSERT dbo.OrderItems (OrderId, ProductId, ProductName, UnitPrice, Qty) VALUES
 
 /* Đơn #3 — DI08592242 (2 món + mã INOX10, miễn phí ship) */
 SET IDENTITY_INSERT dbo.Orders ON;
-INSERT dbo.Orders (OrderId, OrderCode, DeliveryMethod, PaymentMethod, PromoCode, Subtotal, ShippingFee, Discount, Total, CustomerName, CustomerPhone, CustomerAddress, Note, CreatedAt)
-VALUES (3, N'DI08592242', N'standard', N'cod', N'INOX10', 6470000, 0, 647000, 5823000,
+INSERT dbo.Orders (OrderId, OrderCode, DeliveryMethod, PaymentMethod, PromoCode, Subtotal, ShippingFee, Discount, CustomerName, CustomerPhone, CustomerAddress, Note, CreatedAt)
+VALUES (3, N'DI08592242', N'standard', N'cod', N'INOX10', 6470000, 0, 647000,
        N'Nguyễn Test', N'0901234567', N'12 Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh', NULL, CONVERT(DATETIME2(3), '2026-09-21T12:51:25.922', 126));
 SET IDENTITY_INSERT dbo.Orders OFF;
 INSERT dbo.OrderItems (OrderId, ProductId, ProductName, UnitPrice, Qty) VALUES
@@ -551,8 +568,8 @@ INSERT dbo.OrderItems (OrderId, ProductId, ProductName, UnitPrice, Qty) VALUES
 
 /* Đơn #4 — DI10424677 (2 món + mã QUANGHUY10, vận phí 30.000đ) */
 SET IDENTITY_INSERT dbo.Orders ON;
-INSERT dbo.Orders (OrderId, OrderCode, DeliveryMethod, PaymentMethod, PromoCode, Subtotal, ShippingFee, Discount, Total, CustomerName, CustomerPhone, CustomerAddress, Note, CreatedAt)
-VALUES (4, N'DI10424677', N'standard', N'cod', N'QUANGHUY10', 265000, 30000, 26500, 268500,
+INSERT dbo.Orders (OrderId, OrderCode, DeliveryMethod, PaymentMethod, PromoCode, Subtotal, ShippingFee, Discount, CustomerName, CustomerPhone, CustomerAddress, Note, CreatedAt)
+VALUES (4, N'DI10424677', N'standard', N'cod', N'QUANGHUY10', 265000, 30000, 26500,
        N'Nguyễn Test', N'0901234567', N'12 Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh', NULL, CONVERT(DATETIME2(3), '2026-09-21T18:25:04.246', 126));
 SET IDENTITY_INSERT dbo.Orders OFF;
 INSERT dbo.OrderItems (OrderId, ProductId, ProductName, UnitPrice, Qty) VALUES
@@ -561,8 +578,8 @@ INSERT dbo.OrderItems (OrderId, ProductId, ProductName, UnitPrice, Qty) VALUES
 
 /* Đơn #5 — DI90672646 (5 món, không mã, miễn phí ship) */
 SET IDENTITY_INSERT dbo.Orders ON;
-INSERT dbo.Orders (OrderId, OrderCode, DeliveryMethod, PaymentMethod, PromoCode, Subtotal, ShippingFee, Discount, Total, CustomerName, CustomerPhone, CustomerAddress, Note, CreatedAt)
-VALUES (5, N'DI90672646', N'standard', N'cod', NULL, 3940000, 0, 0, 3940000,
+INSERT dbo.Orders (OrderId, OrderCode, DeliveryMethod, PaymentMethod, PromoCode, Subtotal, ShippingFee, Discount, CustomerName, CustomerPhone, CustomerAddress, Note, CreatedAt)
+VALUES (5, N'DI90672646', N'standard', N'cod', NULL, 3940000, 0, 0,
        N'Nguyen Van A', N'0901234567', N'25 Ly Thuong Kiet, Quan 1, TP.HCM', NULL, CONVERT(DATETIME2(3), '2026-09-21T18:21:46.726', 126));
 SET IDENTITY_INSERT dbo.Orders OFF;
 INSERT dbo.OrderItems (OrderId, ProductId, ProductName, UnitPrice, Qty) VALUES

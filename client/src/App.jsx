@@ -1,9 +1,10 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import Footer from './components/Footer';
 import ContactFab from './components/ContactFab';
 import Toast from './components/Toast';
+import ChatWidget from './components/ChatWidget';
 import ScrollToTop from './components/ScrollToTop';
 import Home from './pages/Home';
 import { CartProvider } from './context/CartContext';
@@ -50,6 +51,9 @@ const PageRoutes = () => {
 };
 
 function App() {
+  /* Trợ lý AI chat: state duy nhất ở App — ContactFab mở, ChatWidget tự đóng
+     (Esc / nút X / bấm vào món đồ gợi ý) và quay về ContactFab như cũ. */
+  const [chatOpen, setChatOpen] = useState(false);
   return (
     <CartProvider>
       <CatalogProvider>
@@ -58,7 +62,8 @@ function App() {
           <NavBar />
           <PageRoutes />
           <Footer />
-          <ContactFab />
+          <ContactFab onOpenChat={() => setChatOpen(true)} />
+          <ChatWidget open={chatOpen} onClose={() => setChatOpen(false)} />
           <Toast />
         </Router>
       </CatalogProvider>

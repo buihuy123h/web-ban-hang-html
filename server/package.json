@@ -3,21 +3,21 @@
   "version": "1.2.0",
   "private": true,
   "description": "Express REST API cho storefront Đồ Cũ Quang Huy",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "predev": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/free-port.ps1",
-    "dev": "node --watch server.js",
-    "prestart": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/free-port.ps1",
-    "start": "node server.js",
+    "dev": "node --watch index.js",
+    "start": "node index.js",
     "precompress": "node scripts/precompress.js",
     "test": "node --test",
     "deploy": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/deploy.ps1"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "msnodesqlv8": "^5.1.0",
+    "mssql": "^12.7.2"
   }
 }
-

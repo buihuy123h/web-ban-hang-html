@@ -95,7 +95,7 @@ const note = (ok, msg) => { results.push({ ok, msg }); console.log(`${ok ? 'PASS
     await visit(r);
     await page.screenshot({ path: path.join(OUT, `shot${r === '/' ? '-home' : r.replaceAll('/', '-')}.png`), fullPage: true });
   }
-  note(true, 'Đã chụp ảnh mọi trang (tools/shot-*.png)');
+  note(true, 'Đã chụp ảnh mọi trang (tools/artifacts/shot-*.png)');
 
   problems.forEach((p) => note(false, p));
   const fails = results.filter((r) => !r.ok).length;

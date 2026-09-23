@@ -1,105 +1,115 @@
-# 🗃 Database & ảnh sản phẩm — tổ chức để "lên mạng không lỗi ảnh"
+# SQL Server và ảnh sản phẩm
 
-Tài liệu này trả lời hai câu hỏi: **sản phẩm có ảnh thì hiển thị thế nào?** và **tổ chức DB ra sao để khi đưa lên Internet ảnh vẫn chạy, không 404, không vỡ giao diện?**
+Backend dùng SQL Server `DoCuQuangHuy` làm nguồn dữ liệu runtime duy nhất cho danh mục, sản phẩm,
+mã giảm giá và đơn hàng. `data/products.json` chỉ còn là fixture test/nguồn seed lịch sử;
+`data/orders.json` không còn được ghi khi khách đặt hàng.
 
-## 1. Cấu trúc thư mục
+> Runtime dùng `mssql@12`/`tedious@20` cần **Node.js 22 trở lên** cho SQL Authentication. Job CI
+> production-like phải dùng Node 22; không hạ cảnh báo engine hoặc bỏ qua lỗi cài dependency.
 
-```
-server/
-├── data/
-│   └── products.json        ← DATABASE (sản phẩm + danh mục)
-└── public/
-    └── images/
-        ├── catalog/         ← ảnh danh mục & ảnh hero (dùng chung)
-        │   ├── ban-ghe.svg   ├── noi-that.svg
-        │   ├── noi-chao.jpg  ├── bat-dia.jpg
-        │   └── dung-cu.jpg   └── luu-tru.jpg
-        └── products/        ← ảnh RIÊNG của từng sản phẩm
-            └── ke-inox-4-tang.jpg   (ví dụ mẫu)
-```
+## Chuẩn bị lần đầu
 
-Server tự phục vụ thư mục này tại `/images/*` với header `Cache-Control: public, max-age=2592000, immutable`.
+1. Cài SQL Server Express, SSMS và Microsoft ODBC Driver for SQL Server.
+2. Backup database trước khi chạy bất kỳ script nào.
+3. Nếu đây là database dev hoàn toàn trống, có thể chủ động chạy
+   `database/do-cu-quang-huy.sql`. Đây là script dựng lại dữ liệu và có lệnh `DROP`, tuyệt đối
+   không chạy trên database đang vận hành.
+4. Với database đã có dữ liệu, chạy `database/migrations/001-order-procedure-safe.sql` trong
+   SSMS. Migration dùng `CREATE OR ALTER PROCEDURE`, không xóa bảng hay dữ liệu.
+5. Nếu cần nạp các dòng catalog còn thiếu, chạy `node database/generate-safe-seed.cjs`, review
+   `database/seed-catalog-safe.sql`, rồi chạy file đó trong SSMS. Seed chỉ INSERT khóa còn thiếu,
+   chạy lại không nhân bản và không ghi đè dữ liệu đã sửa.
+6. Copy `.env.example` thành `.env`, rồi chạy `npm start`.
 
-## 2. Schema `server/data/products.json`
+Ví dụ cấu hình Windows Authentication:
 
-### Danh mục
-```json
-{ "key": "luu-tru", "label": "Kệ inox & lưu trữ", "image": "/images/catalog/luu-tru.jpg" }
-```
-
-### Sản phẩm
-| Trường | Kiểu | Bắt buộc | Ý nghĩa |
-|---|---|---|---|
-| `id` | number | ✓ | Khóa chính, duy nhất |
-| `name` | string | ✓ | Tên hiển thị |
-| `category` | string | ✓ | Khóa danh mục (phải có trong `categories`) |
-| `categoryLabel` | string | ✓ | Tên danh mục hiển thị |
-| `price` / `oldPrice` | number / null | ✓ | Giá bán / giá gốc (`null` nếu không giảm) |
-| `rating` / `sold` | number | ✓ | Điểm & số đã bán (cơ sở sắp xếp "phổ biến") |
-| `badge` | string | | `hot` · `sale` · `new` |
-| `image` | string / null | | **Ảnh đại diện riêng** — đường dẫn tương đối `/images/products/...`; `null` = mượn ảnh danh mục |
-| `images` | string[] | | Gallery ảnh phụ (cùng loại đường dẫn) — FE tự sinh các "góc ảnh" |
-| `description` | string | ✓ | Mô tả |
-| `specs` | string[] | ✓ | Các gạch đầu dòng thông số |
-
-Ví dụ sản phẩm có ảnh thật (sản phẩm #19 trong DB hiện tại):
-```json
-{
-  "id": 19,
-  "name": "Kệ inox 4 tầng cho quán & nhà bếp",
-  "category": "luu-tru",
-  "price": 850000,
-  "oldPrice": 990000,
-  "image": "/images/products/ke-inox-4-tang.jpg",
-  "images": ["/images/products/ke-inox-4-tang.jpg"]
-}
+```dotenv
+DB_AUTH_MODE=windows
+DB_SERVER=.\SQLEXPRESS
+# DB_PORT=1433
+DB_NAME=DoCuQuangHuy
+DB_DRIVER=msnodesqlv8
+DB_ODBC_DRIVER=ODBC Driver 18 for SQL Server
+DB_TRUSTED_CONNECTION=true
+DB_ENCRYPT=true
+DB_TRUST_SERVER_CERTIFICATE=true
+DB_CONNECT_TIMEOUT_MS=10000
+DB_REQUEST_TIMEOUT_MS=15000
+DB_POOL_MAX=10
+DB_POOL_MIN=0
+DB_POOL_IDLE_TIMEOUT_MS=30000
 ```
 
-## 3. Bốn nguyên tắc chống lỗi ảnh khi deploy
+Production phải đặt `DB_ENCRYPT=true` và `DB_TRUST_SERVER_CERTIFICATE=false`, đồng thời cài certificate
+có hostname/SAN khớp `DB_SERVER` và chuỗi CA được máy Node tin cậy. `true` chỉ dành cho local hoặc
+container CI tự ký khi đồng thời có `CI=true`, `DB_AUTH_MODE=sql` và `DB_ALLOW_SELF_SIGNED_CI=true`.
 
-1. **DB chỉ lưu đường dẫn TƯƠNG ĐỐI** bắt đầu bằng `/images/...` — **không lưu URL có domain** (`http://localhost:3000/...`, `https://tenmien.com/...`). Đổi tên miền, deploy máy khác, test localhost → trình duyệt tự ghép vào domain hiện tại, ảnh luôn chạy, không phải sửa DB.
-2. **Ảnh là dữ liệu, không phải code.** File ảnh nằm trong `server/public/images/` và được deploy copy kèm (như thư mục `data/`). Không nhét ảnh vào bundle FE — thêm/đổi ảnh không phải build lại client.
-3. **Cache 30 ngày `immutable`** cho `/images/*` (server tự gắn header). An toàn vì quy ước: *thay ảnh = thêm file mới + sửa đường dẫn trong DB*, không ghi đè file cũ. Trình duyệt không tải lại ảnh đã xem → tiết kiệm băng thông.
-4. **Fallback nhiều tầng ở FE** (`client/src/data/productImages.js`): ảnh riêng trong DB → ảnh danh mục → placeholder. Thiếu 1 file không vỡ layout, chỉ hiện ảnh dự phòng. Server khi khởi động quét DB và **cảnh báo `[images]`** nếu thiếu file; test CI (`server/test/api.test.js`) chặn luôn deploy thiếu ảnh.
+Ví dụ SQL Authentication cho container CI (không dùng cho production Windows):
 
-## 4. Thêm sản phẩm có ảnh — 3 bước
+```dotenv
+CI=true
+NODE_ENV=production
+DB_AUTH_MODE=sql
+DB_SERVER=localhost
+DB_PORT=1433
+DB_NAME=DoCuQuangHuy
+DB_USER=app_runtime_ci
+DB_PASSWORD=<GitHub secret>
+DB_TRUSTED_CONNECTION=false
+DB_ENCRYPT=true
+DB_TRUST_SERVER_CERTIFICATE=true
+DB_ALLOW_SELF_SIGNED_CI=true
+```
 
-1. Chép file ảnh vào `server/public/images/products/`, đặt tên không dấu, gợi ý `ten-mon.jpg` (vd `ban-nhua-vuong-60.jpg`).
-2. Thêm object vào mảng `products` trong `server/data/products.json`:
-   ```json
-   {
-     "id": 22,
-     "name": "Bàn nhựa vuông 60 cm",
-     "category": "ban-ghe",
-     "categoryLabel": "Bàn ghế & ghế nhựa",
-     "price": 150000,
-     "oldPrice": null,
-     "rating": 4.6,
-     "sold": 0,
-     "badge": "new",
-     "image": "/images/products/ban-nhua-vuong-60.jpg",
-     "images": ["/images/products/ban-nhua-vuong-60.jpg"],
-     "description": "Mô tả ngắn về tình trạng món đồ…",
-     "specs": ["Thông số 1", "Thông số 2"]
-   }
-   ```
-3. `npm run dev` lại (hoặc `npm run deploy` khi production). **Không cần build lại FE.**
+Chạy `node database/bootstrap-ci.js` bằng `CI_SQL_ADMIN_PASSWORD` để dựng DB tạm và tạo runtime user.
+Script từ chối chạy ngoài CI/host allowlist, không in secret và không dùng runtime user `sa`. Nó chạy
+schema destructive chỉ trên container tạm; tuyệt đối không dùng với production/staging. Production tạo
+Windows user/service account riêng rồi review `database/least-privilege.sql`: runtime chỉ đọc catalog và
+`EXECUTE dbo.usp_TaoDonHang`, không có `db_owner`/DDL hoặc quyền ghi trực tiếp bảng đơn.
 
-> Gallery nhiều góc ảnh: liệt kê thêm đường dẫn trong `images` — trang chi tiết tự sinh đủ thumbnail "Góc 1, Góc 2, …". Nếu `images` rỗng, FE dùng ảnh chính + các góc crop như thiết kế cũ.
+Tài khoản Windows chạy Node/VS Code phải được cấp quyền trên `DoCuQuangHuy`. App kết nối trực
+tiếp SQL Server, không kết nối vào SSMS. App probe database trước khi mở cổng; sai instance,
+thiếu quyền hoặc thiếu ODBC driver sẽ làm startup thất bại thay vì âm thầm dùng JSON.
+Nếu named-instance discovery bị chặn, bật SQL Server Browser/TCP/IP hoặc đặt `DB_SERVER=localhost`
+và `DB_PORT` theo port TCP tĩnh đã cấu hình trong SQL Server Configuration Manager.
 
-## 5. Thay ảnh — đừng ghi đè file cũ
+## Sửa dữ liệu động bằng SSMS
 
-Vì trình duyệt cache ảnh 30 ngày, muốn thay ảnh hãy **thêm file mới với tên mới** (vd `ke-inox-4-tang-2.jpg`) rồi sửa đường dẫn trong DB. Ghi đè cùng tên → khách đã vào trang trước đó tiếp tục thấy ảnh cũ đến khi cache hết hạn.
+- `Categories`: danh mục và ảnh danh mục.
+- `Products`: tên, giá, mô tả, ảnh chính và số liệu sản phẩm.
+- `ProductImages`: gallery, thứ tự theo `SortOrder`.
+- `ProductSpecs`: thông số, thứ tự theo `SortOrder`.
+- `PromoCodes`: mã giảm giá và trạng thái hiệu lực.
+- `Orders`, `OrderItems`: dữ liệu đơn được stored procedure ghi nguyên tử.
 
-## 6. Khi lên Internet thật
+API query DB ở mỗi request nên thay đổi đã commit trong SSMS hiện ngay, không cần restart.
+Không chỉnh trực tiếp tổng tiền đơn: stored procedure luôn lấy giá hiện tại từ `Products` và
+lưu snapshot vào `OrderItems`.
 
-- **Deploy 1 máy (mô hình hiện tại):** chạy `npm run deploy` ở `server/`. Nhớ copy cả `server/public/images/` lên máy chủ — đó là "database ảnh".
-- **FE và BE tách origin** (`VITE_API_URL=https://api...`): FE tự ghép domain API vào mọi ảnh `/images/...` qua `resolveImg()` trong `client/src/data/productImages.js` — không cần sửa DB.
-- **Muốn dùng CDN/cloud (Cloudinary, PicGo, S3…) sau này:** chỉ cần điền URL đầy đủ `https://cdn.../anh.jpg` vào `image`/`images` — FE nhận diện và giữ nguyên URL. Đây là lý do DB lưu chuỗi đường dẫn thay vì khóa file.
+## Ảnh sản phẩm
 
-## 7. Dev & kiểm tra
+DB chỉ lưu đường dẫn tương đối bắt đầu bằng `/images/...`; file thật đặt trong
+`server/public/images/`. Ví dụ:
 
-- **Dev:** Vite proxy `/images` → cổng 3000 (`client/vite.config.js`), nên ảnh hiện bình thường tại `localhost:5173`.
-- **Test:** `cd server && npm test` — có test đối chiếu DB ↔ file trên đĩa, chặn deploy thiếu ảnh.
-- **Khởi động:** server in cảnh báo `[images] ... thiếu file` nếu DB khai báo ảnh không tồn tại.
-- **API:** `/api/products` và `/api/products/:id` luôn trả `image` (string/null) và `images` (mảng) — FE dựa vào đó hiển thị.
+```text
+server/public/images/catalog/ban-ghe.svg
+server/public/images/products/ke-inox-4-tang.jpg
+```
+
+Khi thay ảnh, thêm file với tên mới rồi cập nhật `ImageUrl`/`Url` trong SSMS. Không ghi đè tên
+cũ vì `/images/*` được cache 30 ngày với `immutable`.
+
+## Vận hành và kiểm tra
+
+```powershell
+Set-Location "D:\web ban hang html\server"
+npm.cmd test
+npm.cmd start
+```
+
+Mở `http://localhost:3000/api/health`; `database: "connected"` nghĩa là pool sẵn sàng. Khi DB
+mất kết nối, health và route phụ thuộc DB trả `503` mà không lộ connection string.
+
+`npm test` dùng repository trong bộ nhớ, không truy cập SQL Server. Không tự chạy migration hay
+seed trong startup/test. Nếu cần seed lại, backup trước và chỉ dùng script destructive trên DB
+dev trống do chủ repo chủ động xác nhận.

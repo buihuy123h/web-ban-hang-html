@@ -28,13 +28,13 @@ Một cửa hàng đồ inox được trình bày như catalogue tuyển chọn:
 ## Brand Commitments
 
 - Tên hiện có: Đồ Inox Gia Đình.
-- Thiết kế phải kế thừa thư mục tham chiếu `client/docs/design-reference/`: Editorial Circular Commerce, nền stone ấm, cobalt tiết chế, lưới thoáng và bo góc nhỏ.
+- Thiết kế kế thừa ngôn ngữ "Editorial Circular Commerce — Earth Edition" đã chuẩn hoá trong `client/docs/DESIGN.md`: nền kem ấm, olive làm màu tương tác, lưới thoáng và bo góc nhỏ.
 - Ngôn ngữ chính: tiếng Việt.
 
 ## Evidence on Hand
 
-- Danh mục và dữ liệu sản phẩm tại `server/data/products.json` (backend cung cấp qua REST API `/api/products`).
-- Thiết kế tham chiếu tại `client/docs/design-reference/` (mỗi trang có `DESIGN.md`/`code.html`/`screen.png`).
+- Danh mục và dữ liệu sản phẩm trong SQL Server `DoCuQuangHuy` (backend cung cấp qua REST API `/api/products`; `server/data/products.json` chỉ là fixture test/seed).
+- Hệ thống thiết kế (token màu, typography, layout) tại `client/docs/DESIGN.md`.
 - Ảnh catalogue phục vụ từ backend tại `server/public/images/` (`catalog/` + `products/`).
 
 ## Product Principles

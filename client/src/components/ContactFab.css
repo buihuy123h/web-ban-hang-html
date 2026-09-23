@@ -110,3 +110,8 @@
 /* Menu đang mở xòe lên đúng vùng nút back-to-top → ẩn tạm nút đó
    cho gọn mắt (menu đóng lại là nút hiện ra như cũ). */
 body:has(.contact-fab.open) .back-to-top { opacity: 0; pointer-events: none; }
+
+/* ===== Mục "Hỏi trợ lý AI" — button mở panel chat (không phải <a>) ===== */
+button.cf-link { border: 0; background: none; padding: 0; cursor: pointer; font: inherit; }
+.cf-ai { --tone: var(--primary-dark); }
+.cf-ai .cf-bubble { background: linear-gradient(160deg, #8a9a46, #3d451f); }

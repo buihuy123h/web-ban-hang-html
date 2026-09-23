@@ -6,9 +6,12 @@ Dự án **tách riêng Frontend và Backend** thành 2 thư mục độc lập,
 web ban hang html/
 │
 ├── package.json            ← 🎛 Orchestrator: npm run build / test / verify / deploy từ gốc repo
+├── AGENTS.md               ← 📜 Quy tắc làm việc cho AI agent (triage, vai trò, quy trình 4 giai đoạn)
 ├── .github/workflows/      ← 🤖 ci.yml (CI) + deploy.yml (CD — đóng gói release)
 ├── client/                 ← 🎨 FRONTEND (React + Vite) — chi tiết: client/README.md
 ├── server/                 ← ⚙️ BACKEND (Express API + ảnh + database) — chi tiết: server/docs/
+├── crew/                   ← 🤖 CrewAI chạy quy trình 4 giai đoạn — chi tiết: crew/README.md
+├── docs/                   ← 📚 Task spec (docs/tasks) + QA report (docs/qa) — audit trail
 └── tools/                  ← 🔧 Kiểm thử UI bằng Playwright — chi tiết: tools/README.md
     ├── scripts/            ←    mã nguồn các script kiểm thử
     └── artifacts/          ←    ảnh chụp khi chạy (gitignored, tự tạo lại)
@@ -18,7 +21,7 @@ web ban hang html/
 
 ```bash
 npm run setup    # Cài dependencies cho client + server + tools (1 lần)
-npm test         # 21 test API của backend
+npm test         # 39 test API của backend (5 bộ)
 npm run build    # Build client production + nén sẵn Brotli/Gzip
 npm run verify   # test + build — bước "gate" trước khi release/deploy
 npm start        # Server production: API + client build tại http://localhost:3000
@@ -41,7 +44,7 @@ React + Vite + React Router. Chạy tại `http://localhost:5173`, mọi request
 | `client/src/components/` | NavBar, Footer, ProductCard, ContactFab, Icon, Toast, ScrollToTop |
 | `client/src/pages/` | Home, Products, ProductDetail, Cart, Saved, About, Contact, NotFound |
 | `client/src/data/productImages.js` | Bản đồ ảnh danh mục + resolve/fallback ảnh — ảnh phục vụ từ BE (`/images/*`), bundle FE không chứa ảnh |
-| `client/docs/` | Tài liệu thiết kế (DESIGN, PRODUCT, figma, audit UI, `design-reference/`) |
+| `client/docs/` | Tài liệu thiết kế (DESIGN, PRODUCT, figma) |
 
 ```bash
 cd client
@@ -56,21 +59,23 @@ Express REST API, chạy tại `http://localhost:3000`. Ở production serve lu�
 
 | File / thư mục | Vai trò |
 |---|---|
-| `server/package.json` | Khai báo dependency BE (express) + script test/deploy/precompress |
-| `server/server.js` | REST API: `/api/health`, `/api/categories`, `/api/products`, `/api/orders` + security headers, rate limit, gzip + ETag/304, cache RAM, precompress |
-| `server/data/products.json` | Nguồn dữ liệu: sản phẩm + danh mục, ảnh lưu **đường dẫn tương đối** `/images/...` |
+| `server/index.js` | ENTRY chuẩn: nạp `.env` → kết nối SQL Server → listen :3000 → graceful shutdown (SIGINT/SIGTERM) |
+| `server/app.js` | Lắp đặt Express app (pipeline middleware + mount routes + error handler); xuất `app` cho test |
+| `server/routes/` · `controllers/` · `models/` | Cấu trúc MVC — API: `/api/health`, `/api/categories`, `/api/products`, `/api/orders`, `/api/chat`; model đọc SQL Server (memory fixture khi test) |
+| `server/middleware/` | Security headers (CSP strict, COOP, HSTS sau proxy HTTPS tin cậy, chặn iframe…), CORS chặt theo NODE_ENV (production chỉ same-origin, mở qua `CORS_ORIGIN`), rate limit `/api` 240/phút/IP + riêng đặt hàng 10/phút, `X-Request-Id` truy vết log, Brotli/Gzip + ETag/304 cho JSON, 413 body quá lớn, 404 JSON, serve client build + SPA fallback |
+| `server/lib/` | `db.js` (pool SQL Server) + `chat.js` (chatbot AI RAG, fallback thân thiện khi thiếu key) |
+| `server/data/products.json` | Fixture cho test + nguồn seed; production đọc catalog từ SQL Server (xem `server/docs/DATABASE.md`) |
 | `server/public/images/` | File ảnh thật: `catalog/` + `products/` — phục vụ tại `/images` với cache 30 ngày immutable |
-| `server/database/` | SQL + script seed dữ liệu |
-| `server/scripts/deploy.ps1` | Deploy 1 lệnh: test → build → precompress → restart → health check |
-| `server/scripts/precompress.js` | Nén sẵn Brotli/Gzip cho client build (chạy lúc build & server tự chạy khi thiếu) |
-| `server/test/api.test.js` | 21 test API (`node:test` có sẵn của Node, 0 dependency) |
-| `server/docs/DATABASE.md` | Cách tổ chức database & ảnh sản phẩm để lên mạng không lỗi ảnh |
+| `server/database/` | SQL + script seed/migration dữ liệu |
+| `server/scripts/` | `deploy.ps1` (deploy 1 lệnh) · `free-port.ps1` · `precompress.js` (nén sẵn Brotli/Gzip) · `optimize-images.ps1` |
+| `server/test/` | 39 test API — 5 bộ (api, chat, chat-rate, database, repository-injection) bằng `node:test`, 0 dependency |
+| `server/docs/` | `DATABASE.md` (tổ chức database & ảnh) + `CHATBOT.md` (chatbot RAG) |
 
 ```bash
 cd server
 npm install     # lần đầu
 npm run dev     # chạy BE tại http://localhost:3000
-npm test        # chạy 21 test API
+npm test        # chạy 39 test API (5 bộ)
 npm run deploy  # test → build FE → precompress → restart server
 ```
 

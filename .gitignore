@@ -1,26 +1,70 @@
-# Dependencies
+# ============================================================
+# .gitignore — Đồ Cũ Quang Huy
+# File khớp pattern dưới đây sẽ KHÔNG được đưa lên GitHub.
+# Lưu ý: chỉ tác dụng với file CHƯA được git track.
+# ============================================================
+
+# ---- Dependencies (npm cục bộ ở server/ client/ tools/) ----
 node_modules/
 
-# Bản build
+# ---- Bản build production & đóng gói deploy ----
 dist/
+release/
+*.tar.gz
 
-# Môi trường & log
+# ---- Môi trường & bí mật (KHÔNG BAO GIỜ push key thật) ----
 .env
 .env.*
+!.env.example
+!server/.env.example
+!crew/.env.example
+
+# ---- Logs ----
 *.log
 *.err
+*.pid
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-# Dữ liệu runtime — server tự tạo lại khi thiếu
+# ---- Dữ liệu runtime — server tự tạo lại khi thiếu ----
 server/data/orders.json
 
-# Artifacts kiểm thử (ảnh chụp, dump) — script trong tools/ tự tạo lại khi chạy
+# ---- Artifacts kiểm thử (Playwright, ảnh chụp, dump) ----
 tools/artifacts/*
 !tools/artifacts/.gitkeep
+test-results/
+playwright-report/
+playwright/.cache/
+blob-report/
+coverage/
 
-# Hệ điều hành
+# ---- Screenshot QA chụp ở root (cur-*.png) ----
+/cur-*.png
+
+# ---- CrewAI (Python) — venv, cache, output runtime ----
+crew/.venv/
+crew/output/
+__pycache__/
+*.py[cod]
+
+# ---- Hệ điều hành ----
 .DS_Store
 Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
 
+# ---- IDE / editor ----
+.vscode/
+.idea/
+*.swp
+*.swo
 
-# Screenshot QA chụp ở root (cur-*.png)
-/cur-*.png
+# ---- File tạm ----
+*.tmp
+*.temp
+~$*
+

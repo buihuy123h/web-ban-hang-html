@@ -25,7 +25,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Precompress failed - deploy aborted.' }
 
 Write-Host '== [4/5] Restart API server (port 3000) ==' -ForegroundColor Cyan
 & (Join-Path $PSScriptRoot 'free-port.ps1') -Port 3000
-Start-Process node -ArgumentList 'server.js' -WorkingDirectory $serverDir -WindowStyle Hidden
+Start-Process node -ArgumentList 'index.js' -WorkingDirectory $serverDir -WindowStyle Hidden
 
 Write-Host '== [5/5] Health check ==' -ForegroundColor Cyan
 $health = $null

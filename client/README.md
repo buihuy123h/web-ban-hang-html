@@ -19,7 +19,7 @@ Ngôn ngữ thiết kế: **Editorial Circular Commerce — Earth Edition** — 
 │   ├── package.json
 │   ├── vite.config.js             # Proxy /api → :3000 khi dev + tách vendor chunk khi build
 │   ├── index.html
-│   ├── docs/                      # Tài liệu thiết kế (DESIGN, PRODUCT, figma, audit, design-reference/)
+│   ├── docs/                      # Tài liệu thiết kế (DESIGN, PRODUCT, figma)
 │   └── src/
 │       ├── api/                   # Lớp gọi REST API (client.js, catalog.js, orders.js)
 │       ├── context/               # CatalogContext (dữ liệu) + CartContext (giỏ hàng, đã lưu)
@@ -27,14 +27,17 @@ Ngôn ngữ thiết kế: **Editorial Circular Commerce — Earth Edition** — 
 │       ├── components/            # NavBar, Footer, ProductCard, ContactFab, Toast, ScrollToTop
 │       ├── pages/                 # Home, Products, ProductDetail, Cart, Saved, About, Contact, NotFound
 │       └── main.jsx / App.jsx / *.css
-├── server/                        # BACKEND (Express API)
+├── server/                        # BACKEND (Express API — cấu trúc MVC)
 │   ├── package.json
-│   ├── server.js                  # REST API + serve client/dist + precompress + cache RAM
-│   ├── scripts/                   # deploy.ps1, free-port.ps1, precompress.js
-│   ├── test/api.test.js           # 21 test API (node:test có sẵn của Node, 0 dependency)
-│   ├── data/products.json         # Nguồn dữ liệu duy nhất (sản phẩm + danh mục)
-│   ├── database/                  # SQL + seed dữ liệu
-│   ├── docs/DATABASE.md           # Tổ chức database & ảnh khi lên mạng
+│   ├── index.js                   # Entry: nạp .env → SQL Server → listen :3000 → graceful shutdown
+│   ├── app.js                     # Lắp đặt app (middleware + routes + error handler)
+│   ├── routes/ controllers/ models/ middleware/   # MVC chuẩn
+│   ├── lib/                       # db.js (pool SQL Server) + chat.js (chatbot AI RAG)
+│   ├── scripts/                   # deploy.ps1, free-port.ps1, precompress.js, optimize-images.ps1
+│   ├── test/                      # 39 test API (5 bộ — node:test, 0 dependency)
+│   ├── data/                      # products.json (fixture test/seed) + chat-knowledge.json
+│   ├── database/                  # SQL + seed + migration dữ liệu
+│   ├── docs/                      # DATABASE.md + CHATBOT.md
 │   └── public/images/             # Ảnh thật: catalog/ + products/ (serve tại /images, cache 30 ngày)
 └── tools/                         # Kiểm thử UI Playwright (xem tools/README.md)
     ├── scripts/                   # Mã nguồn các script kiểm thử
@@ -49,7 +52,8 @@ Ngôn ngữ thiết kế: **Editorial Circular Commerce — Earth Edition** — 
 | GET | `/api/categories` | Danh sách danh mục |
 | GET | `/api/products?cat=&q=&sort=` | Danh sách sản phẩm (lọc, tìm, sắp xếp) |
 | GET | `/api/products/:id` | Chi tiết sản phẩm + sản phẩm liên quan |
-| POST | `/api/orders` | Tạo đơn hàng — backend tự kiểm tra dữ liệu và **tính lại tiền theo giá server** (không tin giá client), lưu vào `server/data/orders.json` |
+| POST | `/api/orders` | Tạo đơn hàng — backend tự kiểm tra dữ liệu và **tính lại tiền theo giá server** (không tin giá client), ghi đơn vào SQL Server bằng stored procedure |
+| POST | `/api/chat` | Trợ lý khách hàng AI (RAG trên dữ liệu shop: sản phẩm, phí ship, địa chỉ; fallback thân thiện khi thiếu API key) |
 
 ## 🚀 Chạy dự án
 
@@ -80,12 +84,12 @@ cd server
 npm start
 ```
 
-> Tài liệu thiết kế (DESIGN.md, PRODUCT.md, figma, audit UI, tham chiếu `design-reference/`) nằm tại `client/docs/`.
+> Tài liệu thiết kế (DESIGN.md, PRODUCT.md, figma) nằm tại `client/docs/`.
 
 ## 🔄 CI/CD
 
 **CI — GitHub Actions (`.github/workflows/ci.yml`):** mỗi push (main) / pull request chạy 2 job song song:
-- `backend` — `npm ci` + `npm test` (21 test API viết bằng `node:test` có sẵn của Node, không cần cài gì thêm)
+- `backend` — `npm ci` + `npm test` (39 test API — 5 bộ, viết bằng `node:test` có sẵn của Node, không cần cài gì thêm)
 - `frontend` — `npm ci` + `npm run build` + **precompress Brotli/Gzip** → artifact `client-dist` **deploy-ready** (lấy về là chạy được, không cần nén thêm trên server)
 - `smoke` — smoke test UI thật bằng Playwright (chỉ chạy khi bấm *Run workflow* — không làm chậm CI thường)
 - Tối ưu: `concurrency` hủy run cũ khi push liên tiếp, `permissions: contents: read`, cache npm theo lockfile từng package.
@@ -109,9 +113,9 @@ npm test          # từ gốc repo — hoặc: cd server && npm test
 npm run deploy    # từ gốc repo — = scripts/deploy.ps1: test → build → precompress → restart → health check
 ```
 
-Script tự dừng tiến trình cũ đang chiếm port 3000, khởi động lại `node server.js` ở chế độ nền, và chỉ báo thành công sau khi `/api/health` trả `ok`. Thêm `-SkipTests` nếu muốn bỏ qua bước test.
+Script tự dừng tiến trình cũ đang chiếm port 3000, khởi động lại `node index.js` ở chế độ nền, và chỉ báo thành công sau khi `/api/health` trả `ok`. Thêm `-SkipTests` nếu muốn bỏ qua bước test.
 
-**Bảo mật & hiệu năng tích hợp trong server (không thêm dependency):** security headers (`nosniff`, chặn iframe, Referrer-Policy, Permissions-Policy), rate limit 240 req/phút/IP cho `/api` (429 + `Retry-After`), gzip tự động cho JSON lớn, cache `immutable` cho `/assets` (file Vite có hash) và `no-cache` cho HTML, request log, graceful shutdown (SIGINT/SIGTERM), tự tạo `data/orders.json` nếu thiếu.
+**Bảo mật & hiệu năng tích hợp trong server (không thêm dependency):** security headers (CSP strict, `nosniff`, chặn iframe, COOP, Referrer-Policy, Permissions-Policy, HSTS sau proxy HTTPS, ẩn `X-Powered-By`), CORS chặt (production chỉ cùng origin; mở qua `CORS_ORIGIN`), `X-Request-Id` gắn mọi response + log truy vết, rate limit 240 req/phút/IP cho `/api` + riêng đặt hàng 10/phút và chat theo `CHAT_RATE_MAX` (429 + `Retry-After`), Brotli/Gzip tự động cho JSON lớn, giới hạn body 100KB (413), cache `immutable` cho `/assets` (file Vite có hash) và `no-cache` cho HTML, graceful shutdown (SIGINT/SIGTERM + fatal handler thoát sạch để process manager khởi động lại).
 
 ## ✨ Tính năng
 

@@ -1,0 +1,72 @@
+{
+  "shop": {
+    "name": "Đồ Cũ Quang Huy",
+    "address": "707 Tân Sơn, P. An Hội Tây, Gò Vấp, TP. Hồ Chí Minh",
+    "hours": "Mở cửa 08:00 đến 21:00 mỗi ngày",
+    "hotline": "0374 034 430",
+    "zalo": "https://zalo.me/0374034430",
+    "intro": "Chuyên mua và bán đồ cũ: đồ dùng quán ăn, nội thất phòng trọ, bàn ghế nhựa, nồi chảo, dụng cụ bếp, kệ inox. Hàng mới về mỗi tuần, đã kiểm tra và vệ sinh trước khi bán. Nội thành giao trong ngày, tỉnh khác gửi qua nhà xe toàn quốc."
+  },
+  "faqs": [
+    {
+      "key": "giao-hang",
+      "q": "Giao hàng thế nào?",
+      "keywords": ["giao hang", "van chuyen", "gui hang", "nha xe", "giao tan noi", "giao khi nao", "bao lau nhan", "go vap", "noi thanh"],
+      "a": "Nội thành TP.HCM giao trong ngày. Tỉnh khác shop gửi qua nhà xe toàn quốc (63 tỉnh) — ở xa có thể xin video thử hàng trước khi chốt."
+    },
+    {
+      "key": "phi-ship",
+      "q": "Phí ship và freeship?",
+      "keywords": ["phi ship", "phi giao", "cuoc", "freeship", "free ship", "mien phi giao", "ship", "tien ship", "cuoc xe"],
+      "a": "Phí giao tiêu chuẩn 30.000₫, giao nhanh 45.000₫. Đơn từ 500.000₫ được miễn phí giao tiêu chuẩn."
+    },
+    {
+      "key": "thanh-toan",
+      "q": "Thanh toán thế nào?",
+      "keywords": ["thanh toan", "cod", "chuyen khoan", "tra tien", "tra khi nhan", "payment", "atm"],
+      "a": "Nhận COD (trả tiền khi nhận hàng) hoặc chuyển khoản trước khi gửi. Mua số lượng lớn liên hệ để được báo giá sỉ."
+    },
+    {
+      "key": "giam-gia",
+      "q": "Có mã giảm giá không?",
+      "keywords": ["ma giam gia", "ma giam", "khuyen mai", "coupon", "giam gia", "voucher", "uu dai"],
+      "a": "Mã QUANGHUY10 giảm 10% giá trị đơn hàng — nhập lúc đặt hàng trên web."
+    },
+    {
+      "key": "xem-hang",
+      "q": "Xem hàng trước khi nhận được không?",
+      "keywords": ["xem hang", "thu hang", "video", "kiem tra", "hinh that", "xin video", " xem truoc"],
+      "a": "Được — món nào đăng là món đó, hình thật tình trạng thật. Ở xa có thể xin video thử hàng trước khi chốt đơn."
+    },
+    {
+      "key": "mua-si",
+      "q": "Mua sỉ / mua số lượng lớn?",
+      "keywords": ["mua si", "so luong lon", "bao gia si", "mua nhieu", "don lon", "mo quan", "kinh doanh"],
+      "a": "Shop nhận đơn sỉ cho quán ăn, phòng trọ, quán mới mở — nhắn Zalo 0374 034 430 để được báo giá sỉ rẻ nhất."
+    },
+    {
+      "key": "dia-chi-gio",
+      "q": "Địa chỉ và giờ mở cửa?",
+      "keywords": ["dia chi", "o dau", "gio mo cua", "mo cua", "showroom", "kho", "den tham", "qua cua hang", "gap"],
+      "a": "Kho 707 Tân Sơn, P. An Hội Tây, Gò Vấp, TP.HCM. Mở cửa 08:00–21:00 mỗi ngày, có chỗ để xe."
+    },
+    {
+      "key": "thu-mua",
+      "q": "Có thu mua đồ cũ không?",
+      "keywords": ["thu mua", "ban do cu", "thanh ly", "can ban", "ban lai", "dinh ly", "quet do"],
+      "a": "Có — shop thu mua thanh lý quán xá, nhà trọ quanh khu vực; chỉ chọn món còn dùng tốt, giá mua hợp lý. Nhắn Zalo 0374 034 430 để báo giá thu mua."
+    },
+    {
+      "key": "doi-tra",
+      "q": "Đổi trả thế nào?",
+      "keywords": ["doi tra", "bao hanh", "doi hang", "tra hang", "hu hong", "hong", "khac mo ta"],
+      "a": "Đồ cũ bán đúng tình trạng đã mô tả, được thử kỹ trước khi lên web. Nếu nhận hàng khác mô tả hoặc hư hỏng do vận chuyển, liên hệ trong 48h để đổi món hoặc hoàn tiền."
+    },
+    {
+      "key": "chat-luong",
+      "q": "Đồ cũ có sạch, dùng tốt không?",
+      "keywords": ["tinh trang", "sach se", "ve sinh", "dung tot", "chat luong", "do cu", "cu", "re"],
+      "a": "Mọi món được thử tại chỗ (ghế chịu tải, quạt chạy êm, nồi dùng được trên bếp), vệ sinh và khử mùi trước khi giao; đồ dùng ăn uống được cọ kỹ. Không đạt thì không lên web."
+    }
+  ]
+}

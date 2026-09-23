@@ -9,7 +9,7 @@ const assert = require('node:assert/strict');
 const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
-const { app, products, categories } = require('../server.js');
+const { app, products, categories } = require('../app.js');
 const { precompress } = require('../scripts/precompress');
 
 let server;
@@ -145,6 +145,28 @@ test('POST /api/orders → gộp dòng trùng id', async () => {
   assert.equal(res.status, 201);
   assert.equal(res.body.order.items.length, 1);
   assert.equal(res.body.order.items[0].qty, 3);
+});
+
+test('POST /api/orders → tổng qty sau gộp vượt 99 thì 400', async () => {
+  const first = products[0];
+  const res = await post('/api/orders', {
+    items: [{ id: first.id, qty: 60 }, { id: first.id, qty: 40 }],
+    delivery: 'standard', payment: 'cod', customer: validCustomer,
+  });
+  assert.equal(res.status, 400);
+  assert.match(res.body.error, /Số lượng không hợp lệ/);
+});
+
+test('POST /api/orders → express luôn 45.000đ dù subtotal đạt ngưỡng miễn phí', async () => {
+  const expensive = products.find((product) => product.price >= 500000) || products[0];
+  const qty = Math.ceil(500000 / expensive.price);
+  const res = await post('/api/orders', {
+    items: [{ id: expensive.id, qty }],
+    delivery: 'express', payment: 'cod', customer: validCustomer,
+  });
+  assert.equal(res.status, 201);
+  assert.ok(res.body.order.subtotal >= 500000);
+  assert.equal(res.body.order.shippingFee, 45000);
 });
 
 test('POST /api/orders → thiếu dữ liệu thì 400 kèm lỗi từng trường', async () => {

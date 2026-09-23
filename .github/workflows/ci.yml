@@ -19,15 +19,18 @@ jobs:
   backend:
     name: Backend — test API
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     defaults:
       run:
         working-directory: server
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          node-version: 20
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
           cache: npm
           cache-dependency-path: server/package-lock.json
 
@@ -40,15 +43,18 @@ jobs:
   frontend:
     name: Frontend — build production
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: client
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          node-version: 20
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
           cache: npm
           cache-dependency-path: client/package-lock.json
 
@@ -64,25 +70,58 @@ jobs:
         run: node ../server/scripts/precompress.js
 
       - name: Lưu bản build (artifact, deploy-ready)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: client-dist
           path: client/dist
           retention-days: 7
 
-  # Smoke test UI thật (Playwright): chỉ chạy khi bấm "Run workflow" trên GitHub
-  # — không làm chậm CI thường của push/PR, vẫn có đường kiểm thử E2E khi cần.
-  smoke:
-    name: Smoke UI — Playwright
+  smoke-preflight:
+    name: Smoke — kiểm tra secret
     if: github.event_name == 'workflow_dispatch'
     needs: [backend, frontend]
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - name: Kiểm tra cấu hình SQL CI
+        env:
+          CI_SQL_ADMIN_PASSWORD: ${{ secrets.CI_SQL_ADMIN_PASSWORD }}
+        run: |
+          if [ -z "$CI_SQL_ADMIN_PASSWORD" ]; then
+            echo "::error::Thiếu GitHub Actions secret CI_SQL_ADMIN_PASSWORD."
+            exit 1
+          fi
 
-      - uses: actions/setup-node@v4
+  # Smoke production-like với SQL Server thật, chỉ chạy khi bấm Run workflow.
+  # DB và runtime credential đều là tạm thời, bị hủy cùng runner.
+  smoke:
+    name: Smoke UI — Playwright
+    if: github.event_name == 'workflow_dispatch'
+    needs: [smoke-preflight]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      mssql:
+        image: mcr.microsoft.com/mssql/server@sha256:bf438d7104f861f5e1e1ba14b063d60a5bd883964b3c9b3b3c0064536177baa5 # SQL Server 2022 CU22 GDR1
+        env:
+          ACCEPT_EULA: Y
+          MSSQL_PID: Developer
+          MSSQL_SA_PASSWORD: ${{ secrets.CI_SQL_ADMIN_PASSWORD }}
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$MSSQL_SA_PASSWORD\" -C -Q \"SELECT 1\" -b"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 18
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          node-version: 20
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
 
       - name: Cài dependencies (server + client + tools)
         run: |
@@ -99,24 +138,86 @@ jobs:
           npm run build --prefix client
           node server/scripts/precompress.js
 
-      - name: Khởi động server production
+      - name: Tạo credential runtime tạm
+        shell: bash
         run: |
-          node server/server.js &
+          runtime_password="Ci1!$(openssl rand -hex 24)"
+          echo "::add-mask::$runtime_password"
+          echo "DB_PASSWORD=$runtime_password" >> "$GITHUB_ENV"
+
+      - name: Khởi tạo database CI và tài khoản tối thiểu quyền
+        env:
+          CI: 'true'
+          DB_AUTH_MODE: sql
+          DB_SERVER: 127.0.0.1
+          DB_PORT: '1433'
+          DB_NAME: DoCuQuangHuy
+          DB_USER: ci_app_runtime
+          DB_ENCRYPT: 'true'
+          DB_TRUST_SERVER_CERTIFICATE: 'true'
+          DB_ALLOW_SELF_SIGNED_CI: 'true'
+          CI_SQL_ADMIN_USER: sa
+          CI_SQL_ADMIN_PASSWORD: ${{ secrets.CI_SQL_ADMIN_PASSWORD }}
+        run: node server/database/bootstrap-ci.js
+
+      - name: Khởi động server production-like
+        env:
+          CI: 'true'
+          DB_AUTH_MODE: sql
+          DB_SERVER: 127.0.0.1
+          DB_PORT: '1433'
+          DB_NAME: DoCuQuangHuy
+          DB_USER: ci_app_runtime
+          DB_ENCRYPT: 'true'
+          DB_TRUST_SERVER_CERTIFICATE: 'true'
+          DB_ALLOW_SELF_SIGNED_CI: 'true'
+          NODE_ENV: production
+          TRUST_PROXY: '0'
+        run: |
+          node server/index.js > server-smoke.log 2>&1 &
+          echo $! > server-smoke.pid
           for i in $(seq 1 30); do
             curl -sf http://localhost:3000/api/health >/dev/null && break
+            if ! kill -0 "$(cat server-smoke.pid)" 2>/dev/null; then
+              sed -E 's/(password|token|secret)=[^ ]+/\1=[REDACTED]/Ig' server-smoke.log
+              exit 1
+            fi
             sleep 1
           done
           curl -sf http://localhost:3000/api/health
+
+      - name: Kiểm tra API với SQL Server thật
+        env:
+          CI: 'true'
+          DB_AUTH_MODE: sql
+          DB_SERVER: 127.0.0.1
+          DB_PORT: '1433'
+          DB_NAME: DoCuQuangHuy
+          DB_USER: ci_app_runtime
+          DB_ENCRYPT: 'true'
+          DB_TRUST_SERVER_CERTIFICATE: 'true'
+          DB_ALLOW_SELF_SIGNED_CI: 'true'
+          BASE: http://localhost:3000
+        run: node tools/scripts/verify-sql-ci.js
 
       - name: Chạy smoke test UI
         working-directory: tools
         run: npm run smoke
 
+      - name: Dừng server
+        if: always()
+        run: |
+          if [ -f server-smoke.pid ]; then
+            kill "$(cat server-smoke.pid)" 2>/dev/null || true
+          fi
+
       - name: Lưu ảnh chụp khi thất bại
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: smoke-artifacts
-          path: tools/artifacts
+          path: |
+            tools/artifacts
+            server-smoke.log
           retention-days: 7
 

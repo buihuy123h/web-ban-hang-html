@@ -3,9 +3,10 @@ import { useLocation } from 'react-router-dom';
 import Icon from './Icon';
 import './ContactFab.css';
 
-/* ===== Nút liên hệ nổi (Gọi điện · Zalo · Messenger · TikTok) =====
+/* ===== Nút liên hệ nổi (Trợ lý AI · Gọi điện · Zalo · Messenger · TikTok) =====
    Khách bấm là nhắn tin/gọi luôn. Kênh là thông tin thật của cửa hàng —
-   khi thay số/đổi link chỉ cần sửa ở CONTACT_ITEMS này. */
+   khi thay số/đổi link chỉ cần sửa ở CONTACT_ITEMS này.
+   Riêng "Hỏi trợ lý AI" là button → gọi onOpenChat() để mở ChatWidget. */
 const CONTACT_ITEMS = [
   { key: 'tiktok', icon: 'tiktok', label: 'TikTok · @cquanghuy8', href: 'https://www.tiktok.com/@cquanghuy8', tone: 'tiktok', delay: 3 },
   { key: 'messenger', icon: 'messenger', label: 'Nhắn tin Messenger', href: 'https://m.me/100090912844650', tone: 'messenger', delay: 2 },
@@ -13,7 +14,7 @@ const CONTACT_ITEMS = [
   { key: 'phone', icon: 'phone', label: 'Gọi 0374 034 430', href: 'tel:0374034430', tone: 'phone', delay: 0 },
 ];
 
-const ContactFab = () => {
+const ContactFab = ({ onOpenChat }) => {
   const [open, setOpen] = useState(false);
   const rootRef = useRef(null);
   const location = useLocation();
@@ -39,6 +40,20 @@ const ContactFab = () => {
   return (
     <div ref={rootRef} className={`contact-fab${open ? ' open' : ''}`}>
       <ul className="cf-menu" id="cf-menu" aria-label="Kênh liên hệ nhanh">
+        {onOpenChat ? (
+          <li className="cf-item" style={{ '--cf-delay': 4 }}>
+            <button
+              type="button"
+              className="cf-link cf-ai"
+              onClick={() => { setOpen(false); onOpenChat(); }}
+            >
+              <span className="cf-bubble">
+                <Icon name="spark" size={22} strokeWidth={1.8} />
+              </span>
+              <span className="cf-label">Hỏi trợ lý AI</span>
+            </button>
+          </li>
+        ) : null}
         {CONTACT_ITEMS.map((item) => (
           <li key={item.key} className="cf-item" style={{ '--cf-delay': item.delay }}>
             <a

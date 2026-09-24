@@ -18,6 +18,7 @@ Ngôn ngữ thiết kế: **Editorial Circular Commerce — Earth Edition** — 
 ├── client/                        # FRONTEND (React + Vite)
 │   ├── package.json
 │   ├── vite.config.js             # Proxy /api → :3000 khi dev + tách vendor chunk khi build
+│   ├── vercel.json                # Rewrite deep link của React Router về index.html
 │   ├── index.html
 │   ├── docs/                      # Tài liệu thiết kế (DESIGN, PRODUCT, figma)
 │   └── src/
@@ -85,6 +86,72 @@ npm start
 ```
 
 > Tài liệu thiết kế (DESIGN.md, PRODUCT.md, figma) nằm tại `client/docs/`.
+
+## ☁️ Deploy frontend độc lập lên Vercel
+
+Chọn trước domain production/alias ổn định cho frontend để cấu hình CORS. Deploy backend và xác nhận
+khỏe để có URL HTTPS public, ví dụ `https://<backend>.onrender.com`; sau đó import repository vào
+Vercel và cấu hình project như sau:
+
+| Thiết lập Vercel | Giá trị |
+|---|---|
+| Framework Preset | `Vite` |
+| Root Directory | `client` |
+| Install Command | `npm ci` |
+| Build Command | `npm run build` |
+| Output Directory | `dist` |
+| Node.js Version | `22.x` |
+
+Trong **Settings → Environment Variables**, tạo biến sau cho Production:
+
+```dotenv
+VITE_API_URL=https://<backend>.onrender.com/api
+```
+
+Giá trị phải là URL HTTPS tuyệt đối, có `/api` và không có dấu `/` cuối. Đây là biến build-time:
+Vite đóng giá trị vào JavaScript khi build, vì vậy sau mỗi lần đổi biến phải **redeploy frontend**;
+deployment cũ không tự nhận giá trị mới. Không đưa secret vào biến `VITE_*` vì nội dung của nó có thể đọc
+được trong bundle trình duyệt.
+
+`vercel.json` rewrite mọi route về `index.html` theo cấu hình SPA chính thức của Vercel. Vì vậy mở hoặc
+refresh trực tiếp `/san-pham`, `/cart`, `/product/:id` vẫn để React Router xử lý; file tĩnh thật
+trong `dist/assets/` vẫn được Vercel phục vụ từ output build.
+
+### Phối hợp CORS với backend
+
+Trên Render, đặt `CORS_ORIGIN` bằng **origin chính xác** của frontend, ví dụ:
+
+```dotenv
+CORS_ORIGIN=https://<frontend>.vercel.app
+```
+
+Origin chỉ gồm scheme + hostname + port nếu có, không có path hoặc dấu `/` cuối. Không dùng `*` ở
+production. URL Preview của Vercel thay đổi theo deployment nên không tự nằm trong allowlist; ưu tiên
+domain production/alias ổn định, hoặc thêm từng preview origin cụ thể vào danh sách phân cách bằng dấu
+phẩy rồi redeploy backend.
+
+### Kiểm tra sau deploy
+
+1. Mở trang chủ và refresh trực tiếp các route `/san-pham`, `/cart` và `/product/:id` (thay `:id`
+   bằng mã sản phẩm thật);
+   không route nào được trả 404.
+2. Trong DevTools → Network, xác nhận request catalog đi tới
+   `https://<backend>.onrender.com/api/...` và ảnh đi tới
+   `https://<backend>.onrender.com/images/...`, không phải origin Vercel.
+3. Kiểm tra danh mục, tìm kiếm, ảnh, chatbot và giỏ hàng. Không tạo đơn thử trên production nếu chưa có
+   quy trình dọn dữ liệu.
+4. Nếu trình duyệt báo CORS, so sánh chính xác origin trên thanh địa chỉ với `CORS_ORIGIN`; sửa backend
+   rồi redeploy/restart backend trước khi thử lại.
+
+Nếu chỉ biết URL frontend sau lần deploy đầu, cập nhật `CORS_ORIGIN` bằng URL production vừa nhận,
+redeploy backend, rồi kiểm tra lại từ frontend. Không mở wildcard tạm thời để bỏ qua bước này.
+
+### Rollback frontend
+
+Nếu bản mới lỗi, vào **Deployments** của Vercel, chọn deployment khỏe gần nhất và dùng
+**Promote to Production** (hoặc rollback theo giao diện hiện tại). Sau đó kiểm tra lại deep link, API và
+ảnh. Nếu rollback sang bản cần backend URL khác, cập nhật `VITE_API_URL` rồi tạo deployment mới; không
+sửa hostname trực tiếp trong source.
 
 ## 🔄 CI/CD
 

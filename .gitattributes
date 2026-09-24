@@ -1,0 +1,5 @@
+# Line-ending nhất quán cho script đa nền tảng (run.bat ASCII+CRLF, run.sh UTF-8+LF)
+*.sh  text eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf

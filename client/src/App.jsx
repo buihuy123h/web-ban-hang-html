@@ -9,6 +9,7 @@ import ScrollToTop from './components/ScrollToTop';
 import Home from './pages/Home';
 import { CartProvider } from './context/CartContext';
 import { CatalogProvider } from './context/CatalogContext';
+import { HERO_IMAGE } from './data/productImages';
 import './App.css';
 
 /* Tách bundle theo route: Home giữ eager (trang landing cần LCP nhanh nhất),
@@ -33,7 +34,7 @@ const RouteLoader = () => (
 const PageRoutes = () => {
   const location = useLocation();
   return (
-    <div className="page-enter" key={location.pathname}>
+    <div className="page-enter" key={location.pathname} style={{ '--page-hero-image': `url("${HERO_IMAGE}")` }}>
       <Suspense fallback={<RouteLoader />}>
         <Routes location={location}>
           <Route path="/" element={<Home />} />

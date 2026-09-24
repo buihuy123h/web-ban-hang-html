@@ -29,6 +29,26 @@ npm run deploy   # Deploy cục bộ: test → build → precompress → restart
 npm run smoke    # Smoke test UI bằng Playwright (cần server đang chạy)
 ```
 
+## 🚀 Khởi chạy nhanh — `run.bat` / `run.sh`
+
+Không cần nhớ lệnh npm: launcher tại gốc repo gói sẵn mọi thao tác. **Windows: nhấn đúp `run.bat`** để mở menu, hoặc `run.bat <lệnh>` trong terminal. Linux/macOS/Git Bash: `./run.sh <lệnh>` (không tham số → menu).
+
+| Lệnh | Chức năng |
+|---|---|
+| `setup` | Cài dependencies lần đầu (client + server + tools) |
+| `dev` | Chạy dev: BE :3000 + FE :5173 (Windows mở 2 cửa sổ) |
+| `build` | Build production + nén Brotli/Gzip |
+| `start` | Chạy web production tại :3000 (**tự build nếu chưa có `client/dist`**) |
+| `test` | Toàn bộ test API backend |
+| `verify` | Gate trước release: test + build |
+| `smoke` | Smoke test UI Playwright (tự health-check server trước) |
+| `deploy` | test → build → precompress → restart → health check |
+| `clean` | Dọn file tạm/build/artifacts (giữ `.gitkeep`) |
+| `clean deep` | Dọn thêm `node_modules` + `crew/.venv` (~900 MB, phải cài lại) |
+| `crew "<yêu cầu>"` | Chạy crew AI quy trình 4 giai đoạn |
+
+Ví dụ: `run.bat dev` · `./run.sh start` · `run.bat crew "thêm mã giảm giá"`.
+
 ## 🎨 FRONTEND — thư mục `client/`
 
 React + Vite + React Router. Chạy tại `http://localhost:5173`, mọi request `/api/*` được proxy về backend cổng 3000.

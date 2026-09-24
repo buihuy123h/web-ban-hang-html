@@ -54,7 +54,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); letter-spa
   display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, .72fr); gap: 60px;
   align-items: end; padding: 68px 0 56px; border-bottom: 1px solid var(--line);
 }
-.page-hero::after { content: ''; height: 260px; background: url('/images/catalog/noi-chao.jpg') 74% 54% / 170% auto no-repeat; border-radius: var(--r-md); box-shadow: var(--shadow-card); }
+.page-hero::after { content: ''; height: 260px; background: var(--page-hero-image) 74% 54% / 170% auto no-repeat; border-radius: var(--r-md); box-shadow: var(--shadow-card); }
 .page-hero h1 { margin: 0; font-size: clamp(2.6rem, 6vw, 5.5rem); line-height: .98; }
 .page-hero p { margin: 24px 0 0; max-width: 58ch; color: var(--muted); line-height: 1.75; }
 

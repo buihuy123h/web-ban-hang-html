@@ -41,7 +41,7 @@ export const categoryImages = {
   'luu-tru': resolveImg('/images/catalog/luu-tru.jpg'),
 };
 
-// Hero trang chủ dùng đúng file ảnh nồi/chảo (được preload trong client/index.html).
+// Hero trang chủ dùng đúng file ảnh nồi/chảo từ backend.
 export const HERO_IMAGE = categoryImages['noi-chao'];
 
 export const categoryImagePositions = {

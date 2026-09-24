@@ -185,16 +185,22 @@ test('CORS: origin trong whitelist được echo + Vary; origin lạ không có 
   assert.equal(denied.status, 200); // Server vẫn xử lý — trình duyệt mới là nơi chặn đọc.
   assert.equal(denied.headers['access-control-allow-origin'], undefined);
 
-  // Preflight (OPTIONS): cho phép → 204 kèm ACAO; lạ → 204 KHÔNG kèm ACAO (browser tự chặn).
-  const preOk = await rawReq('OPTIONS', '/api/products', {
-    origin: 'https://cho-phep.example',
-    'access-control-request-method': 'POST',
-  });
-  assert.equal(preOk.status, 204);
-  assert.equal(preOk.headers['access-control-allow-origin'], 'https://cho-phep.example');
-  assert.match(String(preOk.headers['access-control-allow-methods'] || ''), /POST/);
+  // Preflight (OPTIONS): hai endpoint POST public đều cho phép method/header cần dùng.
+  for (const endpoint of ['/api/orders', '/api/chat']) {
+    const preOk = await rawReq('OPTIONS', endpoint, {
+      origin: 'https://cho-phep.example',
+      'access-control-request-method': 'POST',
+      'access-control-request-headers': 'content-type, x-request-id',
+    });
+    assert.equal(preOk.status, 204, endpoint);
+    assert.equal(preOk.headers['access-control-allow-origin'], 'https://cho-phep.example', endpoint);
+    assert.match(String(preOk.headers['access-control-allow-methods'] || ''), /POST/, endpoint);
+    assert.match(String(preOk.headers['access-control-allow-headers'] || ''), /Content-Type/i, endpoint);
+    assert.match(String(preOk.headers['access-control-allow-headers'] || ''), /X-Request-Id/i, endpoint);
+  }
 
-  const preDenied = await rawReq('OPTIONS', '/api/products', {
+  // Origin lạ vẫn nhận 204 nhưng không có ACAO, nên trình duyệt không cho đọc/gửi request thật.
+  const preDenied = await rawReq('OPTIONS', '/api/orders', {
     origin: 'https://trang-lua-dao.example',
     'access-control-request-method': 'POST',
   });

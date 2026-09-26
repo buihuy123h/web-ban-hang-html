@@ -20,66 +20,66 @@ const categoryTiles = [
 const quickTerms = ['Ghế nhựa', 'Kệ inox', 'Giường tầng', 'Nồi chảo'];
 
 const trustItems = [
-  { icon: 'shield', title: 'Kiểm tra kỹ trước khi bán', desc: 'Mỗi món được thử hoạt động, vệ sinh và chụp ảnh thật trước khi lên web.' },
-  { icon: 'refresh', title: 'Xem hàng trước khi chốt', desc: 'Ghé kho trực tiếp hoặc nhận video thử hàng qua Zalo khi ở xa.' },
-  { icon: 'truck', title: 'Gửi qua nhà xe toàn quốc', desc: 'Nội thành TP.HCM giao trong ngày, tỉnh khác gửi qua nhà xe giá rẻ.' },
+  { icon: 'shield', title: 'Hỏi rõ tình trạng từng món', desc: 'Shop đăng hàng thanh lý; hãy hỏi chi tiết tình trạng trước khi chốt.' },
+  { icon: 'refresh', title: 'Xem hàng trước khi chốt', desc: 'Liên hệ shop để hỏi cách xem hàng trực tiếp hoặc nhận thông tin món.' },
+  { icon: 'truck', title: 'Hỏi cách nhận hàng', desc: 'Shop có đề cập việc gửi qua nhà xe; phí và cách nhận tùy từng món.' },
 ];
 
 /* Dải USP chạy ngang (marquee) — items được nhân đôi trong JSX để cuộn liền mạch */
 const uspItems = [
   { icon: 'shield', text: 'Kiểm tra kỹ từng món trước khi bán' },
   { icon: 'refresh', text: 'Xem hàng tại kho hoặc qua video' },
-  { icon: 'truck', text: 'Gửi nhà xe 63 tỉnh' },
-  { icon: 'clock', text: 'Nội thành TP.HCM giao trong ngày' },
-  { icon: 'spark', text: 'Giá thanh lý thật — không thổi giá' },
-  { icon: 'check', text: 'Ảnh thật, món nào vậy nấy' },
+  { icon: 'truck', text: 'Có hỗ trợ gửi qua nhà xe' },
+  { icon: 'pin', text: 'Kho tại Gò Vấp, TP.HCM' },
+  { icon: 'spark', text: 'Mua bán đồ cũ thanh lý' },
+  { icon: 'check', text: 'Hỏi shop để biết tình trạng từng món' },
 ];
 
 const standards = [
   {
     num: '01', icon: 'refresh', title: 'Thu mua chắt lọc',
-    desc: 'Nguồn hàng từ quán xá, nhà trọ thanh lý. Chỉ giữ lại món còn dùng tốt, bỏ ngay món hư nặng không sửa được.',
-    note: 'Không bán hàng "trôi nổi" không rõ nguồn', noteIcon: 'check',
+    desc: 'Các bài đăng công khai cho biết shop mua bán đồ cũ thanh lý cho gia đình, phòng trọ và quán ăn.',
+    note: 'Hỏi nguồn và tình trạng từng món', noteIcon: 'check',
   },
   {
     num: '02', icon: 'shield', title: 'Kiểm tra & vệ sinh',
-    desc: 'Mỗi món được thử tại chỗ: ghế chịu tải, quạt chạy êm, nồi dùng được trên bếp. Sau đó vệ sinh sạch sẽ trước khi nhập kho.',
-    note: 'Ảnh thật — món nào vậy nấy', noteIcon: 'check',
+    desc: 'Xem bài đăng và nhắn shop để xác nhận ảnh, tình trạng và thông tin thực tế của món đang quan tâm.',
+    note: 'Xác nhận thông tin trước khi mua', noteIcon: 'check',
   },
   {
     num: '03', icon: 'truck', title: 'Giá thanh lý, giao nhanh',
-    desc: 'Giá niêm yết rẻ nhất có thể, mua nhiều ib báo giá sỉ. Nội thành giao trong ngày, tỉnh khác gửi qua nhà xe.',
-    note: 'Hỗ trợ gửi hàng toàn quốc', noteIcon: 'clock',
+    desc: 'Giá và cách nhận hàng cần trao đổi theo từng món; shop công khai số điện thoại để khách liên hệ.',
+    note: 'Liên hệ để hỏi giá và cách nhận', noteIcon: 'phone',
   },
 ];
 
-const testimonials = [
+const featuredStories = [
   {
-    quote: 'Mở quán nhậu cần ba chục ghế bành, nhắn ib một buổi là có hàng giao tận nơi. Ghế còn như mới, giá rẻ hơn mua mới gần nửa.',
-    name: 'Anh Tuấn',
-    city: 'TP. Hồ Chí Minh',
+    quote: 'Ghế nhựa bành lớn về nhiều, còn như mới. Bài đăng mời khách cần thì inbox để được tư vấn.',
+    name: 'Bài đăng Facebook',
+    city: '12 tháng 7',
     bought: 'Ghế nhựa bành lớn',
   },
   {
-    quote: 'Cho con thuê trọ, lấy giường tầng ngang 1m ở đây. Khung sắt chắc, thợ giao lắp nhiệt tình, chốt nhanh gọn lẹ.',
-    name: 'Chị Hồng',
-    city: 'Gò Vấp',
+    quote: 'Shop đăng thanh lý bốn bộ giường tầng ngang 1 m, phù hợp cho phòng trọ; liên hệ theo số điện thoại công khai để hỏi hàng.',
+    name: 'Bài đăng Facebook',
+    city: '8 tháng 6',
     bought: 'Giường tầng ngang 1 m',
   },
   {
-    quote: 'Kệ inox 4 tầng gửi ra Vũng Tàu qua nhà xe, thùng đóng kỹ. Đồ đúng như hình, dùng cho quán phở rất ổn.',
-    name: 'Anh Huy',
-    city: 'Vũng Tàu',
-    bought: 'Kệ inox 4 tầng',
+    quote: 'Nội dung công khai cho biết shop có đồ dùng dành cho gia đình, quán ăn và nhận liên hệ để xem các món đang có.',
+    name: 'Giới thiệu từ Facebook',
+    city: 'Đồ Cũ Quang Huy',
+    bought: 'Đồ dùng quán ăn & gia đình',
   },
 ];
 
 const faqs = [
-  { q: 'Đồ cũ ở đây có còn dùng tốt không?', a: 'Có. Mỗi món được kiểm tra hoạt động và vệ sinh trước khi bán. Món nào có lỗi gì chúng tôi ghi rõ trong mô tả — hình cũng là hình thật của món đó.' },
-  { q: 'Bạn có giao hàng đi tỉnh không?', a: 'Có. Hàng được gửi qua nhà xe — rẻ và nhanh, phí theo bến xe. Đóng gói kỹ, gửi kèm mã bến để bạn nhận hàng thuận tiện.' },
-  { q: 'Mua nhiều cho quán mới mở có được giá tốt hơn?', a: 'Có. Nhắn danh sách món cần qua Zalo hoặc Facebook, bên mình báo giá sỉ rẻ nhất. Đơn lớn có thể hỗ trợ giao tận quán trong nội thành.' },
-  { q: 'Có thể xem hàng trực tiếp không?', a: 'Được. Ghé kho tại 707 Tân Sơn, P. An Hội Tây, Gò Vấp từ 08:00 đến 21:00 mỗi ngày. Xem thoải mái, không mua cũng không sao.' },
-  { q: 'Nhận hàng rồi không ưng thì sao?', a: 'Bạn kiểm tra hàng trước khi nhận hoặc qua video. Nếu hàng không đúng mô tả, hỗ trợ đổi trong ngày hoặc hoàn tiền.' },
+  { q: 'Làm sao biết tình trạng món đồ?', a: 'Hãy nhắn hoặc gọi shop trước khi chốt để hỏi tình trạng, ảnh và thông tin cụ thể của món đang quan tâm.' },
+  { q: 'Shop có gửi hàng qua nhà xe không?', a: 'Các bài đăng công khai có đề cập việc liên hệ shop và gửi hàng qua nhà xe. Hãy hỏi phí, bến nhận và cách đóng gói theo từng món.' },
+  { q: 'Muốn hỏi giá thì liên hệ ở đâu?', a: 'Gọi số 0374 034 430 hoặc nhắn Đồ Cũ Quang Huy trên Facebook để hỏi giá và tình trạng hàng.' },
+  { q: 'Địa chỉ shop ở đâu?', a: 'Địa chỉ được công khai là 707 Tân Sơn, phường An Hội Tây, Gò Vấp, TP.HCM. Nên gọi hoặc nhắn trước khi đến.' },
+  { q: 'Shop đang có những nhóm hàng nào?', a: 'Các bài đăng đã nêu ghế nhựa, giường tầng và đồ dùng cho gia đình, quán ăn. Danh sách thực tế thay đổi theo từng đợt thanh lý.' },
 ];
 
 const Home = () => {
@@ -129,8 +129,8 @@ const Home = () => {
             </p>
             <h1 id="hero-title">Đồ cũ còn tốt,<br />giá thì như mới.</h1>
             <p className="hero-sub">
-              Chuyên mua và bán đồ cũ thanh lý: ghế nhựa, kệ inox, giường tầng, nồi chảo...
-              thu từ quán xá, nhà trọ — kiểm tra kỹ từng món, giá rẻ nhất, gửi qua nhà xe toàn quốc.
+               Chuyên mua và bán đồ cũ thanh lý tại TP.HCM: ghế nhựa, giường tầng và đồ dùng cho gia đình, quán ăn.
+               Nhắn shop để hỏi tình trạng, giá và cách nhận hàng của từng món.
             </p>
 
             <form className="search-console" role="search" onSubmit={submitSearch}>
@@ -207,6 +207,20 @@ const Home = () => {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* ===== BANNER QUẢNG BÁ CỬA HÀNG ===== */}
+      <section className="store-banner reveal" aria-labelledby="store-banner-title">
+        <div className="store-banner-image" aria-hidden="true" style={{ backgroundImage: `url("${HERO_IMAGE}")` }} />
+        <div className="store-banner-copy">
+          <p className="eyebrow">Ghé kho Đồ Cũ Quang Huy</p>
+          <h2 id="store-banner-title">Đến xem hàng thật, chọn món vừa ý.</h2>
+           <p>Địa chỉ được shop công khai: 707 Tân Sơn, phường An Hội Tây, Gò Vấp, TP.HCM. Nhắn hoặc gọi trước để hỏi món đang có, giá và cách xem hàng.</p>
+          <div className="store-banner-actions">
+            <Link to="/san-pham" className="btn btn-light">Xem hàng đang bán <Icon name="arrowRight" size={16} /></Link>
+            <Link to="/contact" className="store-banner-link">Hỏi đường đến kho <Icon name="arrowRight" size={15} /></Link>
+          </div>
         </div>
       </section>
 
@@ -311,21 +325,21 @@ const Home = () => {
       {/* ===== SECTION 5: CẢM NHẬN KHÁCH HÀNG ===== */}
       <section className="testimonials" aria-labelledby="reviews-title">
         <div className="section-head reveal">
-          <p className="eyebrow">Cảm nhận thực tế</p>
-          <h2 id="reviews-title">Khách quen nói gì</h2>
-          <p>Những phản hồi thật từ người đã mua và dùng đồ ở kho.</p>
+           <p className="eyebrow">Từ Facebook của shop</p>
+           <h2 id="reviews-title">Mặt hàng đã được đăng công khai</h2>
+            <p>Một vài mặt hàng và nội dung đã xuất hiện trong các bài đăng công khai của Đồ Cũ Quang Huy.</p>
         </div>
         <div className="t-grid">
-          {testimonials.map((t) => (
+           {featuredStories.map((t) => (
             <figure className="t-card reveal" key={t.name}>
               <span className="t-quote" aria-hidden="true">“</span>
-              <span className="t-stars" aria-label="Đánh giá 5 trên 5">★★★★★</span>
+               <span className="t-stars" aria-label="Nguồn Facebook công khai">● Facebook</span>
               <blockquote>{t.quote}</blockquote>
               <figcaption>
                 <span className="t-avatar" aria-hidden="true">{t.name.split(' ').pop().charAt(0)}</span>
                 <span className="t-who">
                   <strong>{t.name}</strong>
-                  <span>{t.city} · đã mua {t.bought}</span>
+                  <span>{t.city} · {t.bought}</span>
                 </span>
               </figcaption>
             </figure>
@@ -351,7 +365,7 @@ const Home = () => {
           <img src={categoryImages['luu-tru']} alt="Kệ inox và đồ dùng nhà bếp tại kho Đồ Cũ Quang Huy" />
           <figcaption className="story-sticker">
             <span className="story-dot" aria-hidden="true" />
-            Hàng về mỗi tuần · số lượng có hạn
+             Hàng được cập nhật trên Facebook
           </figcaption>
         </figure>
         <div className="story-copy reveal">
@@ -360,9 +374,9 @@ const Home = () => {
           <p>Quán xá thanh lý, nhà trọ trả phòng — bên mình đi thu mua từng đợt, chọn lại món còn dùng ổn, bán bằng giá thật cho người đang cần mở quán, thuê trọ.</p>
           <ul className="story-points">
             <li><Icon name="check" size={15} />Chuyên mua &amp; bán — nguồn hàng thanh lý quán xá, nhà trọ</li>
-            <li><Icon name="check" size={15} />Kiểm tra &amp; vệ sinh từng món trước khi bán</li>
-            <li><Icon name="check" size={15} />Xem hàng tại chỗ hoặc qua video trước khi chốt</li>
-            <li><Icon name="check" size={15} />Gửi hàng qua nhà xe khắp 63 tỉnh</li>
+            <li><Icon name="check" size={15} />Hỏi tình trạng và thông tin món trước khi mua</li>
+            <li><Icon name="check" size={15} />Liên hệ shop để hỏi cách xem hàng</li>
+            <li><Icon name="check" size={15} />Hỏi cách gửi hàng qua nhà xe nếu cần</li>
           </ul>
           <div className="story-actions">
             <Link to="/about" className="btn btn-olive">Đọc câu chuyện của chúng tôi</Link>

@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { useCatalog } from '../context/CatalogContext';
 import ProductCard from '../components/ProductCard';
 import Icon from '../components/Icon';
+import Breadcrumbs from '../components/Breadcrumbs';
 import '../App.css';
 import './Products.css';
 
@@ -47,6 +48,7 @@ const Products = () => {
   if (loading) {
     return (
       <main className="container">
+        <Breadcrumbs items={[{ label: 'Sản phẩm' }]} />
         <section className="page-hero">
           <div>
             <p className="eyebrow">Bộ sưu tập inox 304</p>
@@ -74,6 +76,7 @@ const Products = () => {
   if (error) {
     return (
       <main className="container">
+        <Breadcrumbs items={[{ label: 'Sản phẩm' }]} />
         <section className="page-hero">
           <div>
             <p className="eyebrow">Bộ sưu tập inox 304</p>
@@ -94,6 +97,7 @@ const Products = () => {
 
   return (
     <main className="container">
+      <Breadcrumbs items={[{ label: 'Sản phẩm' }]} />
       <section className="page-hero">
         <div>
           <p className="eyebrow">Bộ sưu tập inox 304</p>

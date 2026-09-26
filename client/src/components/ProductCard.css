@@ -4,9 +4,9 @@
   min-width: 0; display: flex; flex-direction: column; overflow: hidden;
   padding: 10px; background: var(--surface);
   border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--shadow-card);
-  transition: transform .22s ease, box-shadow .22s ease;
+  transition: transform .32s cubic-bezier(.16,1,.3,1), box-shadow .32s ease;
 }
-.p-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-ambient); }
+.p-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-ambient); }
 
 .p-media { position: relative; }
 .p-media-link {
@@ -14,7 +14,7 @@
   border-radius: var(--r-sm); background-repeat: no-repeat; background-size: 340% auto;
   background-color: #e8e1cf; transition: transform .3s ease;
 }
-.p-card:hover .p-media-link { transform: translateY(-2px) scale(1.03); }
+.p-card:hover .p-media-link { transform: translateY(-2px) scale(1.025); }
 
 .p-flag {
   position: absolute; top: 8px; left: 8px; z-index: 1;
@@ -38,11 +38,13 @@
   transition: background-color .15s ease, color .15s ease;
 }
 .p-save:hover { background: #fff; }
+.p-save:focus-visible { outline: 0; box-shadow: var(--shadow-focus); }
 .p-save.saved { background: var(--primary); color: var(--on-primary); }
 
 .p-body { padding: 11px 2px 0; }
-.p-meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0 0 5px; color: var(--muted); font-size: .64rem; }
+.p-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 0 5px; color: var(--muted); font-size: .64rem; }
 .p-cat { letter-spacing: .05em; text-transform: uppercase; }
+.p-meta > span:last-child { white-space: nowrap; }
 .p-name { min-height: 2.72em; margin: 0; font-size: .88rem; font-weight: 600; line-height: 1.36; letter-spacing: -.01em; }
 .p-name a {
   color: var(--ink); text-decoration: none;
@@ -53,23 +55,24 @@
 
 /* Dải giá tonal — tách lớp sắc độ thay vì viền kín */
 .p-strip { margin: 12px -10px -10px; padding: 12px 12px 10px; background: var(--surface-low); border-radius: 0 0 var(--r-md) var(--r-md); }
-.p-price-row { display: flex; align-items: baseline; gap: 8px; }
-.p-price { font-family: var(--font-display); color: var(--primary); font-size: 1rem; font-weight: 700; }
+.p-price-row { display: flex; align-items: center; flex-wrap: wrap; gap: 5px 8px; min-width: 0; min-height: 24px; }
+.p-price { font-family: var(--font-display); color: var(--primary); font-size: clamp(.92rem, 2.2vw, 1.05rem); font-weight: 800; white-space: nowrap; }
 .p-old { color: #94907e; font-size: .68rem; text-decoration: line-through; }
 .p-off {
-  margin-left: auto; padding: 3px 7px; border-radius: var(--r-pill);
+  margin-left: auto; padding: 3px 7px; border-radius: var(--r-pill); white-space: nowrap;
   background: var(--accent-soft); color: var(--on-accent);
   font-size: .6rem; font-weight: 700;
 }
 .p-add {
-  width: 100%; height: 38px; margin-top: 10px;
+  width: 100%; min-height: 40px; height: auto; margin-top: 10px; padding: 8px 10px;
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   border: 0; border-radius: var(--r-pill); background: var(--primary); color: var(--on-primary);
-  cursor: pointer; font-size: .72rem; font-weight: 600;
-  transition: background-color .18s ease, transform .18s ease;
+  cursor: pointer; font-size: .72rem; font-weight: 700; line-height: 1.2;
+  transition: background-color .2s ease, transform .24s cubic-bezier(.16,1,.3,1), box-shadow .2s ease;
 }
 .p-add:hover { background: var(--primary-dark); transform: translateY(-1px); }
 .p-add:active { transform: translateY(1px); }
+.p-add:focus-visible { outline: 0; box-shadow: var(--shadow-focus); }
 
 /* Vệt sáng quét chéo qua ảnh khi hover — như "soi đèn" món đồ */
 .p-media-link::after {
@@ -93,5 +96,17 @@
 }
 
 /* Nút thêm giỏ — trạng thái "Đã thêm" chuyển xanh success + nhún nhẹ */
-.p-add.added { background: var(--success); animation: add-pop .45s cubic-bezier(.34, 1.56, .64, 1); }
+.p-add.added { background: var(--success); animation: add-pop .45s cubic-bezier(.16, 1, .3, 1); }
 @keyframes add-pop { 0% { transform: scale(1); } 45% { transform: scale(.95); } 100% { transform: scale(1); } }
+
+@media (max-width: 420px) {
+  .p-meta { display: block; min-height: 2.2em; }
+  .p-meta > span { display: block; }
+  .p-meta > span:last-child { margin-top: 2px; }
+  .p-name { font-size: .82rem; }
+  .p-strip { margin-inline: -8px; padding-inline: 10px; }
+  .p-price-row { gap: 4px 6px; }
+  .p-old { font-size: .62rem; }
+  .p-off { font-size: .56rem; padding-inline: 5px; }
+  .p-add { font-size: .66rem; }
+}

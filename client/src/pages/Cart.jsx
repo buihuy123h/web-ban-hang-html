@@ -4,6 +4,7 @@ import { useCart } from '../context/CartContext';
 import { formatPrice } from '../utils/format';
 import { createOrder } from '../api/orders';
 import Icon from '../components/Icon';
+import Breadcrumbs from '../components/Breadcrumbs';
 import { getProductImage } from '../data/productImages';
 import '../App.css';
 import './Cart.css';
@@ -82,6 +83,7 @@ const Cart = () => {
   if (placed) {
     return (
       <main className="container">
+        <Breadcrumbs items={[{ label: 'Giỏ hàng' }]} />
         <section className="order-success">
           <span className="success-mark"><Icon name="check" size={22} strokeWidth={2.4} /></span>
           <p className="order-reference">Mã đơn hàng {orderCode}</p>
@@ -98,6 +100,7 @@ const Cart = () => {
 
   return (
     <main className="container">
+      <Breadcrumbs items={[{ label: 'Giỏ hàng' }]} />
       <div className="cart-heading">
         <div>
           <p className="eyebrow">Thanh toán</p>

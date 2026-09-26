@@ -35,6 +35,15 @@ const useRevealOnScroll = () => {
 
     scan();
 
+    /* Progressive enhancement fallback: nội dung không được phép biến mất nếu
+       observer bị trễ, route lazy-load vừa mount hoặc môi trường chụp không
+       phát sinh intersection event. Khi observer hoạt động bình thường, các
+       phần tử vẫn reveal theo viewport như thiết kế; sau 1.5s chỉ những node
+       còn sót lại mới được hiện ra. */
+    const fallbackTimer = window.setTimeout(() => {
+      document.querySelectorAll('.reveal:not(.is-in)').forEach(show);
+    }, 1500);
+
     let mo = null;
     try {
       mo = new MutationObserver(scan);
@@ -46,6 +55,7 @@ const useRevealOnScroll = () => {
     return () => {
       if (io) io.disconnect();
       if (mo) mo.disconnect();
+      window.clearTimeout(fallbackTimer);
     };
   }, []);
 };

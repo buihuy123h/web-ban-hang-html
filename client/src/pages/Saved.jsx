@@ -4,6 +4,7 @@ import { useCatalog } from '../context/CatalogContext';
 import { useCart } from '../context/CartContext';
 import ProductCard from '../components/ProductCard';
 import Icon from '../components/Icon';
+import Breadcrumbs from '../components/Breadcrumbs';
 import { formatPrice } from '../utils/format';
 import '../App.css';
 import './Saved.css';
@@ -31,6 +32,7 @@ const Saved = () => {
 
   return (
     <main className="container saved-page">
+      <Breadcrumbs items={[{ label: 'Sản phẩm đã lưu' }]} />
       <header className="saved-heading">
         <div>
           <p className="eyebrow">Danh sách cá nhân</p>

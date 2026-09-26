@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../components/Icon';
+import Breadcrumbs from '../components/Breadcrumbs';
 import CountUp from '../components/CountUp';
 import { categoryImages } from '../data/productImages';
 import '../App.css';
@@ -8,16 +9,16 @@ import './About.css';
 
 const stats = [
   { icon: 'refresh', text: 'Hàng tuần', l: 'đợt hàng mới về kho' },
-  { icon: 'cart', count: 400, suffix: '+', l: 'người theo dõi trên Facebook' },
-  { icon: 'grid', count: 300, suffix: '+', l: 'món đồ luân chuyển mỗi tháng' },
-  { icon: 'truck', count: 63, suffix: '', l: 'tỉnh thành gửi qua nhà xe' },
+  { icon: 'cart', count: 421, suffix: '', l: 'người theo dõi Facebook khi quét' },
+  { icon: 'pin', text: 'Gò Vấp', l: 'khu vực hoạt động công khai' },
+  { icon: 'phone', text: '0374 034 430', l: 'số liên hệ được đăng công khai' },
 ];
 
 const promises = [
   'Hình thật, tình trạng thật — món nào vậy nấy',
   'Giá thanh lý rõ ràng, mua nhiều báo giá sỉ',
   'Kiểm tra hàng tại chỗ hoặc qua video trước khi nhận',
-  'Nội thành giao trong ngày, tỉnh khác gửi qua nhà xe',
+  'Hỏi shop cách nhận hàng phù hợp với từng món',
 ];
 
 const values = [
@@ -31,7 +32,7 @@ const timeline = [
   { year: 'Khởi đầu', t: 'Nhận thanh lý quán xá, nhà trọ quanh Gò Vấp.' },
   { year: 'Mở rộng', t: 'Đủ đồ cho quán ăn, nhà hàng, trà sữa mới mở.' },
   { year: 'Online', t: 'Bán qua Facebook, gửi hàng qua nhà xe toàn quốc.' },
-  { year: 'Nay', t: 'Kho 707 Tân Sơn, Gò Vấp — thu mua liên tục, hàng mới về mỗi tuần.' },
+  { year: 'Nay', t: 'Shop công khai địa chỉ 707 Tân Sơn, phường An Hội Tây, Gò Vấp và cập nhật hàng trên Facebook.' },
 ];
 
 const process = [
@@ -50,6 +51,7 @@ const team = [
 
 const About = () => (
   <main className="container">
+    <Breadcrumbs items={[{ label: 'Câu chuyện' }]} />
     <section className="page-hero">
       <div>
         <p className="eyebrow">Câu chuyện</p>

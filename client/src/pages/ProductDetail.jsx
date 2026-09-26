@@ -5,6 +5,7 @@ import { useCart } from '../context/CartContext';
 import { formatPrice } from '../utils/format';
 import ProductCard from '../components/ProductCard';
 import Icon from '../components/Icon';
+import Breadcrumbs from '../components/Breadcrumbs';
 import { categoryImages, getProductGallery, getProductPosition, getViewImage, handleImgError } from '../data/productImages';
 import '../App.css';
 import './ProductDetail.css';
@@ -83,9 +84,7 @@ const ProductDetail = () => {
 
   return (
     <main className="container">
-      <nav className="crumbs" aria-label="Đường dẫn">
-        <Link to="/">Sản phẩm</Link><span>/</span><span>{product.categoryLabel}</span><span>/</span><strong>{product.name}</strong>
-      </nav>
+      <Breadcrumbs items={[{ label: 'Sản phẩm', to: '/san-pham' }, { label: product.categoryLabel }, { label: product.name }]} />
       <section className="detail-grid">
         <div className="detail-gallery">
           <div className="detail-media">

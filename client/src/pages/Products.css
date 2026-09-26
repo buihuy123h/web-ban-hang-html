@@ -10,6 +10,7 @@
   display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;
   padding: 14px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
 }
+.toolbar .chips { min-width: 0; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip {
   min-height: 38px; padding: 0 16px; border: 1px solid var(--line); border-radius: var(--r-pill);
@@ -17,6 +18,8 @@
   font-size: .76rem; font-weight: 500; transition: color .15s ease, border-color .15s ease, background-color .15s ease;
 }
 .chip:hover { color: var(--ink); border-color: var(--line-strong); }
+.chip:focus-visible, .result-hint button:focus-visible { outline: 0; box-shadow: var(--shadow-focus); border-color: var(--primary); }
+.chip:active, .result-hint button:active { transform: translateY(1px); }
 .chip.active { background: var(--primary); border-color: var(--primary); color: var(--on-primary); }
 .sort-box select {
   min-height: 38px; padding: 0 34px 0 16px; border: 1px solid var(--line); border-radius: var(--r-pill);
@@ -61,6 +64,8 @@
   font-size: .8rem; font-weight: 600; transition: background-color .18s ease, transform .18s ease;
 }
 .sc-submit:hover { background: var(--inverse-hover); transform: translateY(-1px); }
+.sc-submit:focus-visible { outline: 0; box-shadow: var(--shadow-focus); }
+.sc-submit:active { transform: translateY(1px); }
 
 .quick-row { display: flex; align-items: center; gap: 12px; margin: 16px 0 0; flex-wrap: wrap; }
 .quick-label { color: var(--muted); font-size: .64rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
@@ -87,6 +92,13 @@
   .result-count { padding-bottom: 0; }
   .toolbar { align-items: stretch; flex-direction: column; }
   .sort-box select { width: 100%; }
-  .search-console { grid-template-columns: 1fr; }
+  .search-console { grid-template-columns: 1fr; border-radius: 22px; }
   .sc-submit { width: 100%; }
+}
+
+@media (max-width: 420px) {
+  .product-grid { gap: 12px 8px; }
+  .p-card { padding: 8px; }
+  .chips { gap: 6px; }
+  .chip { min-height: 36px; padding-inline: 12px; font-size: .7rem; }
 }

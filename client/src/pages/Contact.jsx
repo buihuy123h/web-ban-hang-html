@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import Icon from '../components/Icon';
+import Breadcrumbs from '../components/Breadcrumbs';
 import '../App.css';
 import './Contact.css';
 
@@ -12,13 +13,13 @@ const services = [
 ];
 
 const channels = [
-  { icon: 'phone', label: 'Gọi điện', value: '0374 034 430', href: 'tel:0374034430', note: 'Gọi trực tiếp từ 08:00 đến 21:00 mỗi ngày' },
+  { icon: 'phone', label: 'Gọi điện', value: '0374 034 430', href: 'tel:0374034430', note: 'Gọi để hỏi hàng, giá và thời gian xem' },
   { icon: 'zalo', label: 'Zalo', value: '0374 034 430', href: 'https://zalo.me/0374034430', note: 'Nhắn tin Zalo — báo giá nhanh trong ít phút' },
   { icon: 'messenger', label: 'Messenger', value: 'Chat với shop', href: 'https://m.me/100090912844650', note: 'Nhắn tin Facebook, xem hàng mới về mỗi tuần' },
-  { icon: 'facebook', label: 'Facebook', value: 'Đồ Cũ Quang Huy · Fanpage', href: 'https://www.facebook.com/profile.php?id=100090912844650', note: 'Theo dõi fanpage để không lỡ đợt hàng mới' },
+  { icon: 'facebook', label: 'Facebook', value: 'Đồ Cũ Quang Huy', href: 'https://www.facebook.com/ocuquanghuy/', note: 'Xem bài đăng và hàng được cập nhật công khai' },
   { icon: 'tiktok', label: 'TikTok', value: '@cquanghuy8', href: 'https://www.tiktok.com/@cquanghuy8', note: 'Video hàng mới về trong kho mỗi tuần' },
   { icon: 'tiktok', label: 'TikTok', value: '@nguyn.loi49', href: 'https://www.tiktok.com/@nguyn.loi49', note: 'Kênh phụ — quay hàng thật, chốt giá nhanh' },
-  { icon: 'pin', label: 'Showroom', value: '707 Tân Sơn, P. An Hội Tây, Gò Vấp, TP.HCM', note: 'Mở cửa 08:00 đến 21:00, có chỗ để xe' },
+  { icon: 'pin', label: 'Địa chỉ công khai', value: '707 Tân Sơn, P. An Hội Tây, Gò Vấp, TP.HCM', note: 'Vui lòng gọi hoặc nhắn trước để hỏi giờ xem hàng' },
 ];
 
 const Contact = () => {
@@ -44,6 +45,7 @@ const Contact = () => {
 
   return (
     <main className="container">
+      <Breadcrumbs items={[{ label: 'Liên hệ & hỗ trợ' }]} />
       <section className="page-hero">
         <div>
           <p className="eyebrow">Liên hệ &amp; hỗ trợ</p>
@@ -121,11 +123,11 @@ const Contact = () => {
         <div className="map-info">
           <span className="eyebrow">Đến tận nơi</span>
           <h2 id="map-title">Ghé kho đồ cũ tại Gò Vấp</h2>
-          <p>Sẵn sàng cho bạn xem trực tiếp từng món trước khi chốt. Hàng về liên tục mỗi tuần, số lượng mỗi đợt có hạn — đến sớm kẻo lỡ món ưng ý.</p>
+           <p>Shop công khai địa chỉ tại 707 Tân Sơn, Gò Vấp. Hãy gọi hoặc nhắn trước để hỏi sản phẩm đang có, tình trạng và cách xem hàng.</p>
           <ul className="map-points">
             <li><Icon name="pin" size={15} />707 Tân Sơn, P. An Hội Tây, Gò Vấp, TP.HCM</li>
-            <li><Icon name="clock" size={15} />Mở cửa 08:00 đến 21:00 mỗi ngày</li>
-            <li><Icon name="truck" size={15} />Gửi hàng qua nhà xe toàn quốc</li>
+             <li><Icon name="phone" size={15} />Gọi 0374 034 430 để hỏi hàng và thời gian xem</li>
+             <li><Icon name="truck" size={15} />Hỏi shop cách nhận hàng qua nhà xe</li>
           </ul>
           <a
             className="btn btn-olive"

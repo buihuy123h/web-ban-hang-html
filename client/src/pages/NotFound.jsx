@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Breadcrumbs from '../components/Breadcrumbs';
 
 const NotFound = () => (
   <main className="container">
+    <Breadcrumbs items={[{ label: 'Không tìm thấy trang' }]} />
     <section className="empty-state not-found" aria-labelledby="not-found-title">
       <p className="error-code">404</p>
       <h1 id="not-found-title">Không tìm thấy trang</h1>

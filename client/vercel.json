@@ -2,6 +2,10 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
+      "source": "/images/:path*",
+      "destination": "https://web-ban-hang-html-2.onrender.com/images/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

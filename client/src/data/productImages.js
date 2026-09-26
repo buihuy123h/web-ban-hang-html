@@ -9,22 +9,21 @@
  *  - Server phục vụ /images với cache 30 ngày immutable (tên file không bao giờ bị ghi đè).
  * Chi tiết cách tổ chức: server/docs/DATABASE.md
  */
-import { API_BASE } from '../api/client';
-
-// BE có thể chạy origin khác (VITE_API_URL=...): tách gốc server từ URL API.
-// '/api' (mặc định — đi qua proxy lúc dev, cùng origin lúc production) → IMG_BASE rỗng.
-const IMG_BASE = API_BASE === '/api' ? '' : API_BASE.replace(/\/api\/?$/, '');
+// Ảnh luôn dùng đường dẫn tương đối để browser tải từ cùng origin với FE.
+// - Dev: Vite proxy `/images` sang backend local.
+// - Vercel: `vercel.json` proxy `/images/*` sang backend Render.
+// Cách này tránh CORP `same-origin` của backend chặn ảnh khi FE và BE khác domain.
 
 /**
  * Chuyển đường dẫn ảnh trong DB thành URL dùng được:
- *  - "/images/x.jpg" → IMG_BASE + "/images/x.jpg" (ảnh do BE phục vụ)
+ *  - "/images/x.jpg" → giữ nguyên đường dẫn (Vercel/Vite proxy tới BE)
  *  - "https://..."   → giữ nguyên (ảnh CDN/Internet — FE không tự kiểm tra được)
  *  - rỗng            → '' (caller tự chọn ảnh fallback)
  */
 export const resolveImg = (path) => {
   if (!path) return '';
   if (/^(https?:|data:|blob:)/i.test(path)) return path;
-  if (path.startsWith('/')) return `${IMG_BASE}${path}`;
+  if (path.startsWith('/')) return path;
   return path;
 };
 

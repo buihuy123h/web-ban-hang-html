@@ -1,6 +1,6 @@
 {
   "name": "server",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "private": true,
   "description": "Express REST API cho storefront Đồ Cũ Quang Huy",
   "main": "index.js",
@@ -10,6 +10,10 @@
     "start": "node index.js",
     "precompress": "node scripts/precompress.js",
     "test": "node --test",
+    "db:migrate": "node database/postgres/apply-schema.js",
+    "db:apply-schema": "node database/postgres/apply-schema.js",
+    "db:seed": "node database/postgres/seed.js",
+    "db:setup": "node database/postgres/apply-schema.js && node database/postgres/seed.js",
     "deploy": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/deploy.ps1"
   },
   "engines": {
@@ -17,7 +21,6 @@
   },
   "dependencies": {
     "express": "^4.18.2",
-    "msnodesqlv8": "^5.1.0",
-    "mssql": "^12.7.2"
+    "pg": "^8.13.1"
   }
 }

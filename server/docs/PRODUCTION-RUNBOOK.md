@@ -2,17 +2,20 @@
 
 Backend được đóng gói độc lập với frontend. Docker build context là `server/`; image chỉ phục vụ
 `/api/*` và `/images/*`, không build/copy `client/dist`. Frontend Vercel gọi backend bằng URL HTTPS.
-Docker install bỏ native install script của `msnodesqlv8` có trong lockfile vì adapter này chỉ phục vụ
-Windows Authentication; container bắt buộc dùng `DB_AUTH_MODE=sql` qua `mssql`/`tedious` thuần JS.
+Driver database là `pg` (node-postgres) thuần JS — chạy được trên container Linux mà không cần native
+build; kết nối PostgreSQL/Supabase qua `DATABASE_URL` (xem `server/docs/DATABASE.md`).
 
 ## Điều kiện bắt buộc trước khi deploy
 
-- Dùng SQL Server/Azure SQL có TCP endpoint mà Render truy cập được và hỗ trợ SQL Authentication.
-  `localhost`, `.\SQLEXPRESS` và SQL Server trên PC cá nhân không phải endpoint production.
+- Dùng PostgreSQL có endpoint công khai mà Render truy cập được — khuyên dùng Supabase Session pooler
+  cổng `5432`, với login `app_runtime` quyền tối thiểu; copy URI từ nút **Connect**, không tự đoán host.
+  `localhost` và PostgreSQL trên PC cá nhân không phải endpoint production.
+- Supabase không dùng IP allowlist; nếu dùng nhà cung cấp khác có firewall, lấy **toàn bộ outbound
+  CIDR** mà Render hiển thị cho đúng service/region để mở TCP tới cổng 5432.
 - Database đã có schema/migration và dữ liệu cần thiết theo `DATABASE.md`. Backup và restore thử trước
   khi thay đổi schema; container **không** tự migration/seed khi khởi động.
-- TLS của database hợp lệ để giữ `DB_ENCRYPT=true` và `DB_TRUST_SERVER_CERTIFICATE=false`. Không hạ
-  kiểm tra certificate để chữa lỗi kết nối.
+- Production bắt buộc URI có `sslmode=require` trở lên. Ưu tiên `verify-full` + `PGSSL_CA` sau khi đã
+  cấu hình CA; không tắt TLS để chữa lỗi.
 - Repository đã được push lên nguồn mà Render đọc được. Secret chỉ nhập trong dashboard/secret store,
   không ghi vào `.env`, Dockerfile, image layer, log hoặc ảnh chụp.
 
@@ -29,7 +32,8 @@ docker build --tag do-cu-quang-huy-api:local .
 ```
 
 Stage `test` chạy `npm test` bằng repository trong bộ nhớ, không cần DB thật. Final image dùng Node.js
-22, chạy bằng user `node` và không chứa test, docs, script database, `.env` hay frontend.
+22, chạy bằng user `node` và không chứa test, docs, script database, `.env`, frontend hoặc fixture
+`data/products.json`; image chỉ giữ `data/chat-knowledge.json` vì chatbot cần FAQ/thông tin shop lúc runtime.
 
 Để chạy final image, tạo file env **ngoài repo** hoặc truyền biến bằng secret store. Ví dụ lệnh dưới đây
 chỉ minh hoạ tên file, không dùng credential thật trong lịch sử terminal:
@@ -42,22 +46,13 @@ File env production cần tối thiểu:
 
 ```dotenv
 NODE_ENV=production
-DB_AUTH_MODE=sql
-DB_SERVER=<sql-hostname>
-DB_PORT=1433
-DB_NAME=DoCuQuangHuy
-DB_USER=<runtime-user>
-DB_PASSWORD=<secret>
-DB_TRUSTED_CONNECTION=false
-DB_ENCRYPT=true
-DB_TRUST_SERVER_CERTIFICATE=false
-DB_DRIVER=tedious
+DATABASE_URL=postgresql://app_runtime.<project-ref>:<mat-khau>@<session-pooler>:5432/postgres?sslmode=require
 CORS_ORIGIN=https://<frontend>.vercel.app
 TRUST_PROXY=1
 ```
 
-Không đặt `PORT` cứng trên Render; local có thể dùng mặc định `3000`. `DB_DRIVER` có thể bỏ trống hoặc
-đặt `tedious`/`mssql`; không dùng `msnodesqlv8` với SQL Authentication trong Linux container.
+Không đặt `PORT` cứng trên Render; local có thể dùng mặc định `3000`. Các tuỳ chọn pool/timeout và CA
+xem `server/.env.example`; secret chỉ nằm trong dashboard/secret store, không commit.
 
 Kiểm tra local sau khi app kết nối DB:
 
@@ -73,9 +68,15 @@ Khi dừng bằng `docker stop`, Node nhận SIGTERM và đóng HTTP server/pool
 ## Tạo Docker Web Service trên Render
 
 1. Trong Render, chọn **New > Web Service**, kết nối repository và chọn nhánh production.
-2. Chọn runtime **Docker**. Cách khuyến nghị: đặt **Root Directory** là `server`, khi đó Dockerfile Path
-   là `Dockerfile` và Docker build context là `.`. Nếu không đặt Root Directory, dùng Dockerfile Path
-   `server/Dockerfile` và Docker Context `server`; không trộn hai cách.
+2. Chọn runtime **Docker** và nhập đúng một cấu hình dành cho monorepo này:
+   - **Root Directory:** `server`
+   - **Dockerfile Path:** `Dockerfile`
+   - **Docker Context:** `.`
+   - **Docker Command/Start Command:** để trống
+
+   Mọi đường dẫn đã được tính từ Root Directory. Không nhập `server/Dockerfile` hoặc context `server`,
+   vì Render sẽ tìm nhầm thành `server/server/...`. Với Root Directory này, thay đổi chỉ nằm ngoài
+   `server/` không nên kích hoạt deploy backend.
 3. Không nhập Build Command/Start Command riêng; Dockerfile chạy `npm start`. Không thêm migration/seed
    vào pre-deploy/start command.
 4. Đặt **Health Check Path** là `/api/health`.
@@ -85,23 +86,43 @@ Khi dừng bằng `docker stop`, Node nhận SIGTERM và đóng HTTP server/pool
 | Biến | Giá trị production |
 |---|---|
 | `NODE_ENV` | `production` |
-| `DB_AUTH_MODE` | `sql` |
-| `DB_SERVER` | Hostname TCP của SQL Server, không kèm `https://` |
-| `DB_PORT` | Thường `1433`, theo nhà cung cấp DB |
-| `DB_NAME` | `DoCuQuangHuy` hoặc DB production đã migrate |
-| `DB_USER` | Login runtime quyền tối thiểu |
-| `DB_PASSWORD` | Secret runtime |
-| `DB_TRUSTED_CONNECTION` | `false` |
-| `DB_ENCRYPT` | `true` |
-| `DB_TRUST_SERVER_CERTIFICATE` | `false` |
-| `DB_DRIVER` | `tedious`, `mssql` hoặc bỏ trống |
+| `DATABASE_URL` | Session pooler URI của `app_runtime`, có `sslmode=require` — dùng kiểu Secret |
+| `PGSSL_CA` | CA đã mount khi URL dùng `sslmode=verify-ca/verify-full` (tuỳ chọn) |
 | `CORS_ORIGIN` | Origin FE chính xác, ví dụ `https://shop.vercel.app` |
 | `TRUST_PROXY` | `1` |
 
-`PORT` do Render cấp. Các biến timeout/pool/rate limit và xKiro là tuỳ chọn, xem `.env.example`.
+`PORT` do Render cấp; không tạo biến `PORT=3000` trong Dashboard. App kiểm tra `PORT` thuộc `1..65535`
+và lắng nghe rõ ràng trên `0.0.0.0:$PORT`. Các biến pool/timeout (`PGPOOL_MAX`, `PG_CONNECT_TIMEOUT_MS`…),
+rate limit và xKiro là tuỳ chọn, xem `.env.example`. Production bắt buộc TLS — sai cấu hình database
+(`DATABASE_URL` sai format, thiếu mật khẩu, thiếu/sai `sslmode`) thì app thoát code 1 ngay khi khởi động,
+log chỉ ghi tên biến gây lỗi.
 Nhiều origin CORS được phân cách bằng dấu phẩy, không có path/dấu `/` cuối và không dùng `*` ở
 production. Preview URL động của Vercel không tự được phép; ưu tiên domain/alias ổn định hoặc thêm từng
 origin preview cụ thể rồi redeploy backend.
+
+### Ảnh và filesystem Render
+
+- DB chỉ lưu đường dẫn `/images/...`; file thật phải được commit trong `server/public/images/` trước khi
+  build. Docker image copy các file này và Express phục vụ chúng read-only với cache 30 ngày.
+- Cấu hình hiện tại **không cần persistent disk**: ảnh là asset versioned đi cùng image, không có luồng
+  upload/sửa ảnh runtime. Khi thay ảnh, dùng tên file mới rồi cập nhật đường dẫn DB để tránh cache cũ.
+- Filesystem mặc định của Render là ephemeral. Mọi file phát sinh hoặc sửa trong container sẽ mất khi
+  restart/redeploy. Nếu sau này có upload, phải thiết kế object storage hoặc persistent storage riêng;
+  không ghi upload vào `public/images` của container.
+
+### Bàn giao URL backend cho frontend Vercel
+
+Sau khi backend healthy, vào project frontend trên Vercel và đặt biến build-time:
+
+```dotenv
+VITE_API_URL=https://<backend>.onrender.com/api
+```
+
+Giá trị phải có `/api`, không có dấu `/` cuối. Redeploy frontend sau khi đổi vì Vite nhúng biến lúc
+build. `CORS_ORIGIN` trên Render phải là origin frontend chính xác, ví dụ
+`https://<frontend>.vercel.app` (không path, không dấu `/` cuối). FE phải resolve đường dẫn `/images/...`
+về cùng origin backend từ cấu hình API; không hardcode hostname Render vào source. Với Vercel preview,
+chỉ thêm URL cụ thể/alias ổn định vào allowlist, không mở `*` ở production.
 
 ## Kiểm tra sau deploy
 
@@ -134,9 +155,12 @@ Invoke-WebRequest -Method Options -Uri "$backend/api/chat" -Headers $preflightHe
 
 - Xem **Logs** và **Events** của Render; đối chiếu request bằng `X-Request-Id`. Không dán secret hoặc
   payload chứa PII vào ticket.
-- App fail trước khi mở cổng: kiểm tra `DB_AUTH_MODE=sql`, hostname/port, firewall, credential và TLS.
-- Health 503 hoặc startup timeout: database chưa reachable/chưa migrate; sửa hạ tầng, không chuyển sang
-  fixture JSON và không bật trust certificate.
+- App fail trước khi mở cổng: kiểm tra `DATABASE_URL` (protocol/hostname/mật khẩu URL-encode/sslmode);
+  log khởi động chỉ ghi tên biến gây lỗi.
+- DB đôi khi kết nối được, đôi khi timeout: dùng session pooler (cổng 5432) thay direct connection;
+  kiểm tra `PGPOOL_MAX` và giới hạn kết nối của gói Supabase.
+- Health 503 hoặc startup timeout: database chưa reachable/chưa migrate/seed bằng URL quản trị từ máy có
+  quyền); sửa hạ tầng, không chuyển sang fixture JSON và không hạ kiểm tra certificate.
 - Browser báo CORS: so sánh chính xác scheme/hostname/port của FE với `CORS_ORIGIN`, sau đó redeploy BE.
 - Ảnh 404: file phải tồn tại trong `server/public/images/` và DB chỉ lưu đường dẫn `/images/...`.
 - Render cold start có thể khiến request đầu chậm; đợi service healthy, không giả catalog fallback.
@@ -158,10 +182,11 @@ Phần này giữ lại cho phương án chạy backend trực tiếp bằng Win
 ### Trước khi phát hành
 
 - Dùng Node.js 22 LTS, cài dependency bằng `npm ci --omit=dev` từ lockfile.
-- Chạy service bằng Windows service account riêng, không phải Administrator; cấp quyền theo
-  `database/least-privilege.sql` sau khi thay placeholder đã review.
-- SQL Server chỉ mở trong private network/firewall allowlist. Đặt `DB_ENCRYPT=true`,
-  `DB_TRUST_SERVER_CERTIFICATE=false`; certificate phải khớp hostname và có CA tin cậy.
+- Chạy service bằng Windows service account riêng, không phải Administrator; cấp quyền DB tối thiểu
+  bằng role riêng (GRANT SELECT/INSERT/UPDATE trên bảng + EXECUTE trên `fn_tao_don_hang`), không dùng
+  role superuser `postgres` cho runtime.
+- PostgreSQL chỉ mở trong private network/firewall allowlist. URL production phải có `sslmode=require`
+  trở lên; có CA riêng thì dùng `verify-full` và `PGSSL_CA`.
 - Đặt `CORS_ORIGIN` đúng origin HTTPS public, `TRUST_PROXY=1` nếu có đúng một reverse proxy. Không dùng
   `*`. Secret nằm trong secret store/biến môi trường của service, không nằm trong artifact hay log.
 - Rate limit RAM chỉ bảo vệ một process. Nếu chạy nhiều instance, đặt rate limit tập trung tại reverse
@@ -171,7 +196,8 @@ Phần này giữ lại cho phương án chạy backend trực tiếp bằng Win
 
 1. Xác minh SHA-256 artifact, backup DB và bảo đảm backup gần nhất đã từng restore thử.
 2. Giải nén vào thư mục version mới; không ghi đè version đang phục vụ.
-3. Chạy migration forward-only/idempotent bằng `db_migrator`, không dùng service account runtime.
+3. Đặt tạm `MIGRATION_DATABASE_URL`, chạy `npm run db:migrate` rồi `npm run db:seed`, sau đó xóa biến;
+   không dùng `DATABASE_URL` runtime để quản trị và không tự migrate lúc app start.
 4. Khởi động version mới ngoài luồng traffic; `/api/health` phải trả 200 và `database=connected`.
 5. Chuyển traffic nguyên tử ở reverse proxy/service manager; kiểm tra catalog và asset theo luồng chỉ đọc.
    Không chạy smoke hiện tại trên production vì nó tạo đơn hàng.

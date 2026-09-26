@@ -25,6 +25,16 @@ const trustItems = [
   { icon: 'truck', title: 'Gửi qua nhà xe toàn quốc', desc: 'Nội thành TP.HCM giao trong ngày, tỉnh khác gửi qua nhà xe giá rẻ.' },
 ];
 
+/* Dải USP chạy ngang (marquee) — items được nhân đôi trong JSX để cuộn liền mạch */
+const uspItems = [
+  { icon: 'shield', text: 'Kiểm tra kỹ từng món trước khi bán' },
+  { icon: 'refresh', text: 'Xem hàng tại kho hoặc qua video' },
+  { icon: 'truck', text: 'Gửi nhà xe 63 tỉnh' },
+  { icon: 'clock', text: 'Nội thành TP.HCM giao trong ngày' },
+  { icon: 'spark', text: 'Giá thanh lý thật — không thổi giá' },
+  { icon: 'check', text: 'Ảnh thật, món nào vậy nấy' },
+];
+
 const standards = [
   {
     num: '01', icon: 'refresh', title: 'Thu mua chắt lọc',
@@ -78,6 +88,7 @@ const Home = () => {
   const navigate = useNavigate();
   const { showToast } = useCart();
   const [openFaq, setOpenFaq] = useState(-1);
+  const [copied, setCopied] = useState(false);
   const [query, setQuery] = useState('');
   const [cat, setCat] = useState('');
 
@@ -101,12 +112,15 @@ const Home = () => {
     } catch {
       showToast('Mã ưu đãi của bạn: QUANGHUY10');
     }
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1800);
   };
 
   return (
     <main className="container home">
       {/* ===== SECTION 1: HERO + SEARCH CONSOLE ===== */}
       <section className="hero" aria-labelledby="hero-title">
+        <span className="hero-blob" aria-hidden="true" />
         <div className="hero-grid">
           <div className="hero-copy">
             <p className="hero-badge">
@@ -198,7 +212,7 @@ const Home = () => {
 
       {/* ===== SECTION 2: DANH MỤC TUYỂN CHỌN ===== */}
       <section className="category-band" aria-labelledby="categories-title">
-        <div className="section-head">
+        <div className="section-head reveal">
           <p className="eyebrow">Danh mục tuyển chọn</p>
           <h2 id="categories-title">Sáu nhóm đồ luôn sẵn có</h2>
           <p>Từ ghế nhựa quán nhậu đến kệ inox nhà bếp — hàng thanh lý về liên tục mỗi tuần.</p>
@@ -221,7 +235,7 @@ const Home = () => {
                 <span className="cat-tile-copy">
                   <strong>{tile.title}</strong>
                   <small>{tile.note}</small>
-                  <em>{count} sản phẩm →</em>
+                  <em>{count} sản phẩm <span className="cat-arrow" aria-hidden="true">→</span></em>
                 </span>
               </Link>
             );
@@ -232,7 +246,7 @@ const Home = () => {
       {/* ===== SECTION 3: SẢN PHẨM NỔI BẬT — dẫn sang /san-pham ===== */}
       <section className="featured" aria-labelledby="featured-title">
         <div className="featured-head">
-          <div className="section-head">
+          <div className="section-head reveal">
             <p className="eyebrow">Bán chạy nhất</p>
             <h2 id="featured-title">Được khách chốt nhiều nhất</h2>
             <p>Bốn món đang được chốt nhiều nhất — hàng thanh lý số lượng có hạn, ai nhanh tay người đó có.</p>
@@ -271,7 +285,7 @@ const Home = () => {
 
       {/* ===== SECTION 4: TIÊU CHUẨN TUYỂN CHỌN ===== */}
       <section className="standards" aria-labelledby="standards-title">
-        <div className="section-head">
+        <div className="section-head reveal">
           <p className="eyebrow">Tiêu chuẩn tuyển chọn</p>
           <h2 id="standards-title">Mỗi món đồ qua ba vòng kiểm</h2>
           <p>Mỗi món đều qua tay người thật: kiểm tra, vệ sinh, chụp ảnh thật trước khi lên web.</p>
@@ -296,7 +310,7 @@ const Home = () => {
 
       {/* ===== SECTION 5: CẢM NHẬN KHÁCH HÀNG ===== */}
       <section className="testimonials" aria-labelledby="reviews-title">
-        <div className="section-head">
+        <div className="section-head reveal">
           <p className="eyebrow">Cảm nhận thực tế</p>
           <h2 id="reviews-title">Khách quen nói gì</h2>
           <p>Những phản hồi thật từ người đã mua và dùng đồ ở kho.</p>
@@ -304,13 +318,29 @@ const Home = () => {
         <div className="t-grid">
           {testimonials.map((t) => (
             <figure className="t-card reveal" key={t.name}>
+              <span className="t-quote" aria-hidden="true">“</span>
               <span className="t-stars" aria-label="Đánh giá 5 trên 5">★★★★★</span>
               <blockquote>{t.quote}</blockquote>
               <figcaption>
-                <strong>{t.name}</strong>
-                <span>{t.city} · đã mua {t.bought}</span>
+                <span className="t-avatar" aria-hidden="true">{t.name.split(' ').pop().charAt(0)}</span>
+                <span className="t-who">
+                  <strong>{t.name}</strong>
+                  <span>{t.city} · đã mua {t.bought}</span>
+                </span>
               </figcaption>
             </figure>
+          ))}
+        </div>
+      </section>
+
+      {/* ===== Dải USP chạy ngang — divider giữa trang ===== */}
+      <section className="usp-marquee" aria-label="Cam kết của chúng tôi">
+        <div className="usp-track">
+          {[...uspItems, ...uspItems].map((item, index) => (
+            <span className="usp-item" key={index}>
+              <Icon name={item.icon} size={15} />
+              {item.text}
+            </span>
           ))}
         </div>
       </section>
@@ -324,7 +354,7 @@ const Home = () => {
             Hàng về mỗi tuần · số lượng có hạn
           </figcaption>
         </figure>
-        <div className="story-copy">
+        <div className="story-copy reveal">
           <p className="eyebrow">Chuyện nhà</p>
           <h2 id="story-title">Đồ cũ còn dùng tốt, bỏ đi thì tiếc.</h2>
           <p>Quán xá thanh lý, nhà trọ trả phòng — bên mình đi thu mua từng đợt, chọn lại món còn dùng ổn, bán bằng giá thật cho người đang cần mở quán, thuê trọ.</p>
@@ -343,7 +373,7 @@ const Home = () => {
 
       {/* ===== SECTION 7: GIẢI ĐÁP NHANH — FAQ accordion ===== */}
       <section className="faq" aria-labelledby="faq-title">
-        <div className="section-head">
+        <div className="section-head reveal">
           <p className="eyebrow">Giải đáp nhanh</p>
           <h2 id="faq-title">Câu hỏi hay gặp</h2>
           <p>Những điều khách hay hỏi trước khi chốt món đồ cũ đầu tiên.</p>
@@ -360,7 +390,11 @@ const Home = () => {
                 <strong>{item.q}</strong>
                 <span className="faq-icon"><Icon name={openFaq === index ? 'minus' : 'plus'} size={16} strokeWidth={2.2} /></span>
               </button>
-              {openFaq === index && <p className="faq-a">{item.a}</p>}
+              <div className={`faq-a-wrap${openFaq === index ? ' open' : ''}`}>
+                <div className="faq-a-inner">
+                  <p className="faq-a">{item.a}</p>
+                </div>
+              </div>
             </article>
           ))}
         </div>
@@ -371,7 +405,7 @@ const Home = () => {
       </section>
 
       {/* ===== SECTION 8: CTA BANNER ===== */}
-      <section className="cta-banner">
+      <section className="cta-banner reveal">
         <div className="cta-glow" aria-hidden="true" />
         <div className="cta-content">
           <p className="cta-badge"><Icon name="spark" size={13} /><span>Ưu đãi cho đơn đầu tiên</span></p>
@@ -379,9 +413,9 @@ const Home = () => {
           <p>Sao chép mã và nhập lúc thanh toán — áp dụng cho mọi món trong đơn.</p>
         </div>
         <div className="cta-actions">
-          <button type="button" className="code-chip" onClick={copyPromo}>
+          <button type="button" className={`code-chip${copied ? ' copied' : ''}`} onClick={copyPromo}>
             <span className="code-value">QUANGHUY10</span>
-            <span className="code-copy"><Icon name="copy" size={13} />Sao chép</span>
+            <span className="code-copy"><Icon name={copied ? 'check' : 'copy'} size={13} />{copied ? 'Đã sao chép' : 'Sao chép'}</span>
           </button>
           <Link to="/contact" className="btn btn-light">Nhận tư vấn</Link>
         </div>

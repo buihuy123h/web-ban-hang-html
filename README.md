@@ -21,7 +21,7 @@ web ban hang html/
 
 ```bash
 npm run setup    # Cài dependencies cho client + server + tools (1 lần)
-npm test         # 39 test API của backend (5 bộ)
+npm test         # 61 test API của backend (6 bộ)
 npm run build    # Build client production + nén sẵn Brotli/Gzip
 npm run verify   # test + build — bước "gate" trước khi release/deploy
 npm start        # Server production: API + client build tại http://localhost:3000
@@ -79,23 +79,23 @@ Express REST API, chạy tại `http://localhost:3000`. Ở production serve lu�
 
 | File / thư mục | Vai trò |
 |---|---|
-| `server/index.js` | ENTRY chuẩn: nạp `.env` → kết nối SQL Server → listen :3000 → graceful shutdown (SIGINT/SIGTERM) |
+| `server/index.js` | ENTRY chuẩn: nạp `.env` → kết nối PostgreSQL (Supabase) → listen :3000 → graceful shutdown (SIGINT/SIGTERM) |
 | `server/app.js` | Lắp đặt Express app (pipeline middleware + mount routes + error handler); xuất `app` cho test |
-| `server/routes/` · `controllers/` · `models/` | Cấu trúc MVC — API: `/api/health`, `/api/categories`, `/api/products`, `/api/orders`, `/api/chat`; model đọc SQL Server (memory fixture khi test) |
-| `server/middleware/` | Security headers (CSP strict, COOP, HSTS sau proxy HTTPS tin cậy, chặn iframe…), CORS chặt theo NODE_ENV (production chỉ same-origin, mở qua `CORS_ORIGIN`), rate limit `/api` 240/phút/IP + riêng đặt hàng 10/phút, `X-Request-Id` truy vết log, Brotli/Gzip + ETag/304 cho JSON, 413 body quá lớn, 404 JSON, serve client build + SPA fallback |
-| `server/lib/` | `db.js` (pool SQL Server) + `chat.js` (chatbot AI RAG, fallback thân thiện khi thiếu key) |
-| `server/data/products.json` | Fixture cho test + nguồn seed; production đọc catalog từ SQL Server (xem `server/docs/DATABASE.md`) |
+| `server/routes/` · `controllers/` · `models/` | Cấu trúc MVC — API: `/api/health` (chi tiết: node/memory/pool + `?deep=1` đo độ trễ DB), `/api/categories`, `/api/products`, `/api/orders`, `/api/chat`; model đọc PostgreSQL/Supabase (memory fixture khi test) |
+| `server/middleware/` | Security headers (CSP strict, COOP, CORP, Permissions-Policy mở rộng, HSTS sau proxy HTTPS tin cậy, chặn iframe…), CORS chặt theo NODE_ENV (production chỉ same-origin, mở qua `CORS_ORIGIN`), rate limit `/api` 240/phút/IP + riêng đặt hàng 10/phút, `X-Request-Id` truy vết log (đánh dấu request chậm `[slow]` + `bytes=`, quiet paths bớt nhiễu), Brotli/Gzip + ETag/304 cho JSON, 413 body quá lớn, 404 JSON, serve client build + SPA fallback |
+| `server/lib/` | `db.js` (pool PostgreSQL `pg` + tự kết nối lại theo backoff khi mất kết nối runtime) + `chat.js` (chatbot AI RAG, fallback thân thiện khi thiếu key) |
+| `server/data/products.json` | Fixture cho test + nguồn seed; production đọc catalog từ PostgreSQL/Supabase (xem `server/docs/DATABASE.md`) |
 | `server/public/images/` | File ảnh thật: `catalog/` + `products/` — phục vụ tại `/images` với cache 30 ngày immutable |
-| `server/database/` | SQL + script seed/migration dữ liệu |
+| `server/database/` | `postgres/` (schema + seed PostgreSQL/Supabase) + file SQL Server cũ để tham chiếu (legacy) |
 | `server/scripts/` | `deploy.ps1` (deploy 1 lệnh) · `free-port.ps1` · `precompress.js` (nén sẵn Brotli/Gzip) · `optimize-images.ps1` |
-| `server/test/` | 39 test API — 5 bộ (api, chat, chat-rate, database, repository-injection) bằng `node:test`, 0 dependency |
+| `server/test/` | 61 test API — 6 bộ (api, chat, chat-rate, database, repository-injection, security-hardening) bằng `node:test`, 0 dependency |
 | `server/docs/` | `DATABASE.md` (tổ chức database & ảnh) + `CHATBOT.md` (chatbot RAG) |
 
 ```bash
 cd server
 npm install     # lần đầu
 npm run dev     # chạy BE tại http://localhost:3000
-npm test        # chạy 39 test API (5 bộ)
+npm test        # chạy 61 test API (6 bộ)
 npm run deploy  # test → build FE → precompress → restart server
 ```
 

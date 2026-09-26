@@ -26,15 +26,15 @@ const NavBar = () => {
         <ul className="nav-links">
           <li><NavLink to="/" end><Icon name="home" size={18} /><span className="nl-label">Trang chủ</span></NavLink></li>
           <li><NavLink to="/san-pham"><Icon name="grid" size={19} /><span className="nl-label">Sản phẩm</span></NavLink></li>
-          <li><NavLink to="/saved"><Icon name="bookmark" size={18} /><span className="nl-label">Đã lưu</span>{savedCount > 0 && <span className="nav-count" aria-hidden="true">{savedCount}</span>}</NavLink></li>
-          <li className="nav-cart-mobile"><NavLink to="/cart"><Icon name="cart" size={19} /><span className="nl-label">Giỏ</span>{cartCount > 0 && <span className="nav-count" aria-hidden="true">{cartCount}</span>}</NavLink></li>
+          <li><NavLink to="/saved"><Icon name="bookmark" size={18} /><span className="nl-label">Đã lưu</span>{savedCount > 0 && <span className="nav-count" key={savedCount} aria-hidden="true">{savedCount}</span>}</NavLink></li>
+          <li className="nav-cart-mobile"><NavLink to="/cart"><Icon name="cart" size={19} /><span className="nl-label">Giỏ</span>{cartCount > 0 && <span className="nav-count" key={cartCount} aria-hidden="true">{cartCount}</span>}</NavLink></li>
           <li><NavLink to="/about"><Icon name="spark" size={18} /><span className="nl-label">Câu chuyện</span></NavLink></li>
           <li><NavLink to="/contact"><Icon name="phone" size={18} /><span className="nl-label">Liên hệ</span></NavLink></li>
         </ul>
         <Link to="/cart" className="cart-btn" aria-label={`Giỏ hàng, ${cartCount} sản phẩm`}>
           <Icon name="cart" size={18} />
           <span>Giỏ hàng</span>
-          <strong aria-hidden="true">{String(cartCount).padStart(2, '0')}</strong>
+          <strong key={cartCount} aria-hidden="true">{String(cartCount).padStart(2, '0')}</strong>
         </Link>
       </nav>
     </header>

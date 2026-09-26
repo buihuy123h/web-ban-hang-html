@@ -16,7 +16,9 @@
   width: 34px; height: 34px; display: grid; place-items: center;
   background: var(--inverse); color: var(--on-inverse); border-radius: 50%;
   font-size: .68rem; letter-spacing: -.03em;
+  transition: transform .35s cubic-bezier(.34, 1.56, .64, 1);
 }
+.logo:hover .logo-mark { transform: rotate(-8deg) scale(1.07); }
 
 /* Nav links — pill tonal theo trạng thái active (tách lớp sắc độ, không viền kín) */
 .nav-links { list-style: none; display: flex; gap: 4px; padding: 0; margin: 0; }
@@ -33,19 +35,24 @@
   display: inline-grid; min-width: 17px; height: 17px; margin-left: 2px; place-items: center;
   border-radius: 9px; background: var(--primary); color: var(--on-primary);
   font-size: .58rem; font-weight: 600;
+  /* NavBar.jsx đặt key={count} → phần tử remount mỗi lần đổi số, chạy pop */
+  animation: count-pop .45s cubic-bezier(.34, 1.56, .64, 1);
 }
+@keyframes count-pop { 0% { transform: scale(.3); } 55% { transform: scale(1.3); } 100% { transform: scale(1); } }
 
 .cart-btn {
   justify-self: end; display: inline-flex; align-items: center; gap: 10px;
   min-height: 40px; padding: 0 13px 0 16px; border-radius: var(--r-pill);
   background: var(--inverse); color: var(--on-inverse); text-decoration: none;
-  font-size: .78rem; font-weight: 600; transition: background-color .18s ease;
+  font-size: .78rem; font-weight: 600;
+  transition: background-color .18s ease, transform .18s ease, box-shadow .18s ease;
 }
-.cart-btn:hover { background: var(--inverse-hover); }
+.cart-btn:hover { background: var(--inverse-hover); transform: translateY(-1px); box-shadow: var(--shadow-card); }
 .cart-btn strong {
   display: grid; place-items: center; min-width: 24px; height: 24px; padding: 0 6px;
   border-radius: 12px; background: var(--primary); color: var(--on-primary);
   font-family: var(--font-mono); font-size: .64rem;
+  animation: count-pop .45s cubic-bezier(.34, 1.56, .64, 1);
 }
 
 @media (max-width: 760px) {

@@ -3,7 +3,7 @@
 /**
  * ENTRY POINT — backend Đồ Cũ Quang Huy.
  * Chạy: `node index.js` · `npm start` · `npm run dev` (trong thư mục server/).
- * Trách nhiệm duy nhất của file này: nạp .env → startServer (kết nối SQL Server,
+ * Trách nhiệm duy nhất của file này: nạp .env → startServer (kết nối PostgreSQL,
  * listen) → đăng ký graceful shutdown. Cấu trúc chi tiết xem comment đầu app.js.
  */
 
@@ -37,7 +37,7 @@ const bootstrap = async () => {
     } else {
       const candidate = String(error && (error.code || error.name) || '');
       const code = /^[A-Z0-9_.-]{1,64}$/i.test(candidate) ? candidate : 'CONNECT_FAILED';
-      console.error(`[database] Không thể kết nối SQL Server: ${code}`);
+      console.error(`[database] Không thể kết nối PostgreSQL: ${code}`);
     }
     process.exitCode = 1;
   }

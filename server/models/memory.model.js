@@ -1,7 +1,7 @@
 'use strict';
 
 /* MODEL nhớ trong RAM — dựng từ data/products.json; dùng cho test và demo khi
- * không cần SQL Server. Tách từ lib/memory-repositories.js khi chuẩn hoá cấu
+ * không cần PostgreSQL. Tách từ lib/memory-repositories.js khi chuẩn hoá cấu
  * trúc MVC; logic giữ nguyên 100%, hành vi mô phỏng sát model SQL
  * (lọc/tìm/sắp xếp, tính phí ship, mã giảm giá QUANGHUY10). */
 

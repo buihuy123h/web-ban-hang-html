@@ -1,10 +1,11 @@
 /* Chụp full-page mọi trang chính. Chạy: npm run shoot (trong tools/ — output vào artifacts/)
 
-   QUAN TRỌNG: trang dùng scroll-reveal (animation-timeline: view() — xem
-   App.css) nên BẮT BUỘC quét cuộn qua trang trước khi chụp. Playwright chụp
-   full-page bằng cách ghép nội dung ngoài màn hình mà KHÔNG cuộn thật, nên
-   các khối .reveal chưa từng vào viewport sẽ bị chụp ở trạng thái opacity: 0
-   (trông như mất nội dung, trong khi người dùng thật cuộn tới vẫn thấy). */
+   QUAN TRỌNG: trang dùng scroll-reveal (IntersectionObserver trong
+   client/src/hooks/useRevealOnScroll.js — xem App.css) nên BẮT BUỘC quét cuộn
+   qua trang trước khi chụp. Playwright chụp full-page bằng cách ghép nội dung
+   ngoài màn hình mà KHÔNG cuộn thật, nên các khối .reveal chưa từng vào
+   viewport sẽ bị chụp ở trạng thái opacity: 0 (trông như mất nội dung, trong
+   khi người dùng thật cuộn tới vẫn thấy). */
 const { chromium } = require('playwright');
 const path = require('path');
 // Mọi ảnh chụp ghi vào tools/artifacts/ (gitignored).

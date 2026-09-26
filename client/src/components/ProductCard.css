@@ -14,7 +14,7 @@
   border-radius: var(--r-sm); background-repeat: no-repeat; background-size: 340% auto;
   background-color: #e8e1cf; transition: transform .3s ease;
 }
-.p-card:hover .p-media-link { transform: translateY(-2px); }
+.p-card:hover .p-media-link { transform: translateY(-2px) scale(1.03); }
 
 .p-flag {
   position: absolute; top: 8px; left: 8px; z-index: 1;
@@ -70,3 +70,28 @@
 }
 .p-add:hover { background: var(--primary-dark); transform: translateY(-1px); }
 .p-add:active { transform: translateY(1px); }
+
+/* Vệt sáng quét chéo qua ảnh khi hover — như "soi đèn" món đồ */
+.p-media-link::after {
+  content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: linear-gradient(105deg, transparent 42%, rgba(255, 253, 246, .34) 50%, transparent 58%);
+  transform: translateX(-130%); transition: transform .75s ease;
+}
+.p-card:hover .p-media-link::after { transform: translateX(130%); }
+
+/* Pill "Xem chi tiết" trượt hiện giữa ảnh (chỉ trên thiết bị có hover thật) */
+.p-view {
+  position: absolute; left: 50%; bottom: 13px; z-index: 1;
+  padding: 7px 14px; border-radius: var(--r-pill);
+  background: rgba(255, 253, 246, .95); color: var(--ink);
+  font-size: .64rem; font-weight: 700; white-space: nowrap; pointer-events: none;
+  opacity: 0; transform: translate(-50%, 7px);
+  transition: opacity .22s ease, transform .22s cubic-bezier(.16, 1, .3, 1);
+}
+@media (hover: hover) {
+  .p-card:hover .p-view { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* Nút thêm giỏ — trạng thái "Đã thêm" chuyển xanh success + nhún nhẹ */
+.p-add.added { background: var(--success); animation: add-pop .45s cubic-bezier(.34, 1.56, .64, 1); }
+@keyframes add-pop { 0% { transform: scale(1); } 45% { transform: scale(.95); } 100% { transform: scale(1); } }

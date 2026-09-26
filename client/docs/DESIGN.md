@@ -49,3 +49,27 @@ editorial.
   đáp án fade-in, hàng dẫn sang `/contact`); About thêm quy trình 4 bước (số vòng
   tròn olive-soft hover đổ đầy) và team card với avatar chữ cái tròn + role mono.
 - Motion tiết chế: hero reveal một lần, hover nâng 1–3px, tôn trọng `prefers-reduced-motion`.
+
+## Motion
+
+- **Scroll reveal**: 1 IntersectionObserver toàn cục trong `client/src/hooks/useRevealOnScroll.js`
+  (gọi 1 lần trong `App.jsx`); mọi node `.reveal` — kể cả node mount sau (lazy page, lọc sản phẩm)
+  do MutationObserver bổ sung — nhận class `.is-in` khi vào viewport, animate 1 lần rồi unobserve.
+  Keyframes `reveal-in .68s cubic-bezier(.16,1,.3,1)` dùng property `translate` riêng để không đè
+  transform hover của phần tử.
+- **Stagger lưới**: category tiles / standards / testimonials / about-stats lệch nhịp
+  `animation-delay` 70ms/bước qua `:nth-child` (chỉ khi `no-preference`).
+- **Số liệu động**: component `<CountUp>` — ease-out cubic, kích hoạt khi vào viewport
+  (threshold .4), tôn trọng `prefers-reduced-motion` (hiện thẳng giá trị cuối).
+- **Micro-interactions**: badge giỏ/lưu "pop" bằng `key` remount (`count-pop` spring overshoot);
+  logo-mark xoay −8° spring; nút "Thêm vào giỏ" chuyển `--success` + nhún ~1.6s khi bấm;
+  toast spring scale-overshoot; `.cta-glow` "thở" chậm; ảnh thẻ sản phẩm zoom nhẹ + vệt sáng
+  quét chéo + pill "Xem chi tiết" (chỉ `@media (hover: hover)`); mũi tên category tile trượt 5px;
+  seal hero lơ lửng 5.2s; hero blob đất nung "thở" 9s sau nội dung; search console focus ring
+  olive-soft; nút sao chép mã có trạng thái "Đã sao chép" xanh success.
+- **Marquee USP** (divider giữa trang chủ): nhân đôi nội dung + `translateX(-50%)` 30s linear,
+  hover pause, mask gradient mờ 2 đầu.
+- **FAQ accordion**: mở/đóng mượt bằng `grid-template-rows: 0fr → 1fr` (không mount/unmount).
+- Mọi animation vòng lặp (marquee, blob, seal, glow) dừng theo `prefers-reduced-motion: reduce`.
+- QA lưu ý: chụp full-page Playwright phải cuộn quét trang trước vì `.reveal` ngoài viewport
+  còn `opacity: 0` (`tools/scripts/shoot-pages.js` đã xử lý).

@@ -1,115 +1,67 @@
-# SQL Server và ảnh sản phẩm
+# Database PostgreSQL/Supabase
 
-Backend dùng SQL Server `DoCuQuangHuy` làm nguồn dữ liệu runtime duy nhất cho danh mục, sản phẩm,
-mã giảm giá và đơn hàng. `data/products.json` chỉ còn là fixture test/nguồn seed lịch sử;
-`data/orders.json` không còn được ghi khi khách đặt hàng.
+Runtime chỉ dùng PostgreSQL qua `pg` và chỉ đọc `DATABASE_URL`. Dữ liệu nghiệp vụ nằm trong schema
+backend-only `app`; không thêm schema này vào Supabase **Exposed Schemas**.
 
-> Runtime dùng `mssql@12`/`tedious@20` cần **Node.js 22 trở lên** cho SQL Authentication. Job CI
-> production-like phải dùng Node 22; không hạ cảnh báo engine hoặc bỏ qua lỗi cài dependency.
+## Cấu trúc và hợp đồng
 
-## Chuẩn bị lần đầu
+- Migration nguồn: `database/postgres/migrations/*.sql`; runner lưu version/checksum trong
+  `app.schema_migrations`, giữ advisory lock và chạy từng file trong transaction.
+- 7 bảng nghiệp vụ: `categories`, `products`, `product_images`, `product_specs`, `promo_codes`,
+  `orders`, `order_items`. ID, đường dẫn `/images/...`, snapshot tên/giá và `timestamptz` được giữ.
+- `app.fn_tao_don_hang(...)` là `SECURITY DEFINER`, `search_path=''`; validate lại toàn bộ input,
+  gộp item bằng JSONB (không temp table), lock product theo ID và retry collision mã đơn tối đa 20 lần.
+- Catalog gọi `extensions.unaccent(...)` với bind parameter để tìm không dấu/case-insensitive.
+- Runtime role chỉ được đọc catalog/promo và execute hàm; không DDL hay DML trực tiếp đơn hàng.
 
-1. Cài SQL Server Express, SSMS và Microsoft ODBC Driver for SQL Server.
-2. Backup database trước khi chạy bất kỳ script nào.
-3. Nếu đây là database dev hoàn toàn trống, có thể chủ động chạy
-   `database/do-cu-quang-huy.sql`. Đây là script dựng lại dữ liệu và có lệnh `DROP`, tuyệt đối
-   không chạy trên database đang vận hành.
-4. Với database đã có dữ liệu, chạy `database/migrations/001-order-procedure-safe.sql` trong
-   SSMS. Migration dùng `CREATE OR ALTER PROCEDURE`, không xóa bảng hay dữ liệu.
-5. Nếu cần nạp các dòng catalog còn thiếu, chạy `node database/generate-safe-seed.cjs`, review
-   `database/seed-catalog-safe.sql`, rồi chạy file đó trong SSMS. Seed chỉ INSERT khóa còn thiếu,
-   chạy lại không nhân bản và không ghi đè dữ liệu đã sửa.
-6. Copy `.env.example` thành `.env`, rồi chạy `npm start`.
+## Chuẩn bị Supabase an toàn
 
-Ví dụ cấu hình Windows Authentication:
+1. Tạo project và backup trước mọi thay đổi.
+2. Trong SQL Editor bằng tài khoản quản trị, tạo login riêng; thay password trực tiếp, không lưu lệnh
+   có secret vào repo/log:
 
-```dotenv
-DB_AUTH_MODE=windows
-DB_SERVER=.\SQLEXPRESS
-# DB_PORT=1433
-DB_NAME=DoCuQuangHuy
-DB_DRIVER=msnodesqlv8
-DB_ODBC_DRIVER=ODBC Driver 18 for SQL Server
-DB_TRUSTED_CONNECTION=true
-DB_ENCRYPT=true
-DB_TRUST_SERVER_CERTIFICATE=true
-DB_CONNECT_TIMEOUT_MS=10000
-DB_REQUEST_TIMEOUT_MS=15000
-DB_POOL_MAX=10
-DB_POOL_MIN=0
-DB_POOL_IDLE_TIMEOUT_MS=30000
-```
+   ```sql
+   CREATE ROLE app_runtime LOGIN PASSWORD '<nhập-trực-tiếp-trong-SQL-Editor>';
+   ```
 
-Production phải đặt `DB_ENCRYPT=true` và `DB_TRUST_SERVER_CERTIFICATE=false`, đồng thời cài certificate
-có hostname/SAN khớp `DB_SERVER` và chuỗi CA được máy Node tin cậy. `true` chỉ dành cho local hoặc
-container CI tự ký khi đồng thời có `CI=true`, `DB_AUTH_MODE=sql` và `DB_ALLOW_SELF_SIGNED_CI=true`.
+3. Copy hai URI từ nút **Connect**:
+   - runtime: Session pooler `5432`, username pooler tương ứng role `app_runtime`;
+   - quản trị migration: direct/session admin URL. Không dùng transaction pooler `6543` mặc định.
+4. Đặt tạm trong terminal/secret store, không ghi URL quản trị vào `.env`:
 
-Ví dụ SQL Authentication cho container CI (không dùng cho production Windows):
+   ```powershell
+   $env:MIGRATION_DATABASE_URL = "postgresql://.../postgres?sslmode=require"
+   npm run db:migrate
+   npm run db:seed
+   Remove-Item Env:MIGRATION_DATABASE_URL
+   ```
+
+`npm run db:migrate` chạy lại an toàn: migration đã áp được bỏ qua nếu checksum khớp; checksum đổi sẽ
+bị chặn. Không có lệnh `DROP` trong migration. `npm run db:seed` validate fixture trước transaction,
+chỉ insert khóa thiếu và không ghi đè dữ liệu sửa tay. Fixture chuẩn tạo 6 category, 21 product,
+1 product image, 84 spec và 2 promo. Đơn lịch sử không được seed mặc định.
+
+## Biến môi trường runtime
 
 ```dotenv
-CI=true
-NODE_ENV=production
-DB_AUTH_MODE=sql
-DB_SERVER=localhost
-DB_PORT=1433
-DB_NAME=DoCuQuangHuy
-DB_USER=app_runtime_ci
-DB_PASSWORD=<GitHub secret>
-DB_TRUSTED_CONNECTION=false
-DB_ENCRYPT=true
-DB_TRUST_SERVER_CERTIFICATE=true
-DB_ALLOW_SELF_SIGNED_CI=true
+DATABASE_URL=postgresql://app_runtime.<project-ref>:<password>@<session-pooler>:5432/postgres?sslmode=require
 ```
 
-Chạy `node database/bootstrap-ci.js` bằng `CI_SQL_ADMIN_PASSWORD` để dựng DB tạm và tạo runtime user.
-Script từ chối chạy ngoài CI/host allowlist, không in secret và không dùng runtime user `sa`. Nó chạy
-schema destructive chỉ trên container tạm; tuyệt đối không dùng với production/staging. Production tạo
-Windows user/service account riêng rồi review `database/least-privilege.sql`: runtime chỉ đọc catalog và
-`EXECUTE dbo.usp_TaoDonHang`, không có `db_owner`/DDL hoặc quyền ghi trực tiếp bảng đơn.
+- Đây là nguồn credential runtime duy nhất; app không đọc `MIGRATION_DATABASE_URL`, `PGHOST` hoặc `DB_*`.
+- Host từ xa và production phải có `sslmode=require`, `verify-ca` hoặc `verify-full`.
+- `verify-ca`/`verify-full` yêu cầu `PGSSL_CA` trỏ tới CA đã mount; `require` mã hóa nhưng không xác minh
+  hostname certificate. Ưu tiên `verify-full` sau khi đã cấu hình CA từ Supabase Database Settings.
+- Pool/timeout tùy chọn: `PGPOOL_MAX` (1–100), `PGPOOL_IDLE_TIMEOUT_MS` (1000–300000),
+  `PG_CONNECT_TIMEOUT_MS` (1000–120000), `PG_QUERY_TIMEOUT_MS` (1000–300000).
+- Thiếu/sai URL, TLS hay timeout làm startup fail trước listen; log chỉ nêu tên biến/mã lỗi.
 
-Tài khoản Windows chạy Node/VS Code phải được cấp quyền trên `DoCuQuangHuy`. App kết nối trực
-tiếp SQL Server, không kết nối vào SSMS. App probe database trước khi mở cổng; sai instance,
-thiếu quyền hoặc thiếu ODBC driver sẽ làm startup thất bại thay vì âm thầm dùng JSON.
-Nếu named-instance discovery bị chặn, bật SQL Server Browser/TCP/IP hoặc đặt `DB_SERVER=localhost`
-và `DB_PORT` theo port TCP tĩnh đã cấu hình trong SQL Server Configuration Manager.
+## Ảnh, seed và vận hành
 
-## Sửa dữ liệu động bằng SSMS
+DB chỉ lưu đường dẫn `/images/...`; file nằm trong `public/images/`, versioned cùng image Docker và
+cache 30 ngày. Thay ảnh bằng tên file mới. Filesystem Render là ephemeral, không dùng để upload.
 
-- `Categories`: danh mục và ảnh danh mục.
-- `Products`: tên, giá, mô tả, ảnh chính và số liệu sản phẩm.
-- `ProductImages`: gallery, thứ tự theo `SortOrder`.
-- `ProductSpecs`: thông số, thứ tự theo `SortOrder`.
-- `PromoCodes`: mã giảm giá và trạng thái hiệu lực.
-- `Orders`, `OrderItems`: dữ liệu đơn được stored procedure ghi nguyên tử.
+Sau migration/seed staging, đối soát count/ID, orphan FK, order code, tổng tiền và duplicate item trước
+cutover. App/Docker/Render không tự migrate hay seed khi start. SQL Server scripts trong
+`database/` là legacy để audit/import, không được runtime gọi. Workflow GitHub hiện vẫn dùng SQL Server
+và phải được xử lý bằng task CI riêng đã được chủ repo duyệt.
 
-API query DB ở mỗi request nên thay đổi đã commit trong SSMS hiện ngay, không cần restart.
-Không chỉnh trực tiếp tổng tiền đơn: stored procedure luôn lấy giá hiện tại từ `Products` và
-lưu snapshot vào `OrderItems`.
-
-## Ảnh sản phẩm
-
-DB chỉ lưu đường dẫn tương đối bắt đầu bằng `/images/...`; file thật đặt trong
-`server/public/images/`. Ví dụ:
-
-```text
-server/public/images/catalog/ban-ghe.svg
-server/public/images/products/ke-inox-4-tang.jpg
-```
-
-Khi thay ảnh, thêm file với tên mới rồi cập nhật `ImageUrl`/`Url` trong SSMS. Không ghi đè tên
-cũ vì `/images/*` được cache 30 ngày với `immutable`.
-
-## Vận hành và kiểm tra
-
-```powershell
-Set-Location "D:\web ban hang html\server"
-npm.cmd test
-npm.cmd start
-```
-
-Mở `http://localhost:3000/api/health`; `database: "connected"` nghĩa là pool sẵn sàng. Khi DB
-mất kết nối, health và route phụ thuộc DB trả `503` mà không lộ connection string.
-
-`npm test` dùng repository trong bộ nhớ, không truy cập SQL Server. Không tự chạy migration hay
-seed trong startup/test. Nếu cần seed lại, backup trước và chỉ dùng script destructive trên DB
-dev trống do chủ repo chủ động xác nhận.

@@ -3,7 +3,7 @@
 /**
  * BACKEND — Express REST API cho client (React + Vite), cấu trúc MVC:
  *   index.js (entry: env + DB + listen)  →  app.js (file này: lắp đặt app)
- *   routes/  → controllers/  →  models/  (SQL Server; memory cho test)
+ *   routes/  → controllers/  →  models/  (PostgreSQL; memory cho test)
  *   middleware/ (logger, security, CORS, gzip/ETag, rate limit, static client…)
  *   lib/ (db pool, chat AI — thư viện dùng chung, không phải model nghiệp vụ)
  * - Production: serve bản build client (client/dist) + SPA fallback.
@@ -85,8 +85,21 @@ app.use(errorHandler);
 let database = null;
 let server = null;
 
-const startServer = async (port = process.env.PORT || 3000, injected = null) => {
+const LISTEN_HOST = '0.0.0.0';
+const parsePort = (raw = process.env.PORT, { allowZero = false } = {}) => {
+  const value = raw == null || String(raw).trim() === '' ? 3000 : Number(raw);
+  const min = allowZero ? 0 : 1;
+  if (!Number.isInteger(value) || value < min || value > 65535) {
+    throw new ConfigError(`PORT phải là số nguyên từ ${min} đến 65535.`);
+  }
+  return value;
+};
+
+const startServer = async (port, injected = null) => {
   if (server) return server;
+  // Render cấp PORT lúc runtime. Chỉ test có repository tiêm mới được dùng cổng 0
+  // để hệ điều hành chọn cổng trống; runtime thật phải dùng 1..65535.
+  const listenPort = parsePort(port, { allowZero: Boolean(injected) });
   validateChatConfig();
   if (injected) {
     configureServices(injected);
@@ -100,17 +113,25 @@ const startServer = async (port = process.env.PORT || 3000, injected = null) => 
       throw error;
     }
     configureServices({
-      catalogRepository: createCatalogRepository({ pool: database.pool, sql: database.sql }),
-      orderRepository: createOrderRepository({ pool: database.pool, sql: database.sql }),
+      catalogRepository: createCatalogRepository({ pool: database.pool }),
+      orderRepository: createOrderRepository({ pool: database.pool }),
       isReady: () => database.isReady(),
+      /* Observability cho /api/health: trạng thái pool + ping độ trễ (deep mode ?deep=1). */
+      poolStats: () => ({
+        total: database.pool.totalCount,
+        idle: database.pool.idleCount,
+        waiting: database.pool.waitingCount,
+      }),
+      pingDatabase: async () => database.ping(),
     });
   }
   ensurePrecompressed();
-  server = app.listen(port, () => {
+  server = app.listen(listenPort, LISTEN_HOST, () => {
+    const boundPort = server.address().port;
     const hasClient = fs.existsSync(CLIENT_DIST);
-    console.log(`API server đang chạy tại http://localhost:${port}`);
-    console.log(`  - API:      http://localhost:${port}/api/health`);
-    console.log('  - Dữ liệu:  SQL Server (catalog và đơn hàng động)');
+    console.log(`API server đang lắng nghe tại http://${LISTEN_HOST}:${boundPort}`);
+    console.log(`  - API:      http://${LISTEN_HOST}:${boundPort}/api/health`);
+    console.log('  - Dữ liệu:  PostgreSQL/Supabase (catalog và đơn hàng động)');
     console.log(`  - Ảnh: ${IMAGES_DIR} (phục vụ tại /images, cache 30 ngày)`);
     console.log(hasClient
       ? `  - Client build: đang serve từ ${CLIENT_DIST}`
@@ -124,7 +145,7 @@ const startServer = async (port = process.env.PORT || 3000, injected = null) => 
   // Báo lỗi listen thân thiện thay vì stack trace (EADDRINUSE: cổng bị chiếm).
   server.on('error', (err) => {
     if (err && err.code === 'EADDRINUSE') {
-      console.error(`[server] Không khởi động được: cổng ${port} đang bị tiến trình khác chiếm (EADDRINUSE).`);
+      console.error(`[server] Không khởi động được: cổng ${listenPort} đang bị tiến trình khác chiếm (EADDRINUSE).`);
       console.error('         Gợi ý: chạy "npm run dev" (tự giải phóng cổng 3000), hoặc đổi cổng:  $env:PORT=3100; npm run dev');
     } else {
       console.error('[server] Lỗi lắng nghe:', err);
@@ -150,4 +171,7 @@ const shutdown = (signal, exitCode = 0) => {
   setTimeout(() => process.exit(exitCode), 3000).unref();
 };
 
-module.exports = { app, startServer, shutdown, configureServices, products, categories, parseTrustProxy };
+module.exports = {
+  app, startServer, shutdown, configureServices, products, categories,
+  parseTrustProxy, parsePort, LISTEN_HOST,
+};

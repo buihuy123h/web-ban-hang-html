@@ -51,7 +51,7 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body {
-  margin: 0; min-width: 320px; min-height: 100vh;
+  margin: 0; min-width: 320px; min-height: 100vh; overflow-x: clip;
   /* Chấm bi siêu nhẹ trên nền kem — kết cấu vải ấm cho tổng thể "xinh xắn" */
   background:
     radial-gradient(rgba(96, 108, 56, .05) 1.2px, transparent 1.3px) 0 0 / 26px 26px,

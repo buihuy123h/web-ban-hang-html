@@ -1,15 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../components/Icon';
+import CountUp from '../components/CountUp';
 import { categoryImages } from '../data/productImages';
 import '../App.css';
 import './About.css';
 
 const stats = [
-  { icon: 'refresh', n: 'Hàng tuần', l: 'đợt hàng mới về kho' },
-  { icon: 'cart', n: '400+', l: 'người theo dõi trên Facebook' },
-  { icon: 'grid', n: '300+', l: 'món đồ luân chuyển mỗi tháng' },
-  { icon: 'truck', n: '63', l: 'tỉnh thành gửi qua nhà xe' },
+  { icon: 'refresh', text: 'Hàng tuần', l: 'đợt hàng mới về kho' },
+  { icon: 'cart', count: 400, suffix: '+', l: 'người theo dõi trên Facebook' },
+  { icon: 'grid', count: 300, suffix: '+', l: 'món đồ luân chuyển mỗi tháng' },
+  { icon: 'truck', count: 63, suffix: '', l: 'tỉnh thành gửi qua nhà xe' },
 ];
 
 const promises = [
@@ -67,7 +68,7 @@ const About = () => (
       {stats.map((item) => (
         <div className="stat-card reveal" key={item.l}>
           <span className="stat-icon"><Icon name={item.icon} size={19} /></span>
-          <strong>{item.n}</strong>
+          <strong>{item.count === undefined ? item.text : <CountUp end={item.count} suffix={item.suffix} />}</strong>
           <span>{item.l}</span>
         </div>
       ))}

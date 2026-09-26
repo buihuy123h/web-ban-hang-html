@@ -12,10 +12,17 @@ const ProductCard = ({ product }) => {
   const { addToCart, showToast, toggleSaved, isSaved } = useCart();
   const saved = isSaved(product.id);
   const discount = product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : null;
+  /* Phản hồi "Đã thêm" trên nút trong ~1.6s — timer bị hủy khi thẻ unmount */
+  const [added, setAdded] = React.useState(false);
+  const addedTimer = React.useRef(0);
+  React.useEffect(() => () => window.clearTimeout(addedTimer.current), []);
 
   const handleAdd = () => {
     addToCart(product);
     showToast(`Đã thêm “${product.name}” vào giỏ`);
+    setAdded(true);
+    window.clearTimeout(addedTimer.current);
+    addedTimer.current = window.setTimeout(() => setAdded(false), 1600);
   };
 
   const handleSave = () => {
@@ -42,6 +49,7 @@ const ProductCard = ({ product }) => {
             <Icon name="star" size={11} />
             {product.rating.toFixed(1)}
           </span>
+          <span className="p-view">Xem chi tiết</span>
         </Link>
         <button
           className={`p-save ${saved ? 'saved' : ''}`}
@@ -69,9 +77,9 @@ const ProductCard = ({ product }) => {
           {product.oldPrice && <span className="p-old">{formatPrice(product.oldPrice)}</span>}
           {discount && <span className="p-off">−{discount}%</span>}
         </div>
-        <button className="p-add" type="button" onClick={handleAdd}>
-          <Icon name="cart" size={15} strokeWidth={1.9} />
-          <span>Thêm vào giỏ</span>
+        <button className={`p-add${added ? ' added' : ''}`} type="button" onClick={handleAdd}>
+          <Icon name={added ? 'check' : 'cart'} size={15} strokeWidth={1.9} />
+          <span>{added ? 'Đã thêm vào giỏ' : 'Thêm vào giỏ'}</span>
         </button>
       </div>
     </article>

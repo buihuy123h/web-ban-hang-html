@@ -73,7 +73,9 @@ h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); letter-spa
   display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap;
   overflow: hidden; border-radius: var(--r-xl); background: var(--inverse); color: var(--on-inverse);
 }
-.cta-glow { position: absolute; right: -80px; bottom: -110px; width: 340px; height: 340px; border-radius: 50%; background: rgba(96, 108, 56, .38); filter: blur(70px); pointer-events: none; }
+.cta-glow { position: absolute; right: -80px; bottom: -110px; width: 340px; height: 340px; border-radius: 50%; background: rgba(96, 108, 56, .38); filter: blur(70px); pointer-events: none; animation: cta-breathe 7s ease-in-out infinite; }
+/* Ánh sáng "thở" chậm — banner bớt tĩnh mà vẫn tiết chế */
+@keyframes cta-breathe { 0%, 100% { transform: scale(1); opacity: .78; } 50% { transform: scale(1.15); opacity: 1; } }
 /* Chấm bi phủ nhẹ trên banner — decor dễ thương, không chắn nội dung */
 .cta-banner::before {
   content: ''; position: absolute; inset: 0; pointer-events: none;
@@ -119,7 +121,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); letter-spa
   position: fixed; right: 24px; bottom: 24px; z-index: 900; max-width: min(380px, calc(100vw - 40px));
   display: flex; gap: 10px; align-items: center; padding: 14px 18px;
   color: var(--on-inverse); background: var(--inverse); border-radius: var(--r-pill); box-shadow: var(--shadow-float);
-  font-size: .84rem; animation: toast-in .28s ease-out both;
+  font-size: .84rem; animation: toast-in .42s cubic-bezier(.34, 1.56, .64, 1) both;
 }
 .t-icon { display: inline-grid; place-items: center; min-width: 22px; height: 22px; border-radius: 50%; background: var(--primary); color: var(--on-primary); }
 .t-icon:empty { display: none; }
@@ -130,7 +132,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); letter-spa
   transition: background .18s ease, transform .18s ease;
 }
 .back-to-top:hover { background: var(--inverse-hover); transform: translateY(-2px); }
-@keyframes toast-in { from { opacity: 0; transform: translateY(8px); } }
+@keyframes toast-in { from { opacity: 0; transform: translateY(16px) scale(.94); } }
 
 @media (max-width: 900px) {
   .container { width: min(100% - 40px, 1440px); }
@@ -141,14 +143,38 @@ h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); letter-spa
   .back-to-top { right: 16px; bottom: calc(148px + env(safe-area-inset-bottom)); }
 }
 
-/* Scroll reveal — progressive enhancement, mặc định hiển thị đầy đủ khi trình duyệt không hỗ trợ.
+/* Scroll reveal — IntersectionObserver trong hooks/useRevealOnScroll.js thêm class .is-in
+   khi phần tử vào viewport (chạy được trên mọi trình duyệt hiện đại, không chỉ Chromium).
+   Dùng animation + property `translate` tách riêng để không ghi đè transition hover
+   (transform/box-shadow) của chính phần tử đó.
    Lưu ý QA: chụp full-page bằng Playwright phải quét cuộn trang trước (tools/scripts/shoot-pages.js),
-   vì view() không trôi khi không cuộn thật → .reveal ngoài viewport sẽ chụp ra opacity: 0. */
-@keyframes reveal-in { from { opacity: 0; transform: translateY(18px); } }
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .reveal { animation: reveal-in linear both; animation-timeline: view(); animation-range: entry 0% entry 45%; }
-  }
+   vì phần tử ngoài viewport chưa có .is-in → sẽ chụp ra opacity: 0. */
+.reveal { opacity: 0; translate: 0 26px; }
+.reveal.is-in { animation: reveal-in .68s cubic-bezier(.16, 1, .3, 1) both; }
+@keyframes reveal-in {
+  from { opacity: 0; translate: 0 26px; }
+  to { opacity: 1; translate: 0 0; }
+}
+/* Người dùng giảm chuyển động: hiện thẳng nội dung, không chạy animation */
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; translate: none; }
+  .reveal.is-in { animation: none; }
+}
+
+/* Stagger cho lưới reveal — các phần tử cùng hàng vào viewport lệch nhịp nhẹ
+   (selectornth-child specificity cao hơn nên đè animation-delay 0s của .reveal.is-in) */
+@media (prefers-reduced-motion: no-preference) {
+  .category-tiles > .reveal.is-in:nth-child(2),
+  .standards-grid > .reveal.is-in:nth-child(2),
+  .t-grid > .reveal.is-in:nth-child(2),
+  .about-stats > .reveal.is-in:nth-child(2) { animation-delay: .07s; }
+  .category-tiles > .reveal.is-in:nth-child(3),
+  .standards-grid > .reveal.is-in:nth-child(3),
+  .t-grid > .reveal.is-in:nth-child(3),
+  .about-stats > .reveal.is-in:nth-child(3) { animation-delay: .14s; }
+  .category-tiles > .reveal.is-in:nth-child(4) { animation-delay: .21s; }
+  .category-tiles > .reveal.is-in:nth-child(5) { animation-delay: .28s; }
+  .category-tiles > .reveal.is-in:nth-child(6) { animation-delay: .35s; }
 }
 
 /* ===== Chuyển trang mượt (App.jsx bọc Routes trong .page-enter) ===== */
@@ -216,3 +242,10 @@ h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); letter-spa
 .route-loader { min-height: 50vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; color: var(--muted); font-weight: 600; }
 .route-loader-spinner { width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--line); border-top-color: var(--primary); animation: route-spin .8s linear infinite; }
 @keyframes route-spin { to { transform: rotate(360deg); } }
+
+/* ===== Scrollbar ấm — thumb olive-nâu trên rãnh kem ===== */
+html { scrollbar-color: var(--line-strong) var(--canvas); }
+::-webkit-scrollbar { width: 12px; }
+::-webkit-scrollbar-track { background: var(--canvas); }
+::-webkit-scrollbar-thumb { background: var(--line-strong); border: 3px solid var(--canvas); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }

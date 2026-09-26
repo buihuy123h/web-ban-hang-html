@@ -7,7 +7,7 @@
 const path = require('path');
 const PKG = require('./package.json');
 
-/* Chạy test (npm test / node --test) → dùng memory model + fixture, không đụng SQL Server. */
+/* Chạy test (npm test / node --test) → dùng memory model + fixture, không đụng PostgreSQL. */
 const IS_TEST = process.env.NODE_ENV === 'test' || process.env.npm_lifecycle_event === 'test';
 
 const ROOT_DIR = __dirname;

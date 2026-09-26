@@ -10,6 +10,7 @@ import Home from './pages/Home';
 import { CartProvider } from './context/CartContext';
 import { CatalogProvider } from './context/CatalogContext';
 import { HERO_IMAGE } from './data/productImages';
+import useRevealOnScroll from './hooks/useRevealOnScroll';
 import './App.css';
 
 /* Tách bundle theo route: Home giữ eager (trang landing cần LCP nhanh nhất),
@@ -55,6 +56,8 @@ function App() {
   /* Trợ lý AI chat: state duy nhất ở App — ContactFab mở, ChatWidget tự đóng
      (Esc / nút X / bấm vào món đồ gợi ý) và quay về ContactFab như cũ. */
   const [chatOpen, setChatOpen] = useState(false);
+  /* Scroll-reveal toàn cục: 1 observer duy nhất phục vụ mọi trang (kể cả lazy-load). */
+  useRevealOnScroll();
   return (
     <CartProvider>
       <CatalogProvider>

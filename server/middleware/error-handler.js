@@ -21,8 +21,13 @@ module.exports = function errorHandler(err, req, res, next) {
       .json({ error: 'Cơ sở dữ liệu tạm thời không sẵn sàng. Vui lòng thử lại sau.' });
   }
   if (!IS_TEST) console.error(`[error] request_id=${req.requestId || 'unknown'} code=${(err && (err.code || err.name)) || 'UNEXPECTED_ERROR'}`);
+  // Chỉ nhận status lỗi hợp lệ (integer 400–599) từ err — lỗi ngoài ý muốn mang status
+  // lạ (chuỗi, 2xx/3xx, 999…) phải về 500, không để làm sai chuẩn HTTP của response.
+  const status = Number.isInteger(err && err.status) && err.status >= 400 && err.status <= 599
+    ? err.status
+    : 500;
   if (String(req.originalUrl).startsWith('/api')) {
-    return res.status(err && err.status ? err.status : 500).set('Cache-Control', 'no-store')
+    return res.status(status).set('Cache-Control', 'no-store')
       .json({ error: 'Lỗi máy chủ. Vui lòng thử lại.' });
   }
   return res.status(500).send('Lỗi máy chủ.');

@@ -1,5 +1,8 @@
 'use strict';
 
+const fs = require('node:fs');
+const { IS_TEST } = require('../config');
+
 class ConfigError extends Error {
   constructor(message) {
     super(message);
@@ -8,13 +11,6 @@ class ConfigError extends Error {
     this.isConfigError = true;
   }
 }
-
-const parseBoolean = (name, value, fallback) => {
-  if (value == null || value === '') return fallback;
-  if (/^(true|1|yes)$/i.test(String(value))) return true;
-  if (/^(false|0|no)$/i.test(String(value))) return false;
-  throw new ConfigError(`${name} phải là boolean (true/false).`);
-};
 
 const parseInteger = (name, fallback, { min = 0, max = Number.MAX_SAFE_INTEGER } = {}) => {
   const raw = process.env[name];
@@ -25,105 +21,201 @@ const parseInteger = (name, fallback, { min = 0, max = Number.MAX_SAFE_INTEGER }
   return value;
 };
 
-const createConfig = () => {
-  const authMode = String(process.env.DB_AUTH_MODE || 'windows').trim().toLowerCase();
-  if (!['windows', 'sql'].includes(authMode)) throw new ConfigError('DB_AUTH_MODE chỉ nhận windows hoặc sql.');
-  const serverValue = String(process.env.DB_SERVER || '.\\SQLEXPRESS').trim();
-  const database = String(process.env.DB_NAME || 'DoCuQuangHuy').trim();
-  if (!serverValue) throw new ConfigError('DB_SERVER không được để trống.');
-  if (!database) throw new ConfigError('DB_NAME không được để trống.');
-
-  const encrypt = parseBoolean('DB_ENCRYPT', process.env.DB_ENCRYPT, true);
-  const trustServerCertificate = parseBoolean('DB_TRUST_SERVER_CERTIFICATE', process.env.DB_TRUST_SERVER_CERTIFICATE, authMode === 'windows');
-  const allowSelfSignedCi = parseBoolean('DB_ALLOW_SELF_SIGNED_CI', process.env.DB_ALLOW_SELF_SIGNED_CI, false);
-  const isCi = parseBoolean('CI', process.env.CI, false);
-  const isProduction = process.env.NODE_ENV === 'production';
-  if ((isProduction || isCi) && !encrypt) throw new ConfigError('DB_ENCRYPT phải là true trong production/CI.');
-  if (trustServerCertificate && (isProduction || isCi)) {
-    const permittedCiException = isCi && authMode === 'sql' && encrypt && allowSelfSignedCi;
-    if (!permittedCiException) throw new ConfigError('DB_TRUST_SERVER_CERTIFICATE phải là false; ngoại lệ CI cần DB_ALLOW_SELF_SIGNED_CI.');
-  }
-
-  const pool = {
-    max: parseInteger('DB_POOL_MAX', 10, { min: 1, max: 100 }),
-    min: parseInteger('DB_POOL_MIN', 0, { min: 0, max: 100 }),
-    idleTimeoutMillis: parseInteger('DB_POOL_IDLE_TIMEOUT_MS', 30_000, { min: 1000, max: 300_000 }),
-  };
-  if (pool.min > pool.max) throw new ConfigError('DB_POOL_MIN không được lớn hơn DB_POOL_MAX.');
-  const common = {
-    server: serverValue,
-    database,
-    connectionTimeout: parseInteger('DB_CONNECT_TIMEOUT_MS', 10_000, { min: 1000, max: 120_000 }),
-    requestTimeout: parseInteger('DB_REQUEST_TIMEOUT_MS', 15_000, { min: 1000, max: 300_000 }),
-    pool,
-  };
-
-  if (authMode === 'sql') {
-    const user = String(process.env.DB_USER || '').trim();
-    const password = String(process.env.DB_PASSWORD || '');
-    if (!user) throw new ConfigError('DB_USER không được để trống khi DB_AUTH_MODE=sql.');
-    if (!password) throw new ConfigError('DB_PASSWORD không được để trống khi DB_AUTH_MODE=sql.');
-    if (parseBoolean('DB_TRUSTED_CONNECTION', process.env.DB_TRUSTED_CONNECTION, false)) {
-      throw new ConfigError('DB_TRUSTED_CONNECTION không được là true khi DB_AUTH_MODE=sql.');
-    }
-    const driver = process.env.DB_DRIVER == null ? '' : String(process.env.DB_DRIVER).trim();
-    if (driver && !['tedious', 'mssql'].includes(driver)) throw new ConfigError('DB_DRIVER không hợp lệ với DB_AUTH_MODE=sql.');
-    return {
-      ...common, authMode, user, password,
-      port: parseInteger('DB_PORT', 1433, { min: 1, max: 65535 }),
-      options: { encrypt, trustServerCertificate, enableArithAbort: true },
-    };
-  }
-
-  const driver = String(process.env.DB_DRIVER || 'msnodesqlv8').trim();
-  if (driver !== 'msnodesqlv8') throw new ConfigError('Windows Authentication yêu cầu DB_DRIVER=msnodesqlv8.');
-  if (!parseBoolean('DB_TRUSTED_CONNECTION', process.env.DB_TRUSTED_CONNECTION, true)) {
-    throw new ConfigError('Windows Authentication yêu cầu DB_TRUSTED_CONNECTION=true.');
-  }
-  if (process.env.DB_USER || process.env.DB_PASSWORD) throw new ConfigError('DB_USER/DB_PASSWORD không được dùng khi DB_AUTH_MODE=windows.');
-  const separator = serverValue.lastIndexOf('\\');
-  const server = separator > 0 ? serverValue.slice(0, separator) : serverValue;
-  const instanceName = separator > 0 ? serverValue.slice(separator + 1) : undefined;
-  const port = process.env.DB_PORT ? parseInteger('DB_PORT', 1433, { min: 1, max: 65535 }) : undefined;
-  const config = {
-    ...common, authMode, server, ...(port ? { port } : {}),
-    driver: String(process.env.DB_ODBC_DRIVER || 'ODBC Driver 18 for SQL Server').trim(),
-    options: {
-      trustedConnection: true, ...(instanceName && !port ? { instanceName } : {}),
-      encrypt, trustServerCertificate, enableArithAbort: true,
-    },
-  };
-  config.beforeConnect = (connection) => {
-    if (trustServerCertificate && !/TrustServerCertificate=/i.test(connection.conn_str || '')) {
-      connection.conn_str = `${connection.conn_str};TrustServerCertificate=Yes`;
-    }
-  };
-  return config;
+const isLoopbackHost = (host) => {
+  const value = String(host || '').toLowerCase();
+  return value === 'localhost' || value === '::1' || value.startsWith('127.');
 };
 
-const createDatabase = ({ sqlModule, config } = {}) => {
-  const resolved = config || createConfig();
-  const authMode = resolved.authMode || 'windows';
-  const driverConfig = { ...resolved };
-  delete driverConfig.authMode;
-  const sql = sqlModule || (authMode === 'sql' ? require('mssql') : require('mssql/msnodesqlv8'));
-  const pool = new sql.ConnectionPool(driverConfig);
-  let ready = false;
-  pool.on('error', () => { ready = false; });
+/* Mã lỗi an toàn cho log: chỉ giữ code/name khớp pattern (như index.js), còn lại → DB_ERROR
+ * — không bao giờ đưa message lỗi (có thể chứa credential) vào log. */
+const SAFE_ERROR_CODE = /^[A-Z0-9_.-]{1,64}$/i;
+const sanitizeErrorCode = (error) => {
+  const candidate = String((error && (error.code || error.name)) || '');
+  return SAFE_ERROR_CODE.test(candidate) ? candidate : 'DB_ERROR';
+};
+
+
+const parseDatabaseUrl = (raw, envName = 'DATABASE_URL') => {
+  let url;
+  try { url = new URL(raw); } catch { throw new ConfigError(`${envName} không phải URL PostgreSQL hợp lệ.`); }
+  if (!/^postgres(ql)?:$/.test(url.protocol)) {
+    throw new ConfigError(`${envName} phải bắt đầu bằng postgres:// hoặc postgresql://.`);
+  }
+  if (!url.hostname || !url.username || !url.pathname || url.pathname === '/') {
+    throw new ConfigError(`${envName} phải có hostname, username và database.`);
+  }
+  let database;
+  let user;
+  let password;
+  try {
+    database = decodeURIComponent(url.pathname.slice(1));
+    user = decodeURIComponent(url.username);
+    password = decodeURIComponent(url.password);
+  } catch {
+    throw new ConfigError(`${envName} chứa percent-encoding không hợp lệ.`);
+  }
+  if (!database || database.includes('/')) throw new ConfigError(`${envName} có tên database không hợp lệ.`);
+  if (!isLoopbackHost(url.hostname) && !password) {
+    throw new ConfigError(`${envName} phải có mật khẩu khi kết nối host từ xa.`);
+  }
+  const defaultSslMode = isLoopbackHost(url.hostname) ? 'disable' : '';
+  const sslMode = String(url.searchParams.get('sslmode') || defaultSslMode).toLowerCase();
+  if (!['disable', 'require', 'verify-ca', 'verify-full'].includes(sslMode)) {
+    throw new ConfigError(`${envName} phải khai báo sslmode=require, verify-ca hoặc verify-full cho host từ xa.`);
+  }
   return {
-    sql, pool,
+    host: url.hostname,
+    port: url.port ? Number(url.port) : 5432,
+    database,
+    user,
+    password,
+    sslMode,
+  };
+};
+
+const createConfig = ({ urlEnv = 'DATABASE_URL' } = {}) => {
+  const rawUrl = String(process.env[urlEnv] || '').trim();
+  if (!rawUrl) throw new ConfigError(`${urlEnv} không được để trống.`);
+  const base = parseDatabaseUrl(rawUrl, urlEnv);
+  const production = process.env.NODE_ENV === 'production';
+  if ((production || !isLoopbackHost(base.host)) && base.sslMode === 'disable') {
+    throw new ConfigError(`${urlEnv} phải bật TLS bằng sslmode=require hoặc verify-full.`);
+  }
+
+  let ssl;
+  if (base.sslMode !== 'disable') {
+    const caPath = String(process.env.PGSSL_CA || '').trim();
+    if (base.sslMode === 'verify-ca' || base.sslMode === 'verify-full') {
+      if (!caPath) throw new ConfigError('PGSSL_CA bắt buộc khi sslmode=verify-ca/verify-full.');
+      try { ssl = { ca: fs.readFileSync(caPath, 'utf8'), rejectUnauthorized: true }; }
+      catch { throw new ConfigError('PGSSL_CA không đọc được file CA.'); }
+    } else {
+      ssl = { rejectUnauthorized: false };
+    }
+  }
+
+  /* Cấu hình tự kết nối lại khi mất kết nối DB runtime (fail-fast khi env sai). */
+  const reconnectMinMs = parseInteger('DB_RECONNECT_MIN_MS', 2000, { min: 100, max: 60000 });
+  const reconnectMaxMs = parseInteger('DB_RECONNECT_MAX_MS', 30000, { min: 1000, max: 600000 });
+  if (reconnectMinMs > reconnectMaxMs) {
+    throw new ConfigError('DB_RECONNECT_MIN_MS phải nhỏ hơn hoặc bằng DB_RECONNECT_MAX_MS.');
+  }
+
+  return {
+    host: base.host,
+    port: base.port,
+    database: base.database,
+    user: base.user,
+    password: base.password,
+    ...(ssl ? { ssl } : {}),
+    application_name: 'do-cu-quang-huy',
+    max: parseInteger('PGPOOL_MAX', 10, { min: 1, max: 100 }),
+    idleTimeoutMillis: parseInteger('PGPOOL_IDLE_TIMEOUT_MS', 30000, { min: 1000, max: 300000 }),
+    connectionTimeoutMillis: parseInteger('PG_CONNECT_TIMEOUT_MS', 10000, { min: 1000, max: 120000 }),
+    query_timeout: parseInteger('PG_QUERY_TIMEOUT_MS', 15000, { min: 1000, max: 300000 }),
+    reconnectMinMs,
+    reconnectMaxMs,
+  };
+};
+
+const createDatabase = ({ pgModule, config, reconnect, log } = {}) => {
+  const resolved = config || createConfig();
+  const pg = pgModule || require('pg');
+  /* 2 field cấu hình reconnect không phải option của pg.Pool → tách riêng trước khi dựng pool. */
+  const { reconnectMinMs, reconnectMaxMs, ...poolOptions } = resolved;
+  /* Reconnect mặc định TẮT khi chạy test (IS_TEST) — test muốn chạy phải tiêm option rõ ràng. */
+  const reconnectOption = reconnect && typeof reconnect === 'object' ? reconnect : {};
+  const reconnectConf = {
+    enabled: typeof reconnectOption.enabled === 'boolean' ? reconnectOption.enabled : !IS_TEST,
+    minMs: Number.isFinite(reconnectOption.minMs) ? reconnectOption.minMs
+      : (Number.isFinite(reconnectMinMs) ? reconnectMinMs : 2000),
+    maxMs: Number.isFinite(reconnectOption.maxMs) ? reconnectOption.maxMs
+      : (Number.isFinite(reconnectMaxMs) ? reconnectMaxMs : 30000),
+  };
+  if (reconnectConf.minMs > reconnectConf.maxMs) {
+    throw new ConfigError('DB_RECONNECT_MIN_MS phải nhỏ hơn hoặc bằng DB_RECONNECT_MAX_MS.');
+  }
+  /* Hàm log tiêm được (test bắt nội dung) — mặc định console; mọi dòng 1 dòng key=value, không secret. */
+  const emit = typeof log === 'function' ? log : (message) => console.error(message);
+
+  const pool = new pg.Pool(poolOptions);
+  let ready = false;
+  let closed = false;
+  let probeTimer = null; // timer probe đang hẹn — duy nhất 1 chuỗi probe tồn tại tại một thời điểm
+  let probing = false;   // probe đang chạy (đang await pool.query)
+  let attempt = 0;       // số lần probe đã thử kể từ lần pool lỗi gần nhất
+
+  /* Hẹn probe kế tiếp — no-op nếu reconnect tắt / đã close / đã có chuỗi probe đang chờ. */
+  const scheduleProbe = (delayMs) => {
+    if (!reconnectConf.enabled || closed || probing || probeTimer !== null) return;
+    const timer = setTimeout(() => {
+      probeTimer = null;
+      runProbe().catch(() => { /* phòng hờ: không bao giờ để unhandled rejection */ });
+    }, delayMs);
+    timer.unref?.(); // không giữ process sống chỉ vì probe đang chờ
+    probeTimer = timer;
+  };
+
+  /* Probe kết nối lại bằng đúng query SELECT 1 AS ready:
+   * - thành công → ready=true, reset backoff, log reconnect_ok;
+   * - thất bại → log reconnect_fail + hẹn tiếp với delay luỹ tiến min(minMs * 2^n, maxMs). */
+  const runProbe = async () => {
+    if (closed) return;
+    probing = true;
+    const currentAttempt = attempt + 1;
+    attempt = currentAttempt;
+    let queryError = null;
+    try {
+      await pool.query('SELECT 1 AS ready');
+    } catch (error) {
+      queryError = error;
+    }
+    probing = false;
+    if (closed) return; // close() trong lúc probe đang chờ → không đổi state, không log thêm
+    if (queryError) {
+      const nextDelayMs = Math.min(reconnectConf.minMs * 2 ** currentAttempt, reconnectConf.maxMs);
+      emit(`[database] reconnect_fail attempt=${currentAttempt} code=${sanitizeErrorCode(queryError)} next_delay_ms=${nextDelayMs}`);
+      scheduleProbe(nextDelayMs);
+      return;
+    }
+    ready = true;
+    attempt = 0; // reset backoff: lần mất kết nối kế tiếp bắt đầu lại từ minMs
+    emit(`[database] reconnect_ok attempt=${currentAttempt}`);
+  };
+
+  pool.on('error', (error) => {
+    ready = false; // hạ readiness ngay lập tức
+    try {
+      emit(`[database] pool_error code=${sanitizeErrorCode(error)}`);
+      scheduleProbe(reconnectConf.minMs); // probe đầu tiên sau minMs (no-op nếu probe đã hẹn/chạy)
+    } catch { /* hàm log tiêm ngoài tự ném lỗi → bỏ qua, không làm sập process */ }
+  });
+  pool.on('connect', () => { ready = true; });
+
+  return {
+    pool, pg,
     async connect() {
-      await pool.connect();
-      await pool.request().query('SELECT 1 AS Ready');
+      await pool.query('SELECT 1 AS ready');
       ready = true;
       return pool;
     },
     async close() {
+      closed = true; // chặn probe/log mới sau close
       ready = false;
-      if (pool.connected || pool.connecting) await pool.close();
+      if (probeTimer !== null) {
+        clearTimeout(probeTimer); // clear timer TRƯỚC pool.end()
+        probeTimer = null;
+      }
+      await pool.end();
     },
-    isReady() { return ready && pool.connected !== false; },
+    isReady() { return ready; },
+    /* Đo độ trễ 1 vòng query SELECT 1 (ms, float) — dùng cho deep health; lỗi query → ném lỗi. */
+    async ping() {
+      const startedAt = process.hrtime.bigint();
+      await pool.query('SELECT 1 AS ready');
+      return Number(process.hrtime.bigint() - startedAt) / 1e6;
+    },
   };
 };
 
-module.exports = { ConfigError, createConfig, createDatabase, parseBoolean, parseInteger };
+module.exports = { ConfigError, createConfig, createDatabase, parseDatabaseUrl, parseInteger };

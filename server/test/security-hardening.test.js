@@ -20,7 +20,7 @@ const express = require('express');
 process.env.CORS_ORIGIN = 'https://cho-phep.example';
 
 const { app } = require('../app.js');
-const { parseTrustProxy } = require('../app.js');
+const { parseTrustProxy, parsePort, LISTEN_HOST } = require('../app.js');
 const { parseOrigins } = require('../middleware/cors');
 const { createRateLimiter } = require('../middleware/rate-limit');
 
@@ -102,6 +102,48 @@ test('Config proxy và CORS sai fail-fast', () => {
   }
 });
 
+test('PORT runtime được ràng buộc và host lắng nghe cố định cho Render', async () => {
+  for (const value of ['0', '-1', '65536', '3000.5', 'abc']) {
+    assert.throws(() => parsePort(value), /PORT/);
+  }
+  assert.equal(parsePort(''), 3000);
+  assert.equal(parsePort('10000'), 10000);
+  assert.equal(parsePort(0, { allowZero: true }), 0);
+  assert.equal(LISTEN_HOST, '0.0.0.0');
+
+  const script = `
+    process.env.NODE_ENV = 'test';
+    const { startServer } = require('./app');
+    const repo = { listCategories: async()=>[], listProducts: async()=>[], getProduct: async()=>null };
+    const orderRepository = { createOrder: async()=>({}) };
+    (async () => {
+      const server = await startServer(0, { catalogRepository: repo, orderRepository, isReady: () => true });
+      console.log('QA_BIND=' + JSON.stringify(server.address()));
+      await new Promise((resolve) => server.close(resolve));
+    })().catch((error) => { console.error('QA_CHILD=' + error.name); process.exit(2); });
+  `;
+  const result = spawnSync(process.execPath, ['-e', script], {
+    cwd: path.resolve(__dirname, '..'), encoding: 'utf8', timeout: 5000,
+  });
+  const output = `${result.stdout || ''}${result.stderr || ''}`;
+  assert.equal(result.status, 0, output);
+  const match = output.match(/QA_BIND=(\{[^\r\n]+\})/);
+  assert.ok(match, output);
+  const address = JSON.parse(match[1]);
+  assert.equal(address.address, '0.0.0.0');
+  assert.ok(address.port > 0);
+});
+
+test('Docker final image giữ chat knowledge nhưng không đóng gói catalog fixture', () => {
+  const dockerfile = fs.readFileSync(path.resolve(__dirname, '..', 'Dockerfile'), 'utf8');
+  assert.match(
+    dockerfile,
+    /^COPY --chown=node:node data\/chat-knowledge\.json \.\/data\/chat-knowledge\.json$/m,
+  );
+  assert.doesNotMatch(dockerfile, /^COPY --chown=node:node data \.\/data$/m);
+  assert.doesNotMatch(dockerfile, /data\/products\.json/);
+});
+
 test('Entrypoint fail-fast sạch cho CORS, proxy và chat rate sai', () => {
   const cases = [
     [{ CORS_ORIGIN: '*' }, /CORS_ORIGIN/],
@@ -111,9 +153,8 @@ test('Entrypoint fail-fast sạch cho CORS, proxy và chat rate sai', () => {
   for (const [overrides, expected] of cases) {
     const childEnv = {
       ...process.env,
-      NODE_ENV: 'production', CI: 'false', PORT: '0',
+      NODE_ENV: 'production', CI: 'false', PORT: '10000',
       CORS_ORIGIN: 'https://shop.example', TRUST_PROXY: '0', CHAT_RATE_MAX: '12',
-      DB_AUTH_MODE: 'invalid-after-config-check',
       ...overrides,
     };
     delete childEnv.npm_lifecycle_event;
@@ -336,4 +377,49 @@ test('HTML (nếu đã build client) cũng mang CSP', async () => {
   const res = await rawReq('GET', '/');
   assert.equal(res.status, 200);
   assert.match(String(res.headers['content-security-policy'] || ''), /default-src 'self'/);
+});
+
+
+/* ===== Task 2026-09-25 — tăng cường bảo mật chiều sâu (AC1–AC5) ===== */
+
+test('CSP siết img-src chỉ còn self/data + connect-src self; có CORP và Permissions-Policy mở rộng', async () => {
+  const res = await rawReq('GET', '/api/health');
+  const csp = String(res.headers['content-security-policy'] || '');
+  const imgDirective = (csp.match(/img-src ([^;]+)/) || [])[1] || '';
+  assert.equal(imgDirective.trim(), "'self' data:", 'img-src chỉ được phép self + data: (không https: tùy ý)');
+  assert.match(csp, /connect-src 'self'/, 'connect-src phải khai báo tường minh self');
+  assert.equal(res.headers['cross-origin-resource-policy'], 'same-origin', 'phải có CORP same-origin');
+  const pp = String(res.headers['permissions-policy'] || '');
+  for (const api of ['camera', 'microphone', 'geolocation', 'payment', 'usb', 'bluetooth', 'serial', 'idle-detection']) {
+    assert.match(pp, new RegExp(`(^|, )${api}=\\(\\)`), `Permissions-Policy phải tắt ${api}`);
+  }
+});
+
+test('Error handler chỉ nhận status 400–599 từ lỗi; status lạ (chuỗi/200/999) về 500, không lộ chi tiết', async () => {
+  const errorHandler = require('../middleware/error-handler');
+  const mini = express();
+  const boom = (status) => (_req, _res, next) => next(Object.assign(new Error('CHI_TIET_LOI_BEN_TRONG'), { status }));
+  mini.get('/api/str', boom('ENOENT'));
+  mini.get('/api/ok', boom(200));
+  mini.get('/api/999', boom(999));
+  mini.get('/api/real', boom(409));
+  mini.use(errorHandler);
+  const miniServer = await new Promise((resolve) => {
+    const listener = mini.listen(0, '127.0.0.1', () => resolve(listener));
+  });
+  const url = `http://127.0.0.1:${miniServer.address().port}`;
+  try {
+    const cases = [['/api/str', 500], ['/api/ok', 500], ['/api/999', 500], ['/api/real', 409]];
+    for (const [casePath, expected] of cases) {
+      const res = await fetch(url + casePath);
+      assert.equal(res.status, expected, casePath);
+      const body = await res.json();
+      assert.equal(body.error, 'Lỗi máy chủ. Vui lòng thử lại.', casePath);
+      assert.match(String(res.headers.get('cache-control') || ''), /no-store/, casePath);
+    }
+    const leaked = await (await fetch(`${url}/api/999`)).text();
+    assert.doesNotMatch(leaked, /CHI_TIET_LOI_BEN_TRONG/, 'không lộ message lỗi nội bộ');
+  } finally {
+    await new Promise((resolve) => miniServer.close(resolve));
+  }
 });

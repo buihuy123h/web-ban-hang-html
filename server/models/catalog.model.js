@@ -1,9 +1,11 @@
 'use strict';
 
-/* MODEL — danh mục + sản phẩm đọc từ SQL Server (dbo.Categories, dbo.Products,
- * ảnh/spec gộp qua FOR JSON PATH). Tách từ lib/catalog-repository.js khi chuẩn hoá
- * cấu trúc MVC; logic giữ nguyên 100%. Luôn bind input (@category/@search/@id…)
- * — không nối giá trị người dùng vào chuỗi SQL. */
+/* MODEL — danh mục + sản phẩm đọc từ PostgreSQL (bảng categories, products; ảnh/spec
+ * gộp sẵn bằng json_agg nên 1 sản phẩm = 1 dòng). Tên cột được alias về PascalCase
+ * ("ProductId"…) để mapProduct và hợp đồng API giữ nguyên như bản SQL Server.
+ * Input người dùng (cat/q/id/limit) LUÔN đi qua placeholder $1, $2… — không nối chuỗi.
+ * Tìm kiếm dùng unaccent + ILIKE để khớp cả từ khoá không dấu (tương đương collation
+ * Vietnamese_CI_AI cũ). */
 
 const toNumber = (value) => (value == null ? null : Number(value));
 const parseJsonArray = (value) => {
@@ -34,61 +36,59 @@ const mapProduct = (row) => ({
 });
 
 const PRODUCT_SELECT = `
-SELECT p.ProductId, p.Name, p.CategoryKey, c.Label AS CategoryLabel,
-       p.Price, p.OldPrice, p.Rating, p.Sold, p.Badge,
-       p.[Description] AS [Description], p.ImageUrl,
-       COALESCE((SELECT pi.Url AS [url] FROM dbo.ProductImages AS pi
-                 WHERE pi.ProductId = p.ProductId ORDER BY pi.SortOrder FOR JSON PATH), N'[]') AS ImagesJson,
-       COALESCE((SELECT ps.SpecText AS [text] FROM dbo.ProductSpecs AS ps
-                 WHERE ps.ProductId = p.ProductId ORDER BY ps.SortOrder FOR JSON PATH), N'[]') AS SpecsJson
-FROM dbo.Products AS p
-INNER JOIN dbo.Categories AS c ON c.CategoryKey = p.CategoryKey`;
+SELECT p.product_id AS "ProductId", p.name AS "Name", p.category_key AS "CategoryKey",
+       c.label AS "CategoryLabel",
+       p.price AS "Price", p.old_price AS "OldPrice", p.rating AS "Rating", p.sold AS "Sold",
+       p.badge AS "Badge", p.description AS "Description", p.image_url AS "ImageUrl",
+       COALESCE((SELECT json_agg(json_build_object('url', pi.url) ORDER BY pi.sort_order)
+                 FROM app.product_images AS pi WHERE pi.product_id = p.product_id), '[]'::json) AS "ImagesJson",
+       COALESCE((SELECT json_agg(json_build_object('text', ps.spec_text) ORDER BY ps.sort_order)
+                 FROM app.product_specs AS ps WHERE ps.product_id = p.product_id), '[]'::json) AS "SpecsJson"
+FROM app.products AS p
+INNER JOIN app.categories AS c ON c.category_key = p.category_key`;
 
-const createCatalogRepository = ({ pool, sql }) => ({
+const createCatalogRepository = ({ pool }) => ({
   async listCategories() {
-    const result = await pool.request().query(`
-      SELECT CategoryKey AS [key], Label AS label, ImageUrl AS [image]
-      FROM dbo.Categories
-      ORDER BY CategoryKey ASC;`);
-    return result.recordset.map((row) => ({ key: row.key, label: row.label, image: row.image || null }));
+    const result = await pool.query('SELECT category_key AS "key", label AS "label", image_url AS "image" FROM app.categories ORDER BY category_key ASC;');
+    return result.rows.map((row) => ({ key: row.key, label: row.label, image: row.image || null }));
   },
 
   async listProducts({ cat, q, sort } = {}) {
-    const request = pool.request();
+    const values = [];
     const where = [];
     if (cat && cat !== 'all') {
-      request.input('category', sql.NVarChar(50), String(cat));
-      where.push('p.CategoryKey = @category');
+      values.push(String(cat));
+      where.push(`p.category_key = $${values.length}`);
     }
     const query = String(q || '').trim();
     if (query) {
-      request.input('search', sql.NVarChar(200), `%${query}%`);
-      where.push("p.Name COLLATE Vietnamese_100_CI_AI LIKE @search COLLATE Vietnamese_100_CI_AI");
+      values.push(`%${query}%`);
+      where.push(`extensions.unaccent(p.name) ILIKE extensions.unaccent($${values.length})`);
     }
     const orderBy = {
-      'price-asc': 'p.Price ASC, p.ProductId ASC',
-      'price-desc': 'p.Price DESC, p.ProductId ASC',
-      rating: 'p.Rating DESC, p.ProductId ASC',
-    }[sort] || 'p.Sold DESC, p.ProductId ASC';
-    const result = await request.query(`${PRODUCT_SELECT}\n${where.length ? `WHERE ${where.join(' AND ')}` : ''}\nORDER BY ${orderBy};`);
-    return result.recordset.map(mapProduct);
+      'price-asc': 'p.price ASC, p.product_id ASC',
+      'price-desc': 'p.price DESC, p.product_id ASC',
+      rating: 'p.rating DESC, p.product_id ASC',
+    }[sort] || 'p.sold DESC, p.product_id ASC';
+    const result = await pool.query(
+      `${PRODUCT_SELECT}\n${where.length ? `WHERE ${where.join(' AND ')}` : ''}\nORDER BY ${orderBy};`,
+      values,
+    );
+    return result.rows.map(mapProduct);
   },
 
   async getProductById(id) {
-    const result = await pool.request()
-      .input('id', sql.Int, Number(id))
-      .query(`${PRODUCT_SELECT}\nWHERE p.ProductId = @id;`);
-    return result.recordset[0] ? mapProduct(result.recordset[0]) : null;
+    const result = await pool.query(`${PRODUCT_SELECT}\nWHERE p.product_id = $1;`, [Number(id)]);
+    return result.rows[0] ? mapProduct(result.rows[0]) : null;
   },
 
   async listRelatedProducts(categoryKey, excludedId, limit = 4) {
     const safeLimit = Math.min(20, Math.max(1, Number(limit) || 4));
-    const result = await pool.request()
-      .input('category', sql.NVarChar(50), categoryKey)
-      .input('excludedId', sql.Int, Number(excludedId))
-      .input('limit', sql.Int, safeLimit)
-      .query(`${PRODUCT_SELECT}\nWHERE p.CategoryKey = @category AND p.ProductId <> @excludedId\nORDER BY p.Sold DESC, p.ProductId ASC\nOFFSET 0 ROWS FETCH NEXT @limit ROWS ONLY;`);
-    return result.recordset.map(mapProduct);
+    const result = await pool.query(
+      `${PRODUCT_SELECT}\nWHERE p.category_key = $1 AND p.product_id <> $2\nORDER BY p.sold DESC, p.product_id ASC\nLIMIT $3;`,
+      [categoryKey, Number(excludedId), safeLimit],
+    );
+    return result.rows.map(mapProduct);
   },
 });
 

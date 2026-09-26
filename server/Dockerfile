@@ -7,11 +7,11 @@ FROM node:22-bookworm-slim AS dependencies
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-# Container production chỉ hỗ trợ DB_AUTH_MODE=sql qua mssql/tedious. Bỏ install script
-# của adapter ODBC Windows để image Linux không cần compiler/ODBC native không sử dụng.
+# pg (node-postgres) là driver thuần JS — không cần native build/ODBC. Giữ --ignore-scripts
+# để chặn mọi install script của dependency trong image production.
 RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
 
-# Cho phép CI/QA kiểm thử đúng môi trường Linux mà không cần SQL Server thật:
+# Cho phép CI/QA kiểm thử đúng môi trường Linux mà không cần PostgreSQL thật:
 #   docker build --target test -t do-cu-quang-huy-api:test .
 FROM dependencies AS test
 
@@ -30,7 +30,7 @@ COPY --from=dependencies --chown=node:node /app/node_modules ./node_modules
 COPY --chown=node:node package.json package-lock.json ./
 COPY --chown=node:node app.js config.js index.js ./
 COPY --chown=node:node controllers ./controllers
-COPY --chown=node:node data ./data
+COPY --chown=node:node data/chat-knowledge.json ./data/chat-knowledge.json
 COPY --chown=node:node lib ./lib
 COPY --chown=node:node middleware ./middleware
 COPY --chown=node:node models ./models

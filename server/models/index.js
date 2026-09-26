@@ -2,11 +2,11 @@
 
 /* MODELS — điểm hội tụ dữ liệu của backend.
  * - Controller luôn lấy repository qua getServices() → đổi nguồn dữ liệu
- *   (SQL ↔ memory) không phải sửa route/controller.
+ *   (PostgreSQL ↔ memory) không phải sửa route/controller.
  * - Production: app.js gọi configureServices(...) với repository SQL sau khi
  *   kết nối DB (xem index.js / app.js).
  * - Test: nạp ngay memory model dựng từ data/products.json (fixture) để cả
- *   suite chạy không cần SQL Server. */
+ *   suite chạy không cần PostgreSQL. */
 
 const fs = require('fs');
 const { IS_TEST, PRODUCTS_FILE } = require('../config');
@@ -20,7 +20,7 @@ const readJson = (file, fallback) => {
   }
 };
 
-/* JSON chỉ là fixture cho test/seed — production đọc catalog từ SQL Server. */
+/* JSON chỉ là fixture cho test/seed — production đọc catalog từ PostgreSQL (Supabase). */
 const testCatalog = IS_TEST ? readJson(PRODUCTS_FILE, { categories: [], products: [] }) : { categories: [], products: [] };
 const categories = Array.isArray(testCatalog.categories) ? testCatalog.categories : [];
 const products = Array.isArray(testCatalog.products) ? testCatalog.products : [];
@@ -33,6 +33,8 @@ for (const product of products) {
 
 let services = IS_TEST ? createMemoryRepositories({ categories, products }) : null;
 let readiness = () => Boolean(services);
+let poolStats = null;    // hàm trả {total, idle, waiting} | null — chỉ production tiêm (health check)
+let databasePing = null; // async hàm trả ms — chỉ production tiêm (deep health)
 
 const configureServices = (nextServices) => {
   if (!nextServices || !nextServices.catalogRepository || !nextServices.orderRepository) {
@@ -40,9 +42,24 @@ const configureServices = (nextServices) => {
   }
   services = nextServices;
   readiness = typeof nextServices.isReady === 'function' ? nextServices.isReady : () => true;
+  /* 2 field optional cho observability — object cũ không có vẫn hợp lệ như trước (additive). */
+  poolStats = typeof nextServices.poolStats === 'function' ? nextServices.poolStats : null;
+  databasePing = typeof nextServices.pingDatabase === 'function' ? nextServices.pingDatabase : null;
 };
 
 const getServices = () => services;
 const isReady = () => readiness();
 
-module.exports = { configureServices, getServices, isReady, products, categories };
+/* Trạng thái pool cho /api/health — KHÔNG ném lỗi (hàm tiêm ném lỗi → trả null). */
+const getPoolStats = () => {
+  try {
+    return typeof poolStats === 'function' ? poolStats() : null;
+  } catch {
+    return null;
+  }
+};
+
+/* Hàm ping DB cho deep health (?deep=1) — trả hàm hoặc null (memory/test mode). */
+const getDatabasePing = () => databasePing;
+
+module.exports = { configureServices, getServices, isReady, getPoolStats, getDatabasePing, products, categories };

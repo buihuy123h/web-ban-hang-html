@@ -21,7 +21,7 @@ process.env.CORS_ORIGIN = 'https://cho-phep.example';
 
 const { app } = require('../app.js');
 const { parseTrustProxy, parsePort, LISTEN_HOST } = require('../app.js');
-const { parseOrigins } = require('../middleware/cors');
+const { parseOrigins, matchOrigin } = require('../middleware/cors');
 const { createRateLimiter } = require('../middleware/rate-limit');
 
 let server;
@@ -94,6 +94,20 @@ test('Config proxy và CORS sai fail-fast', () => {
     process.env.NODE_ENV = 'production';
     process.env.CORS_ORIGIN = '*';
     assert.throws(parseOrigins, /production/);
+    // Wildcard subdomain: https://*.vercel.app chấp nhận mọi con trực tiếp 1 label.
+    process.env.NODE_ENV = 'production';
+    process.env.CORS_ORIGIN = 'https://*.vercel.app,https://shop.example';
+    assert.deepEqual(parseOrigins(), ['https://*.vercel.app', 'https://shop.example']);
+    assert.equal(matchOrigin('https://*.vercel.app', 'https://web-ban-hang-html-2umy.vercel.app'), true);
+    assert.equal(matchOrigin('https://*.vercel.app', 'https://docuquanghuy-huy-6c9e.vercel.app'), true);
+    assert.equal(matchOrigin('https://*.vercel.app', 'https://shop.example'), false); // sai đuôi domain
+    assert.equal(matchOrigin('https://*.vercel.app', 'https://a.b.vercel.app'), false); // chặn sub-subdomain
+    assert.equal(matchOrigin('https://*.vercel.app', 'http://x.vercel.app'), false); // sai scheme
+    assert.equal(matchOrigin('https://shop.example', 'https://shop.example'), true); // exact như cũ
+    assert.equal(matchOrigin('https://*.vercel.app', 'https://evil-vercel.app'), false); // đuôi giả mạo
+    // wildcard sai vị trí → chối cấu hình
+    process.env.CORS_ORIGIN = 'https://a.*.vercel.app';
+    assert.throws(parseOrigins, /wildcard/);
   } finally {
     if (previous == null) delete process.env.CORS_ORIGIN;
     else process.env.CORS_ORIGIN = previous;

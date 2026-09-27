@@ -9,6 +9,8 @@ const categoryRoutes = require('./categories.routes');
 const productRoutes = require('./products.routes');
 const orderRoutes = require('./orders.routes');
 const chatRoutes = require('./chat.routes');
+const adminRoutes = require('./admin.routes');
+const postsRoutes = require('./posts.routes');
 
 const apiRouter = express.Router();
 apiRouter.use(healthRoutes);
@@ -16,5 +18,7 @@ apiRouter.use(categoryRoutes);
 apiRouter.use(productRoutes);
 apiRouter.use(orderRoutes);
 apiRouter.use(chatRoutes);
+apiRouter.use(adminRoutes);
+apiRouter.use(postsRoutes);
 
 module.exports = apiRouter;

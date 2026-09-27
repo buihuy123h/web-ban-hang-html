@@ -1,0 +1,20 @@
+import { request } from './client';
+
+const options = (method, body) => ({ method, body: JSON.stringify(body) });
+export const adminLogin = (username, password) => request('/admin/login', options('POST', { username, password }));
+export const adminLogout = () => request('/admin/logout', { method: 'POST' });
+export const adminMe = () => request('/admin/me');
+export const getAdminProducts = () => request('/admin/products');
+export const createAdminProduct = (data) => request('/admin/products', options('POST', data));
+export const updateAdminProduct = (id, data) => request(`/admin/products/${id}`, options('PUT', data));
+export const deleteAdminProduct = (id) => request(`/admin/products/${id}`, { method: 'DELETE' });
+export const uploadAdminImage = (dataUrl) => request('/admin/upload', { method: 'POST', body: JSON.stringify({ dataUrl }) });
+export const getAdminPosts = () => request('/admin/posts');
+export const createAdminPost = (data) => request('/admin/posts', options('POST', data));
+export const updateAdminPost = (id, data) => request(`/admin/posts/${id}`, options('PUT', data));
+export const deleteAdminPost = (id) => request(`/admin/posts/${id}`, { method: 'DELETE' });
+export const getAdminOrders = () => request('/admin/orders');
+export const getAdminOrder = (id) => request(`/admin/orders/${id}`);
+export const updateAdminOrderStatus = (id, status) => request(`/admin/orders/${id}/status`, options('PATCH', { status }));
+export const getStoreSettings = () => request('/admin/store');
+export const updateStoreSettings = (data) => request('/admin/store', options('PUT', data));

@@ -1,0 +1,13 @@
+'use strict';
+const express = require('express');
+const c = require('../controllers/admin.controller');
+const { requireAdmin } = require('../middleware/admin-auth');
+const router = express.Router();
+router.post('/admin/login', c.login); router.post('/admin/logout', c.logout); router.get('/admin/me', requireAdmin, c.me);
+router.use('/admin', requireAdmin);
+router.post('/admin/upload', c.uploadImage);
+router.get('/admin/products', c.listProducts); router.post('/admin/products', c.saveProduct); router.put('/admin/products/:id', c.saveProduct); router.delete('/admin/products/:id', c.deleteProduct);
+router.get('/admin/posts', c.listPosts); router.post('/admin/posts', c.savePost); router.put('/admin/posts/:id', c.savePost); router.delete('/admin/posts/:id', c.deletePost);
+router.get('/admin/orders', c.listOrders); router.get('/admin/orders/:id', c.getOrder); router.patch('/admin/orders/:id/status', c.updateOrderStatus);
+router.get('/admin/store', c.getStore); router.put('/admin/store', c.updateStore);
+module.exports = router;

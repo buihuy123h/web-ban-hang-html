@@ -22,6 +22,8 @@ const Contact = lazy(() => import('./pages/Contact'));
 const Cart = lazy(() => import('./pages/Cart'));
 const Saved = lazy(() => import('./pages/Saved'));
 const NotFound = lazy(() => import('./pages/NotFound'));
+const Admin = lazy(() => import('./pages/Admin'));
+const Posts = lazy(() => import('./pages/Posts'));
 
 /* Placeholder hiển thị trong lúc tải chunk của trang lazy. */
 const RouteLoader = () => (
@@ -45,6 +47,9 @@ const PageRoutes = () => {
           <Route path="/contact" element={<Contact />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/saved" element={<Saved />} />
+          <Route path="/bai-viet" element={<Posts />} />
+          <Route path="/bai-viet/:slug" element={<Posts />} />
+          <Route path="/admin/*" element={<Admin />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

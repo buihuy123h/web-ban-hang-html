@@ -36,6 +36,7 @@ const Footer = () => {
           <h5>Khám phá</h5>
           <Link to="/">Trang chủ</Link>
           <Link to="/san-pham">Sản phẩm</Link>
+          <Link to="/bai-viet">Bài viết</Link>
           <Link to="/about">Câu chuyện</Link>
           <Link to="/contact">Liên hệ</Link>
           <Link to="/cart">Giỏ hàng</Link>

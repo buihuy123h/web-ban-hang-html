@@ -19,6 +19,8 @@ const { spawnSync } = require('node:child_process');
 const { createConfig, createDatabase } = require('../lib/db');
 const { createCatalogRepository, mapProduct } = require('../models/catalog.model');
 const { createOrderRepository } = require('../models/order.model');
+const { createAdminRepository } = require('../models/admin.model');
+const { createMemoryRepositories } = require('../models/memory.model');
 const { validateCatalog, EXPECTED } = require('../database/postgres/seed');
 
 const PG_ENV_KEYS = [
@@ -243,6 +245,42 @@ test('catalog repository bind input qua $1/$2 — không nối giá trị ngư�
   assert.deepEqual(seen[3].values, ['luu-tru', 19, 4]);
 });
 
+test('memory repository chặn xóa sản phẩm đã có trong đơn với lỗi 409', async () => {
+  const product = { id: 19, name: 'Sản phẩm test', category: 'luu-tru', price: 100000, rating: 0, sold: 0 };
+  const repositories = createMemoryRepositories({ products: [product] });
+  await repositories.orderRepository.createOrder({
+    items: [{ id: product.id, qty: 1 }],
+    delivery: 'standard', payment: 'cod',
+    customer: { name: 'Nguyễn Test', phone: '0901234567', address: '12 Nguyễn Huệ', note: '' },
+  });
+
+  await assert.rejects(
+    repositories.adminRepository.deleteProduct(product.id),
+    (error) => error.isBusinessError === true
+      && error.status === 409
+      && error.message === 'Không thể xóa sản phẩm đã có trong đơn hàng.',
+  );
+  assert.ok(await repositories.catalogRepository.getProductById(product.id));
+});
+
+test('SQL admin repository kiểm tra order_items trước khi xóa sản phẩm', async () => {
+  const queries = [];
+  const pool = {
+    query: async (text, values) => {
+      queries.push({ text, values });
+      return { rowCount: 1, rows: [] };
+    },
+  };
+  const error = await assert.rejects(
+    createAdminRepository({ pool }).deleteProduct(19),
+    (caught) => caught.isBusinessError === true && caught.status === 409,
+  );
+  assert.equal(error, undefined);
+  assert.equal(queries.length, 1);
+  assert.match(queries[0].text, /FROM app\.order_items/);
+  assert.deepEqual(queries[0].values, [19]);
+});
+
 test('order repository gọi fn_tao_don_hang với items jsonb và map đúng contract API', async () => {
   let captured;
   const pool = {
@@ -313,9 +351,10 @@ test('order repository ánh xạ lỗi nghiệp vụ P0001 → 400, lỗi khác 
 test('migration PostgreSQL không destructive, không temp table và khóa quyền runtime', () => {
   const migrationsDir = path.resolve(__dirname, '..', 'database', 'postgres', 'migrations');
   const files = fs.readdirSync(migrationsDir).sort();
-  assert.deepEqual(files, ['001_initial_schema.sql', '002_runtime_permissions.sql']);
+  assert.deepEqual(files, ['001_initial_schema.sql', '002_runtime_permissions.sql', '003_admin_content.sql']);
   const schema = fs.readFileSync(path.join(migrationsDir, files[0]), 'utf8');
   const permissions = fs.readFileSync(path.join(migrationsDir, files[1]), 'utf8');
+  const adminMigration = fs.readFileSync(path.join(migrationsDir, files[2]), 'utf8');
   assert.doesNotMatch(schema, /\bDROP\s+(TABLE|SCHEMA|VIEW|FUNCTION)\b/i);
   assert.doesNotMatch(schema, /CREATE\s+TEMP/i);
   assert.match(schema, /CREATE OR REPLACE FUNCTION app\.fn_tao_don_hang/);
@@ -326,6 +365,9 @@ test('migration PostgreSQL không destructive, không temp table và khóa quy�
   assert.match(permissions, /REVOKE ALL ON ALL TABLES IN SCHEMA app FROM PUBLIC/);
   assert.match(permissions, /GRANT EXECUTE ON FUNCTION app\.fn_tao_don_hang/);
   assert.doesNotMatch(permissions, /GRANT (INSERT|UPDATE|DELETE).*app\.orders/i);
+  assert.match(adminMigration, /CREATE TABLE app\.admin_posts/);
+  assert.match(adminMigration, /CREATE TABLE app\.store_settings/);
+  assert.match(adminMigration, /GRANT SELECT, INSERT, UPDATE, DELETE ON app\.products, app\.admin_posts, app\.store_settings/);
 });
 
 test('migration runner dùng advisory lock/checksum và seed fixture đúng 6/21/1/84', () => {

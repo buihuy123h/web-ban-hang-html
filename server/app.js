@@ -23,6 +23,8 @@ const { IS_TEST, CLIENT_DIST, IMAGES_DIR } = require('./config');
 const { ConfigError, createDatabase } = require('./lib/db');
 const { createCatalogRepository } = require('./models/catalog.model');
 const { createOrderRepository } = require('./models/order.model');
+const { createAdminRepository } = require('./models/admin.model');
+const { createPostsRepository } = require('./models/posts.model');
 const { configureServices, products, categories } = require('./models');
 const apiRouter = require('./routes');
 const requestLogger = require('./middleware/request-logger');
@@ -57,7 +59,9 @@ if (!fs.existsSync(IMAGES_DIR)) fs.mkdirSync(IMAGES_DIR, { recursive: true });
 /* ===== Pipeline middleware (đúng thứ tự cũ: logger → headers → parser → CORS → gzip) ===== */
 app.use(requestLogger);
 app.use(securityHeaders);
-app.use(express.json({ limit: '100kb' }));
+// Admin upload gửi ảnh dạng data URL; chỉ route upload được nới lên 7 MB,
+// các JSON API khác vẫn giữ giới hạn 100 KB như trước.
+app.use((req, res, next) => express.json({ limit: req.path === '/api/admin/upload' ? '7mb' : '100kb' })(req, res, next));
 app.use(cors);
 app.use(jsonGzip);
 
@@ -102,7 +106,7 @@ const startServer = async (port, injected = null) => {
   const listenPort = parsePort(port, { allowZero: Boolean(injected) });
   validateChatConfig();
   if (injected) {
-    configureServices(injected);
+      configureServices(injected);
   } else if (!IS_TEST) {
     database = createDatabase();
     try {
@@ -115,6 +119,8 @@ const startServer = async (port, injected = null) => {
     configureServices({
       catalogRepository: createCatalogRepository({ pool: database.pool }),
       orderRepository: createOrderRepository({ pool: database.pool }),
+      adminRepository: createAdminRepository({ pool: database.pool }),
+      postsRepository: createPostsRepository({ pool: database.pool }),
       isReady: () => database.isReady(),
       /* Observability cho /api/health: trạng thái pool + ping độ trễ (deep mode ?deep=1). */
       poolStats: () => ({

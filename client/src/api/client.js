@@ -20,6 +20,7 @@ const request = async (path, options = {}) => {
   try {
     response = await fetch(`${API_BASE}${path}`, {
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       ...options,
     });
   } catch {

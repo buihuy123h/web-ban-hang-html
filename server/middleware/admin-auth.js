@@ -38,8 +38,12 @@ const getSession = (req) => {
   return { token, ...session };
 };
 
-const setSessionCookie = (res, token) => res.set('Set-Cookie', `${cookieName}=${encodeURIComponent(token)}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${SESSION_TTL_MS / 1000}`);
-const clearSessionCookie = (res) => res.set('Set-Cookie', `${cookieName}=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0`);
+const cookieSecurityAttributes = () => (process.env.NODE_ENV === 'production'
+  ? 'SameSite=None; Secure'
+  : 'SameSite=Lax');
+
+const setSessionCookie = (res, token) => res.set('Set-Cookie', `${cookieName}=${encodeURIComponent(token)}; HttpOnly; ${cookieSecurityAttributes()}; Path=/; Max-Age=${SESSION_TTL_MS / 1000}`);
+const clearSessionCookie = (res) => res.set('Set-Cookie', `${cookieName}=; HttpOnly; ${cookieSecurityAttributes()}; Path=/; Max-Age=0`);
 
 const requireAdmin = (req, res, next) => {
   const session = getSession(req);

@@ -56,13 +56,14 @@ if (trustProxy !== false) app.set('trust proxy', trustProxy);
 
 if (!fs.existsSync(IMAGES_DIR)) fs.mkdirSync(IMAGES_DIR, { recursive: true });
 
-/* ===== Pipeline middleware (đúng thứ tự cũ: logger → headers → parser → CORS → gzip) ===== */
+/* ===== Pipeline middleware (logger → headers → CORS → parser → gzip) ===== */
 app.use(requestLogger);
 app.use(securityHeaders);
+// Run CORS before the JSON parser so trusted origins can read 400/413 responses too.
+app.use(cors);
 // Admin upload gửi ảnh dạng data URL; chỉ route upload được nới lên 7 MB,
 // các JSON API khác vẫn giữ giới hạn 100 KB như trước.
 app.use((req, res, next) => express.json({ limit: req.path === '/api/admin/upload' ? '7mb' : '100kb' })(req, res, next));
-app.use(cors);
 app.use(jsonGzip);
 
 /* ===== API: rate limit → routes → 404 JSON ===== */

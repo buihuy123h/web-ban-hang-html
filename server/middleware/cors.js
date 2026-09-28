@@ -55,12 +55,16 @@ module.exports = function cors(req, res, next) {
   const wildcard = allowedOrigins[0] === '*';
   const allowed = !origin || wildcard || allowedOrigins.some((item) => matchOrigin(item, origin));
   if (origin) res.vary('Origin');
-  if (origin && allowed) res.setHeader('Access-Control-Allow-Origin', wildcard ? '*' : origin);
+  if (origin && allowed) {
+    res.setHeader('Access-Control-Allow-Origin', wildcard ? '*' : origin);
+    // Credentialed CORS requires a concrete trusted origin; it is invalid with "*".
+    if (!wildcard) res.setHeader('Access-Control-Allow-Credentials', 'true');
+  }
   if (req.method === 'OPTIONS') {
-    if (!allowed) return res.status(204).set('Cache-Control', 'no-store').end();
+    if (!origin || !allowed) return res.status(204).set('Cache-Control', 'no-store').end();
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Request-Id');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    return res.sendStatus(204);
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+    return res.status(204).end();
   }
   return next();
 };

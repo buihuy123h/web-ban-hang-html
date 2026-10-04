@@ -1,0 +1,23 @@
+# Render Blueprint for the production backend.
+# Secrets and database credentials must be entered in the Render Dashboard.
+services:
+  - type: web
+    name: do-cu-quang-huy-api
+    runtime: docker
+    rootDir: server
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: TRUST_PROXY
+        value: "1"
+      - key: DATABASE_URL
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+      - key: PGSSL_CA
+        sync: false
+        optional: true

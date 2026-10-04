@@ -1,0 +1,124 @@
+/* ============================================================
+   polish.css — lớp nâng cấp giao diện & animation (FE, pure CSS)
+   Import SAU CÙNG trong App.jsx để ghi đè nhẹ nhàng trên các lớp
+   style trước đó. Không đổi JSX, không thêm dependency.
+   Toàn bộ animation đã được @media (prefers-reduced-motion: reduce)
+   trong index.css tắt tự động khi hệ điều hành bật giảm chuyển động.
+   ============================================================ */
+
+/* ===== 1. Hero trang chủ — entrance stagger khi vào trang ===== */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes hero-up {
+    from { opacity: 0; transform: translateY(22px); }
+  }
+  @keyframes hero-img {
+    from { opacity: 0; transform: translateY(26px) scale(.975); }
+  }
+  .home-hero-copy > * { animation: hero-up .62s cubic-bezier(.22, .61, .36, 1) backwards; }
+  .home-hero-copy > *:nth-child(1) { animation-delay: .05s; }
+  .home-hero-copy > *:nth-child(2) { animation-delay: .13s; }
+  .home-hero-copy > *:nth-child(3) { animation-delay: .21s; }
+  .home-hero-copy > *:nth-child(4) { animation-delay: .29s; }
+  .home-hero-copy > *:nth-child(5) { animation-delay: .37s; }
+  .home-hero-copy > *:nth-child(6) { animation-delay: .45s; }
+  .home-hero-image { animation: hero-img .7s cubic-bezier(.22, .61, .36, 1) .18s backwards; }
+  .home-hero-image .hero-price { animation: hero-up .55s cubic-bezier(.22, .61, .36, 1) .5s backwards; }
+  .home-hero-image .hero-image-caption { animation: hero-up .55s cubic-bezier(.22, .61, .36, 1) .62s backwards; }
+
+  /* Badge giá trên ảnh hero trôi nhẹ — chuyển động tiết chế */
+  @keyframes float-soft {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-7px); }
+  }
+  .hero-price { animation: float-soft 4.5s ease-in-out 1.2s infinite; }
+
+  /* Section head & page hero vào trang lệch nhịp nhẹ */
+  .home-section-head, .page-hero h1, .page-hero p { animation: hero-up .55s cubic-bezier(.22, .61, .36, 1) backwards; }
+  .page-hero p { animation-delay: .1s; }
+}
+
+/* ===== 2. Nút CTA — hiệu ứng ánh sáng quét (shine sweep) ===== */
+.btn-primary, .btn-olive, .sc-submit, .p-add, .home-search button {
+  position: relative; overflow: hidden; isolation: isolate;
+}
+.btn-primary::after, .btn-olive::after, .sc-submit::after, .p-add::after, .home-search button::after {
+  content: ''; position: absolute; top: 0; bottom: 0; left: -80%; width: 55%;
+  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, .28), transparent);
+  transform: skewX(-18deg); transition: left .55s ease; pointer-events: none;
+}
+.btn-primary:hover::after, .btn-olive:hover::after, .sc-submit:hover::after,
+.p-add:hover::after, .home-search button:hover::after { left: 125%; }
+
+/* Nút nổi nhẹ + bóng khi hover, nhún khi nhấn */
+.btn-primary, .btn-olive, .sc-submit {
+  transition: transform .22s cubic-bezier(.16, 1, .3, 1), background-color .18s ease, box-shadow .22s ease;
+}
+.btn-primary:hover, .btn-olive:hover, .sc-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px -10px rgba(74, 59, 50, .4);
+}
+.btn-primary:active, .btn-olive:active, .sc-submit:active { transform: translateY(1px); box-shadow: none; }
+
+/* ===== 3. Thẻ sản phẩm — ảnh zoom mượt khi hover ===== */
+.p-media-image { transition: transform .6s cubic-bezier(.22, .61, .36, 1), filter .4s ease; }
+@media (hover: hover) {
+  .p-card:hover .p-media-image { transform: scale(1.06); }
+  .p-card:hover .p-media-link { transform: none; }
+}
+.p-card { transition: transform .35s cubic-bezier(.22, .61, .36, 1), box-shadow .35s ease, border-color .25s ease; }
+.p-save { transition: background-color .15s ease, color .15s ease, transform .25s cubic-bezier(.16, 1, .3, 1); }
+.p-card:hover .p-save { transform: translateY(-2px); }
+
+/* ===== 4. Category card (trang chủ) — lift + ảnh zoom + mũi tên trượt ===== */
+.category-card { transition: transform .32s cubic-bezier(.22, .61, .36, 1), box-shadow .32s ease, border-color .25s ease; }
+.category-card img { transition: transform .6s cubic-bezier(.22, .61, .36, 1); }
+@media (hover: hover) {
+  .category-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-ambient); }
+  .category-card:hover img { transform: scale(1.07); }
+  .category-card:hover small span { transform: translateX(5px); }
+}
+.category-card small span { display: inline-block; transition: transform .3s cubic-bezier(.16, 1, .3, 1); }
+
+/* ===== 5. Benefit / story cards — micro-interaction ===== */
+.benefit-grid article { transition: transform .3s cubic-bezier(.22, .61, .36, 1), box-shadow .3s ease; }
+.benefit-icon { transition: transform .35s cubic-bezier(.16, 1, .3, 1), background-color .25s ease; }
+@media (hover: hover) {
+  .benefit-grid article:hover { transform: translateY(-4px); box-shadow: var(--shadow-ambient); }
+  .benefit-grid article:hover .benefit-icon { transform: rotate(-6deg) scale(1.12); }
+}
+.story-grid article { overflow: hidden; transition: transform .32s cubic-bezier(.22, .61, .36, 1), box-shadow .32s ease; }
+.story-grid article img { transition: transform .6s cubic-bezier(.22, .61, .36, 1); }
+@media (hover: hover) {
+  .story-grid article:hover { transform: translateY(-4px); box-shadow: var(--shadow-ambient); }
+  .story-grid article:hover img { transform: scale(1.05); }
+}
+
+/* ===== 6. Nav links — gạch chân trượt mượt ===== */
+.nav-links a { position: relative; transition: color .18s ease, background-color .18s ease; }
+.nav-links a::after {
+  content: ''; position: absolute; left: 14px; right: 14px; bottom: 4px; height: 2px;
+  border-radius: 2px; background: var(--accent);
+  transform: scaleX(0); transform-origin: left center;
+  transition: transform .28s cubic-bezier(.22, .61, .36, 1);
+}
+@media (hover: hover) {
+  .nav-links a:hover::after { transform: scaleX(1); }
+}
+/* Active đã có gạch chân riêng (inset box-shadow ở lớp trước) → ẩn ::after tránh trùng vạch */
+.nav-links a.active::after { display: none; }
+
+/* ===== 7. Chips — chuyển nền mềm + bóng nhẹ khi active ===== */
+.chip, .quick-chip {
+  transition: color .18s ease, border-color .18s ease, background-color .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+.chip.active, .quick-chip.active { box-shadow: 0 6px 16px -8px rgba(74, 59, 50, .45); }
+
+/* ===== 8. Panel — phản hồi hover/focus mềm ===== */
+.panel { transition: border-color .25s ease, box-shadow .25s ease, transform .25s ease; }
+
+/* ===== 9. FAB liên hệ — nổi nhẹ khi hover ===== */
+.contact-fab { transition: transform .3s cubic-bezier(.16, 1, .3, 1), box-shadow .3s ease; }
+@media (hover: hover) {
+  .contact-fab:hover { transform: translateY(-3px) scale(1.04); }
+}
+

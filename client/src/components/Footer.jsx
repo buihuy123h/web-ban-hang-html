@@ -31,16 +31,32 @@ const Footer = () => {
               <button type="submit">Đăng ký</button>
             </div>
           </form>
+          <div className="f-social" aria-label="Kết nối với Đồ Cũ Quang Huy">
+            <a className="fs fs-facebook" href="https://www.facebook.com/profile.php?id=100090912844650" target="_blank" rel="noreferrer" aria-label="Facebook · Đồ Cũ Quang Huy">
+              <Icon name="facebook" size={17} />
+            </a>
+            <a className="fs fs-zalo" href="https://zalo.me/0374034430" target="_blank" rel="noreferrer" aria-label="Nhắn tin Zalo 0374 034 430">
+              <Icon name="zalo" size={17} />
+            </a>
+            <a className="fs fs-messenger" href="https://m.me/100090912844650" target="_blank" rel="noreferrer" aria-label="Nhắn tin Messenger">
+              <Icon name="messenger" size={17} />
+            </a>
+            <a className="fs fs-tiktok" href="https://www.tiktok.com/@cquanghuy8" target="_blank" rel="noreferrer" aria-label="TikTok · @cquanghuy8">
+              <Icon name="tiktok" size={17} />
+            </a>
+            <a className="fs fs-phone" href="tel:0374034430" aria-label="Gọi 0374 034 430">
+              <Icon name="phone" size={16} />
+            </a>
+          </div>
         </div>
         <div className="f-col">
           <h5>Khám phá</h5>
           <Link to="/">Trang chủ</Link>
           <Link to="/san-pham">Sản phẩm</Link>
-          <Link to="/bai-viet">Bài viết</Link>
-          <Link to="/about">Câu chuyện</Link>
+          <Link to="/about">Về chúng tôi</Link>
           <Link to="/contact">Liên hệ</Link>
           <Link to="/cart">Giỏ hàng</Link>
-          <Link to="/saved">Sản phẩm đã lưu</Link>
+<Link to="/admin">Quản trị</Link>
         </div>
         <div className="f-col">
           <h5>Hỗ trợ</h5>

@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import Footer from './components/Footer';
 import ContactFab from './components/ContactFab';
@@ -12,6 +12,7 @@ import { CatalogProvider } from './context/CatalogContext';
 import { HERO_IMAGE } from './data/productImages';
 import useRevealOnScroll from './hooks/useRevealOnScroll';
 import './App.css';
+import './styles/polish.css';
 
 /* Tách bundle theo route: Home giữ eager (trang landing cần LCP nhanh nhất),
    7 trang còn lại lazy-load khi cần → giảm dung lượng JS/CSS tải lần đầu. */
@@ -20,7 +21,6 @@ const ProductDetail = lazy(() => import('./pages/ProductDetail'));
 const About = lazy(() => import('./pages/About'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Cart = lazy(() => import('./pages/Cart'));
-const Saved = lazy(() => import('./pages/Saved'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const Admin = lazy(() => import('./pages/Admin'));
 const Posts = lazy(() => import('./pages/Posts'));
@@ -46,8 +46,7 @@ const PageRoutes = () => {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/saved" element={<Saved />} />
-          <Route path="/bai-viet" element={<Posts />} />
+          <Route path="/bai-viet" element={<Navigate to="/about" replace />} />
           <Route path="/bai-viet/:slug" element={<Posts />} />
           <Route path="/admin/*" element={<Admin />} />
           <Route path="*" element={<NotFound />} />

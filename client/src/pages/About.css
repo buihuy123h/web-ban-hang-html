@@ -1,4 +1,31 @@
 /* Chips pill dưới page-hero */
+/* Khoi "Tap ky": bai viet gop chung trang Cau chuyen — dai nen am, dau muc can giua */
+.about-posts-wrap {
+  margin-top: 72px;
+  padding: clamp(36px, 5vw, 60px) clamp(20px, 4vw, 52px) clamp(30px, 4vw, 48px);
+  background: linear-gradient(180deg, #fff8f4 0%, #fdf0e7 100%);
+  border: 1px solid #f0dccf;
+  border-radius: var(--r-xl, 26px);
+  box-shadow: 0 24px 48px -38px rgba(63, 38, 25, .45);
+}
+.about-posts-wrap .section-head { max-width: 620px; margin: 0 auto; text-align: center; }
+.about-posts-wrap .section-head h2 { font-size: clamp(1.9rem, 4vw, 2.9rem); line-height: 1.06; }
+.about-posts-wrap .posts-embedded .posts-grid { margin-top: 36px; padding: 0; }
+.about-posts-wrap .posts-embedded .posts-grid:last-child { margin-bottom: 0; }
+.about-posts-wrap .post-card {
+  border-color: #ead5ca;
+  background: #fffaf7;
+  box-shadow: 0 12px 28px -22px rgba(63, 38, 25, .4);
+}
+.about-posts-wrap .post-card:hover { box-shadow: 0 18px 34px -20px rgba(63, 38, 25, .48); }
+.about-posts-wrap .post-meta,
+.about-posts-wrap .post-read-more { color: #9c4328; }
+.about-posts-wrap .post-card h2 a:hover { color: #9c4328; }
+.about-posts-wrap .posts-message { margin: 30px auto 0; }
+.about-posts-wrap .post-skeleton-card { border-color: #ead5ca; background: #fffaf7; }
+@media (max-width: 560px) { .about-posts-wrap { margin-top: 48px; border-radius: 20px; } }
+
+
 .about-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px; }
 .about-chip { padding: 7px 14px; border-radius: var(--r-pill); background: var(--surface-high); color: var(--ink); font-size: .72rem; font-weight: 500; }
 
@@ -6,7 +33,7 @@
 .about-stats {
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
   margin: 52px 0 0; padding: 14px; border-radius: var(--r-xl);
-  background: radial-gradient(rgba(96, 108, 56, .09) 1.5px, transparent 1.6px) 0 0 / 24px 24px, var(--surface-low);
+  background: radial-gradient(rgba(156, 67, 40, .07) 1.5px, transparent 1.6px) 0 0 / 24px 24px, var(--surface-low);
   box-shadow: inset 0 1px 0 rgba(255, 253, 246, .7), inset 0 -1px 0 rgba(24, 27, 18, .06);
 }
 .stat-card {
@@ -134,3 +161,12 @@
   .timeline::before { display: none; }
   .about-sticker { padding: 8px 13px; font-size: .58rem; }
 }
+
+/* Trang câu chuyện dùng cùng nền kem và điểm nhấn terracotta của trang chủ. */
+.about-page-hero, .about-values, .about-process, .about-journey, .about-team-wrap { color: #251911; }
+.about-page-hero h1, .about-values h2, .about-journey h2 { color: #251911; }
+.about-stats, .about-sticker, .pr-card, .team-card { border-color: #ead5ca; }
+.about-stats { background-color: #fbe3d5; }
+.stat-icon, .pr-num, .team-avatar { background: #fae8de; color: #9c4328; }
+.pr-card:hover .pr-num, .team-card:hover .team-avatar { background: #9c4328; }
+.team-role { color: #9c4328; }

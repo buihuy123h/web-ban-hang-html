@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import Icon from '../components/Icon';
-import Breadcrumbs from '../components/Breadcrumbs';
+import CatalogueBanner from '../components/CatalogueBanner';
 import '../App.css';
 import './Contact.css';
 
@@ -45,13 +45,24 @@ const Contact = () => {
 
   return (
     <main className="container">
-      <Breadcrumbs items={[{ label: 'Liên hệ & hỗ trợ' }]} />
-      <section className="page-hero">
-        <div>
-          <p className="eyebrow">Liên hệ &amp; hỗ trợ</p>
-          <h1>Cần đồ cũ giá tốt? Nhắn một tiếng, báo giá liền.</h1>
-          <p>Chúng tôi hỗ trợ chọn món, báo giá sỉ cho quán ăn — phòng trọ, kiểm tra đơn và gửi hàng qua nhà xe toàn quốc.</p>
-        </div>
+      <CatalogueBanner id="contact-title" title="Liên hệ & hỗ trợ" description="Cần chọn món, báo giá sỉ hay hỏi cách giao hàng? Nhắn một tiếng, shop hỗ trợ ngay." eyebrow="Luôn sẵn sàng hỗ trợ" />
+
+      <section className="contact-quick" aria-label="Liên hệ nhanh">
+        <a className="cq-card cq-call" href="tel:0374034430">
+          <span className="cq-icon"><Icon name="phone" size={21} /></span>
+          <span className="cq-copy"><b>Gọi ngay 0374 034 430</b><small>Hỗ trợ 8:00 – 21:00 tất cả các ngày trong tuần</small></span>
+          <span className="cq-arrow" aria-hidden="true">→</span>
+        </a>
+        <a className="cq-card cq-zalo" href="https://zalo.me/0374034430" target="_blank" rel="noreferrer">
+          <span className="cq-icon"><Icon name="zalo" size={21} /></span>
+          <span className="cq-copy"><b>Nhắn Zalo nhận báo giá</b><small>Gửi ảnh món cần — trả lời trong vài phút</small></span>
+          <span className="cq-arrow" aria-hidden="true">→</span>
+        </a>
+        <a className="cq-card cq-map" href="https://www.google.com/maps/dir/?api=1&destination=707%20T%C3%A2n%20S%C6%A1n%2C%20G%C3%B2%20V%E1%BA%A5p%2C%20TP.HCM" target="_blank" rel="noreferrer">
+          <span className="cq-icon"><Icon name="pin" size={21} /></span>
+          <span className="cq-copy"><b>Đến kho xem hàng trực tiếp</b><small>707 Tân Sơn, Gò Vấp — gọi trước để giữ món</small></span>
+          <span className="cq-arrow" aria-hidden="true">→</span>
+        </a>
       </section>
 
       <section className="service-cards" aria-label="Dịch vụ hỗ trợ">

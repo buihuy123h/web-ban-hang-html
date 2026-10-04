@@ -50,7 +50,13 @@ const orderRateLimit = createRateLimiter({
   maxBucketsEnv: 'ORDER_RATE_BUCKETS_MAX',
   message: 'Bạn đã gửi quá nhiều yêu cầu đặt hàng. Vui lòng thử lại sau.',
 });
+const adminLoginRateLimit = createRateLimiter({
+  maxEnv: 'ADMIN_LOGIN_RATE_MAX', windowEnv: 'ADMIN_LOGIN_RATE_WINDOW_MS', defaultMax: 10,
+  maxBucketsEnv: 'ADMIN_LOGIN_RATE_BUCKETS_MAX',
+  message: 'Bạn đã nhập sai quá nhiều lần. Vui lòng thử lại sau ít phút.',
+});
 
 module.exports = apiRateLimit;
 module.exports.createRateLimiter = createRateLimiter;
 module.exports.orderRateLimit = orderRateLimit;
+module.exports.adminLoginRateLimit = adminLoginRateLimit;

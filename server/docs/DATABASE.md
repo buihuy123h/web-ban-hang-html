@@ -9,6 +9,10 @@ backend-only `app`; không thêm schema này vào Supabase **Exposed Schemas**.
   `app.schema_migrations`, giữ advisory lock và chạy từng file trong transaction.
 - 7 bảng nghiệp vụ: `categories`, `products`, `product_images`, `product_specs`, `promo_codes`,
   `orders`, `order_items`. ID, đường dẫn `/images/...`, snapshot tên/giá và `timestamptz` được giữ.
+- Migration `004` bổ sung: `app.products.cost_price` (giá vốn cho báo cáo lợi nhuận), bảng
+  `app.feedback` (phản hồi khách: name/phone/message/rating/status new|read|replied) và
+  `app.system_settings` (shipping_fee, free_shipping_threshold, maintenance_mode, announcement).
+  Khách hàng không có bảng riêng — tổng hợp từ `app.orders` GROUP BY `customer_phone`.
 - `app.fn_tao_don_hang(...)` là `SECURITY DEFINER`, `search_path=''`; validate lại toàn bộ input,
   gộp item bằng JSONB (không temp table), lock product theo ID và retry collision mã đơn tối đa 20 lần.
 - Catalog gọi `extensions.unaccent(...)` với bind parameter để tìm không dấu/case-insensitive.

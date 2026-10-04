@@ -133,3 +133,38 @@ test('Role lạ / tin cuối là assistant / quá 20 tin / nội dung quá 1000 
   const tooLongContent = await postChat({ messages: [{ role: 'user', content: 'a'.repeat(1001) }] });
   assert.equal(tooLongContent.status, 400);
 });
+
+/* ===== Hành vi tối ưu: ưu tiên câu hỏi hiện tại, ngân sách, chào hỏi ===== */
+
+test('Hỏi ship sau khi xem quạt → chip KHÔNG còn gợi quạt (ưu tiên câu hỏi hiện tại)', async () => {
+  const res = await postChat({
+    messages: [
+      { role: 'user', content: 'cho xem quat dien di ban' },
+      { role: 'assistant', content: 'Quạt đứng cũ còn chạy êm, giá 120.000₫.' },
+      { role: 'user', content: 'phi ship bao nhieu tien ban' },
+    ],
+  });
+  assert.equal(res.status, 200);
+  const chipNames = res.body.products.map((chip) => chip.name.toLowerCase());
+  assert.ok(
+    !chipNames.some((name) => name.includes('quạt')),
+    `không được còn gợi quạt khi khách hỏi ship — got: ${chipNames.join(', ')}`,
+  );
+  assert.ok(res.body.reply.includes('30.000'), 'câu trả lời phải đúng trọng tâm: phí ship');
+});
+
+test('Hỏi ghế dưới 100k → chỉ gợi món giá ≤ 100.000₫', async () => {
+  const res = await postChat(ask('ban co cai ghe nao duoi 100k khong'));
+  assert.equal(res.status, 200);
+  assert.ok(res.body.products.length >= 1, 'ghế 85k/95k phải được gợi');
+  for (const chip of res.body.products) {
+    assert.ok(chip.price <= 100_000, `chip phải trong ngân sách ≤100.000₫ — got ${chip.price}`);
+  }
+});
+
+test('Khách chỉ chào hỏi → chào lại thân thiện, không phải câu "không tìm thấy"', async () => {
+  const res = await postChat(ask('xin chao shop'));
+  assert.equal(res.status, 200);
+  assert.ok(res.body.reply.includes('chào'), 'phải chào lại');
+  assert.ok(!res.body.reply.includes('chưa tìm được'), 'không được trả lời kiểu không tìm thấy');
+});

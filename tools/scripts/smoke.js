@@ -5,6 +5,12 @@ const path = require('path');
 // Ảnh chụp ghi vào tools/artifacts/ (gitignored).
 const OUT = path.join(__dirname, '..', 'artifacts');
 const BASE = process.env.BASE || 'http://localhost:3000';
+// Sandbox offline: chỉ phân loại lỗi mạng bị từ chối ở Fonts/Maps; không bỏ lỗi app.
+const OFFLINE = process.env.SMOKE_OFFLINE === '1';
+const environment = [];
+const blockedExternal = (url, message) => OFFLINE
+  && /^(https:\/\/fonts\.googleapis\.com\/|https:\/\/www\.google\.com\/maps)/.test(url)
+  && String(message).includes('ERR_NETWORK_ACCESS_DENIED');
 
 const results = [];
 const note = (ok, msg) => { results.push({ ok, msg }); console.log(`${ok ? 'PASS' : 'FAIL'}  ${msg}`); };
@@ -15,8 +21,15 @@ const note = (ok, msg) => { results.push({ ok, msg }); console.log(`${ok ? 'PASS
   const page = await context.newPage();
   const problems = [];
   page.on('pageerror', (e) => problems.push(`PAGEERROR @${page.url()}: ${e.message}`));
-  page.on('console', (m) => { if (m.type() === 'error') problems.push(`CONSOLE @${page.url()}: ${m.text().slice(0, 260)}`); });
-  page.on('requestfailed', (r) => { if (!r.url().includes('facebook')) problems.push(`REQFAIL @${page.url()}: ${r.url()}`); });
+  page.on('console', (m) => {
+    if (m.type() !== 'error') return;
+    if (blockedExternal(m.location().url, m.text())) return;
+    problems.push(`CONSOLE @${page.url()}: ${m.text().slice(0, 260)}`);
+  });
+  page.on('requestfailed', (r) => {
+    if (blockedExternal(r.url(), r.failure()?.errorText)) { environment.push(r.url()); return; }
+    if (!r.url().includes('facebook')) problems.push(`REQFAIL @${page.url()}: ${r.url()}`);
+  });
 
   const visit = async (route) => { await page.goto(BASE + route, { waitUntil: 'networkidle', timeout: 20000 }); await page.waitForTimeout(600); };
 
@@ -29,6 +42,8 @@ const note = (ok, msg) => { results.push({ ok, msg }); console.log(`${ok ? 'PASS
         // Query lại theo index mỗi lần bấm — React re-render sau mỗi click làm handle cũ vô hiệu.
         const btn = page.locator(SEL).nth(i);
         if (!(await btn.count())) break;
+        // Nút disabled là trạng thái UI hợp lệ (ví dụ giảm khi quantity = 1).
+        if (await btn.isDisabled()) continue;
         await btn.click({ timeout: 2500 });
         await page.waitForTimeout(400);
       } catch (e) {
@@ -98,6 +113,7 @@ const note = (ok, msg) => { results.push({ ok, msg }); console.log(`${ok ? 'PASS
   note(true, 'Đã chụp ảnh mọi trang (tools/artifacts/shot-*.png)');
 
   problems.forEach((p) => note(false, p));
+  if (environment.length) console.log(`ENVIRONMENT: ${environment.length} request Fonts/Maps bị sandbox từ chối; SMOKE_OFFLINE=1, cần kiểm lại tài nguyên ngoài khi có mạng.`);
   const fails = results.filter((r) => !r.ok).length;
   console.log(`\n=== SMOKE: ${results.length - fails}/${results.length} PASS ===`);
   await browser.close();

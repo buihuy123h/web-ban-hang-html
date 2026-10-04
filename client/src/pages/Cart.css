@@ -120,3 +120,10 @@
   .payment-options { flex-direction: column; }
   .success-actions { flex-direction: column; }
 }
+
+/* Giỏ hàng: panel mua hàng rõ ràng, cùng màu nền với catalogue và trang chủ. */
+.cart-page { background: #fff8f4; }
+.cart-item, .checkout-section, .cart-list { border-color: #ead5ca; }
+.cart-summary { border-color: #ead5ca; background: #fffaf7; }
+.option-list > label { border-color: #ead5ca; background: #fffaf7; }
+.cart-summary .btn-primary { background: #12382c; }

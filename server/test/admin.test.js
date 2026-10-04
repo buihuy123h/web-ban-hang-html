@@ -87,3 +87,37 @@ test('admin endpoint không có cookie trả 401 còn public posts không yêu c
   assert.equal(publicList.response.status, 200);
   assert.deepEqual(publicList.body, { posts: [] });
 });
+
+test('admin quản lý danh mục: tạo, trùng mã, sửa, chặn xóa khi còn sản phẩm, xóa rỗng', async () => {
+  const cookie = await login();
+  const created = await request('/api/admin/categories', json('POST', { key: 'Quạt Điện Cũ', label: 'Quạt điện', image: '' }, cookie));
+  assert.equal(created.response.status, 201);
+  assert.equal(created.body.category.key, 'quat-dien-cu');
+  assert.equal(created.body.category.productCount, 0);
+
+  const duplicate = await request('/api/admin/categories', json('POST', { key: 'quat-dien-cu', label: 'Trùng' }, cookie));
+  assert.equal(duplicate.response.status, 400);
+
+  const missingLabel = await request('/api/admin/categories', json('POST', { key: 'khong-ten' }, cookie));
+  assert.equal(missingLabel.response.status, 400);
+
+  const updated = await request('/api/admin/categories/quat-dien-cu', json('PUT', { label: 'Quạt điện cũ', image: '/images/products/fan.png' }, cookie));
+  assert.equal(updated.response.status, 200);
+  assert.equal(updated.body.category.label, 'Quạt điện cũ');
+  assert.equal(updated.body.category.image, '/images/products/fan.png');
+
+  const blocked = await request('/api/admin/categories/ban-ghe', { method: 'DELETE', headers: { Cookie: cookie } });
+  assert.equal(blocked.response.status, 409);
+  assert.match(blocked.body.error, /đang có sản phẩm/);
+
+  const removed = await request('/api/admin/categories/quat-dien-cu', { method: 'DELETE', headers: { Cookie: cookie } });
+  assert.equal(removed.response.status, 204);
+
+  const gone = await request('/api/admin/categories/quat-dien-cu', json('PUT', { label: 'X' }, cookie));
+  assert.equal(gone.response.status, 404);
+});
+
+test('admin categories không có cookie trả 401', async () => {
+  const result = await request('/api/admin/categories');
+  assert.equal(result.response.status, 401);
+});

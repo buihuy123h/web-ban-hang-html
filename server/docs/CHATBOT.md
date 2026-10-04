@@ -20,15 +20,15 @@
 Kiểm tra AI đã hoạt động: response của `/api/chat` có `"mode": "ai"`.
 `"mode": "fallback"` = chưa có key hoặc xKiro lỗi (kèm log `[chat] xKiro lỗi (…)`).
 
-Đổi model chỉ cần sửa `XKIRO_MODEL` trong `server/.env`
-(gợi ý cho tiếng Việt, miễn phí: `qwen/qwen3.5-flash:free`, `qwen/qwen3.7-flash:free`).
+Đổi model chỉ cần sửa `XKIRO_MODEL` trong `server/.env`. Mặc định hiện tại là
+`openai/gpt-5.6-sol`; model này cần API key/router hỗ trợ model tương ứng.
 
 ## 3. Biến môi trường (server/.env)
 
 | Biến | Mặc định | Ý nghĩa |
 |---|---|---|
 | `XKIRO_API_KEY` | *(rỗng → fallback)* | API key của xKiro |
-| `XKIRO_MODEL` | `qwen/qwen3.5-flash:free` | Model sinh câu trả lời |
+| `XKIRO_MODEL` | `openai/gpt-5.6-sol` | Model sinh câu trả lời |
 | `XKIRO_API_BASE` | `https://api.xkiro.com/v1` | Endpoint router (đổi khi xKiro nâng phiên bản) |
 | `XKIRO_TIMEOUT_MS` | `20000` | Thời gian tối đa chờ AI mỗi lần gọi (ms) |
 | `CHAT_RATE_MAX` | `12` | Số tin/phút/IP riêng cho `/api/chat` (song song rate limit `/api`) |

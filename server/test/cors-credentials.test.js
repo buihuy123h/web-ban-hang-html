@@ -151,6 +151,8 @@ test('login, phiên admin và logout production dùng cookie cross-site an toàn
       origin: allowedOrigin,
       'content-type': 'application/json',
       'content-length': Buffer.byteLength(loginBody),
+      // Mô phỏng request HTTPS đi qua reverse proxy (X-Forwarded-Proto).
+      'x-forwarded-proto': 'https',
     }, loginBody);
     assert.equal(login.status, 200);
     assert.equal(login.headers['access-control-allow-origin'], allowedOrigin);
@@ -168,6 +170,7 @@ test('login, phiên admin và logout production dùng cookie cross-site an toàn
     const logout = await rawRequest('POST', '/api/admin/logout', {
       origin: allowedOrigin,
       cookie,
+      'x-forwarded-proto': 'https',
     });
     assert.equal(logout.status, 204);
     assert.equal(
@@ -185,9 +188,9 @@ test('login, phiên admin và logout production dùng cookie cross-site an toàn
 });
 
 test('cookie admin local/test vẫn tương thích HTTP', () => {
-  const previousNodeEnv = process.env.NODE_ENV;
   const capture = (action) => {
     let value;
+    const request = { headers: {}, secure: false }; // request HTTP thuần
     const response = {
       set(name, headerValue) {
         assert.equal(name, 'Set-Cookie');
@@ -195,22 +198,28 @@ test('cookie admin local/test vẫn tương thích HTTP', () => {
         return this;
       },
     };
-    action(response);
+    action(request, response);
     return value;
   };
 
-  try {
-    process.env.NODE_ENV = 'test';
-    assert.equal(
-      capture((response) => setSessionCookie(response, 'opaque-token')),
-      'qh_admin_session=opaque-token; HttpOnly; SameSite=Lax; Path=/; Max-Age=28800',
-    );
-    assert.equal(
-      capture(clearSessionCookie),
-      'qh_admin_session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0',
-    );
-  } finally {
-    if (previousNodeEnv == null) delete process.env.NODE_ENV;
-    else process.env.NODE_ENV = previousNodeEnv;
-  }
+  assert.equal(
+    capture((req, res) => setSessionCookie(req, res, 'opaque-token')),
+    'qh_admin_session=opaque-token; HttpOnly; SameSite=Lax; Path=/; Max-Age=28800',
+  );
+  assert.equal(
+    capture((req, res) => clearSessionCookie(req, res)),
+    'qh_admin_session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0',
+  );
+  // Request HTTPS (trực tiếp hoặc qua reverse proxy) → cookie bật Secure cho cross-site.
+  const secureCapture = (action) => {
+    let value;
+    const request = { headers: { 'x-forwarded-proto': 'https' }, secure: false };
+    const response = { set: (name, headerValue) => { value = headerValue; return this; } };
+    action(request, response);
+    return value;
+  };
+  assert.match(
+    secureCapture((req, res) => setSessionCookie(req, res, 'opaque-token')),
+    /SameSite=None; Secure/,
+  );
 });

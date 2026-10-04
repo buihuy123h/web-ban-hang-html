@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&amp;family=Plus+Jakarta+Sans:ital,wght@0,400..700;1,400..700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "tertiary-container": "#3a4838", "error": "#ba1a1a", "on-tertiary-fixed": "#111f11", "on-error": "#ffffff", "on-error-container": "#93000a", "surface-container-low": "#fff1ea", "inverse-primary": "#adcebe", "outline-variant": "#c1c8c3", "on-primary-fixed": "#022016", "on-secondary": "#ffffff", "primary": "#163328", "surface-dim": "#edd5c9", "on-tertiary-container": "#a6b6a1", "tertiary-fixed-dim": "#bbcbb6", "on-secondary-container": "#76270e", "secondary": "#9c4328", "primary-fixed-dim": "#adcebe", "surface-container": "#ffeadf", "surface-container-lowest": "#ffffff", "inverse-on-surface": "#ffede4", "on-surface": "#251911", "surface-container-high": "#fbe4d7", "on-primary-fixed-variant": "#304d40", "on-secondary-fixed": "#3a0a00", "inverse-surface": "#3b2d25", "secondary-fixed": "#ffdbd1", "primary-fixed": "#c9ead9", "primary-container": "#2d4a3e", "secondary-container": "#ff8f6e", "tertiary-fixed": "#d7e7d1", "surface": "#fff8f5", "surface-variant": "#f6ded1", "error-container": "#ffdad6", "on-tertiary": "#ffffff", "tertiary": "#243223", "on-primary": "#ffffff", "surface-bright": "#fff8f5", "on-surface-variant": "#424844", "surface-tint": "#476558", "background": "#fff8f5", "surface-container-highest": "#f6ded1", "outline": "#727974", "on-tertiary-fixed-variant": "#3c4b3a", "secondary-fixed-dim": "#ffb59f", "on-background": "#251911", "on-primary-container": "#99b9a9", "on-secondary-fixed-variant": "#7d2c13" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-sm": "0.5rem", "space-xs": "0.25rem", "gutter": "1.5rem", "space-lg": "1.5rem", "space-md": "1rem", "margin": "2rem", "space-xl": "2.5rem" }, "fontFamily": { "display-lg": ["Newsreader"], "headline-md": ["Newsreader"], "label-lg": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "title-sm": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Newsreader"], "headline-sm": ["Newsreader"], "title-md": ["Plus Jakarta Sans"], "headline-lg": ["Newsreader"], "body-lg": ["Plus Jakarta Sans"], "display-lg-mobile": ["Newsreader"] }, "fontSize": { "display-lg": ["44px", { "lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "body-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }], "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }], "title-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "headline-lg-mobile": ["26px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "title-md": ["18px", { "lineHeight": "26px", "fontWeight": "600" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }], "display-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }] } } } };</script></head><body class="bg-background font-body-md text-on-surface antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+<!-- HEADER & NOTIFICATION BANNER -->
+<header class="fixed top-0 left-0 w-full z-50 bg-surface/95 backdrop-blur-md shadow-[0_2px_12px_rgba(74,59,50,0.08)]">
+<!-- Top Notification Bar -->
+<div class="bg-gradient-to-r from-secondary via-secondary to-primary text-on-secondary py-2 px-gutter">
+<div class="max-w-7xl mx-auto flex items-center justify-center gap-space-sm text-center font-label-md text-label-md">
+<span class="material-symbols-outlined text-base text-secondary-fixed animate-bounce">local_fire_department</span>
+<span class="font-bold tracking-wide">🔥 ĐẠI HỘI XẢ KHO THANH LÝ ĐỒ CŨ &amp; ĐỒ DÙNG GIA ĐÌNH - GIẢM ĐẾN 70% | GIAO HÀNG TẬN NƠI - ĐỔI TRẢ 7 NGÀY</span>
+</div>
+</div>
+<!-- Main Header -->
+<div class="h-20 max-w-7xl mx-auto px-gutter flex items-center justify-between gap-space-md lg:gap-space-lg">
+<!-- Brand / Logo -->
+<a class="flex items-center gap-3 shrink-0 group" href="#">
+<img alt="Logo Tiệm Nhà Cũ" class="h-11 w-auto object-contain group-hover:scale-105 transition-transform" src="https://lh3.googleusercontent.com/aida/AEtjO1VRupOzT_Mr57aPJ9zbr6PF8c9ZhaC2wBz3tMZm1Tz1Y3QHURLshXO8XQ2XSXm_mfxPEAOTntnIXsOojadGmENJz3i9X5Inps5RSOy200J5CTN1ExnYfAEjw29c5q_CYm8jBMgOZ4vTzUMKIzO5EDpuwSctCOYv3Fx-j1lPp_c3wa4AEqsN7N8N2KAJ9QAAQP7x9oZ-I7N1PqSzPd5XhWJXdy32pQauKhdTGgcBP1O89UV-oTJaieoRuGM3"/>
+<div class="flex flex-col">
+<span class="font-headline-md text-[22px] leading-tight text-primary font-bold tracking-tight">Kho Đồ Cũ &amp; Gia Dụng</span>
+<span class="font-label-sm text-[11px] text-secondary font-bold tracking-widest uppercase">Xả Kho Giá Sỉ • Uy Tín</span>
+</div>
+</a>
+<!-- Search Bar -->
+<div class="flex-1 max-w-2xl hidden md:block">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-space-md text-outline text-xl pointer-events-none">search</span>
+<input class="w-full pl-11 pr-space-lg py-2.5 bg-surface-container-lowest border border-outline-variant/60 rounded-xl font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all shadow-sm" placeholder="Tìm kiếm tủ lạnh, chậu inox 304, sofa, kệ sắt, máy giặt..." type="text"/>
+<button class="absolute right-2 px-3 py-1 bg-secondary text-on-secondary rounded-lg font-label-sm text-label-sm font-semibold hover:bg-on-secondary-container transition-colors">Tìm kiếm</button>
+</div>
+</div>
+<!-- Header Right Actions -->
+<div class="flex items-center gap-space-md shrink-0">
+<div class="hidden xl:flex items-center gap-space-xs text-on-surface-variant">
+<div class="w-9 h-9 rounded-full bg-secondary-fixed/50 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-xl">call</span>
+</div>
+<div class="flex flex-col text-left">
+<span class="font-label-sm text-[11px] text-outline">Hotline 8:00 - 21:00</span>
+<span class="font-label-lg text-label-lg text-secondary font-bold">0988.123.456</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs">
+<button aria-label="Giỏ hàng" class="relative p-2 text-on-surface-variant hover:text-primary rounded-xl hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-2xl">shopping_cart</span>
+<span class="absolute top-1 right-1 w-4 h-4 rounded-full bg-secondary text-on-secondary font-label-sm text-[10px] flex items-center justify-center font-bold">2</span>
+</button>
+</div>
+<a class="flex items-center gap-1.5 px-space-md py-2.5 bg-secondary text-on-secondary hover:bg-on-secondary-container rounded-xl font-label-lg text-label-lg font-bold transition-all shadow-[0_2px_8px_rgba(156,67,40,0.25)] hover:shadow-md" href="#ky-gui-thu-mua">
+<span class="material-symbols-outlined text-lg">sync_alt</span>
+<span class="whitespace-nowrap">Bán &amp; Ký Gửi Đồ Cũ Nhanh</span>
+</a>
+</div>
+</div>
+<!-- Navigation Categories Bar -->
+<div class="bg-surface-container-low border-t border-b border-outline-variant/40">
+<div class="max-w-7xl mx-auto px-gutter">
+<nav class="flex items-center gap-space-md lg:gap-space-lg overflow-x-auto py-2 scrollbar-none text-body-md">
+<a class="py-1 px-2.5 rounded-lg text-secondary font-bold bg-surface-container-highest whitespace-nowrap flex items-center gap-1" href="#">
+<span class="material-symbols-outlined text-lg">grid_view</span> Tất cả danh mục
+        </a>
+<a class="py-1 text-on-surface-variant hover:text-secondary whitespace-nowrap font-medium transition-colors" href="#danh-muc">
+          Xả kho đồ gỗ nội thất
+        </a>
+<a class="py-1 text-on-surface-variant hover:text-secondary whitespace-nowrap font-medium transition-colors" href="#danh-muc">
+          Đồ Inox Bếp &amp; Chậu Rửa
+        </a>
+<a class="py-1 text-on-surface-variant hover:text-secondary whitespace-nowrap font-medium transition-colors" href="#danh-muc">
+          Điện gia dụng &amp; Máy móc
+        </a>
+<a class="py-1 text-on-surface-variant hover:text-secondary whitespace-nowrap font-medium transition-colors" href="#danh-muc">
+          Kệ sắt &amp; Đồ kho
+        </a>
+<a class="py-1 text-secondary font-bold hover:text-on-secondary-container whitespace-nowrap transition-colors flex items-center gap-1" href="#dong-gia">
+<span class="material-symbols-outlined text-base">sell</span> Đồng giá xả kho &lt;199K
+        </a>
+<a class="py-1 text-on-surface-variant hover:text-secondary whitespace-nowrap font-medium transition-colors flex items-center gap-1" href="#daily-drops">
+<span class="material-symbols-outlined text-base text-primary">new_releases</span> Hàng mới về hôm nay
+        </a>
+</nav>
+</div>
+</div>
+</header>
+<main class="w-full pt-44 bg-background min-h-screen">
+<div class="flex flex-col w-full">
+<!-- SECTION 1: HERO VINTAGE & BENTO SPOTLIGHT -->
+<section class="w-full max-w-7xl mx-auto px-gutter py-space-lg lg:py-space-xl">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg lg:gap-space-xl items-stretch">
+<!-- Left Editorial Hero Column -->
+<div class="lg:col-span-7 flex flex-col justify-between bg-surface-container-low p-space-lg lg:p-space-xl rounded-2xl relative overflow-hidden border border-outline-variant/40 shadow-sm">
+<div class="relative z-10">
+<div class="inline-flex items-center gap-space-xs px-space-md py-1 bg-surface-container-lowest text-secondary rounded-full shadow-sm mb-space-md border border-secondary/20">
+<span class="material-symbols-outlined text-base text-secondary animate-pulse">bolt</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider font-bold">Tổng Kho Xả Hàng Thanh Lý - Sale Sốc Tới 70%</span>
+</div>
+<h1 class="font-display-lg text-3xl sm:text-4xl lg:text-[42px] leading-tight text-primary tracking-tight mb-space-md">
+              KHO TỔNG XẢ SALE &amp; <br/>
+<span class="italic text-secondary font-serif">THANH LÝ ĐỒ CŨ, NỘI THẤT, ĐỒ INOX GIA DỤNG</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl mb-space-xl leading-relaxed">
+              Hàng nghìn món đồ nội thất gỗ, chậu rửa bát &amp; thiết bị inox 304, điện gia dụng được kiểm định vận hành tốt, vệ sinh sạch sẽ. Tiết kiệm 50% - 75% so với mua mới.
+            </p>
+<div class="flex flex-wrap items-center gap-space-md mb-space-xl">
+<a class="px-space-xl py-3.5 bg-secondary text-on-secondary hover:bg-on-secondary-container rounded-xl font-label-lg text-label-lg transition-all shadow-md hover:shadow-lg flex items-center gap-space-xs font-bold" href="#daily-drops">
+<span>Xem Deal Xả Kho Hôm Nay 🔥</span>
+<span class="material-symbols-outlined text-lg">arrow_forward</span>
+</a>
+<a class="px-space-lg py-3.5 bg-surface-container-lowest text-primary hover:bg-surface-container-highest border border-outline-variant/60 rounded-xl font-label-lg text-label-lg shadow-sm transition-all flex items-center gap-space-xs font-semibold" href="#ky-gui-thu-mua">
+<span class="material-symbols-outlined text-lg text-secondary">handshake</span>
+<span>Định Giá Thu Mua Nhanh 24/7</span>
+</a>
+</div>
+</div>
+<!-- 4-Column Trust Stats Banner -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-space-md bg-surface-container-lowest/90 backdrop-blur-sm p-space-md rounded-xl border border-outline-variant/30 shadow-sm relative z-10">
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-secondary text-2xl shrink-0 mt-0.5">flash_on</span>
+<div class="flex flex-col">
+<span class="font-title-sm text-sm font-bold text-primary">Cập nhật mỗi ngày</span>
+<span class="font-body-sm text-[12px] text-on-surface-variant">Hàng về liên tục</span>
+</div>
+</div>
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-primary text-2xl shrink-0 mt-0.5">verified</span>
+<div class="flex flex-col">
+<span class="font-title-sm text-sm font-bold text-primary">Đã test kỹ thuật</span>
+<span class="font-body-sm text-[12px] text-on-surface-variant">Vệ sinh sạch sẽ</span>
+</div>
+</div>
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-tertiary text-2xl shrink-0 mt-0.5">countertops</span>
+<div class="flex flex-col">
+<span class="font-title-sm text-sm font-bold text-primary">Inox 304 &amp; Gỗ thịt</span>
+<span class="font-body-sm text-[12px] text-on-surface-variant">Bền đẹp chắc chắn</span>
+</div>
+</div>
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-secondary text-2xl shrink-0 mt-0.5">local_shipping</span>
+<div class="flex flex-col">
+<span class="font-title-sm text-sm font-bold text-primary">Đổi trả 7 ngày</span>
+<span class="font-body-sm text-[12px] text-on-surface-variant">Bảo hành 3-6 tháng</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Spotlight Feature Card -->
+<div class="lg:col-span-5 flex flex-col justify-between bg-surface-container-high rounded-2xl p-space-md overflow-hidden relative shadow-sm border border-outline-variant/40 group">
+<div class="relative w-full h-80 rounded-xl overflow-hidden mb-space-md shadow-inner bg-surface-container-low">
+<img alt="Khuyến mãi xả kho nội thất gỗ và đồ inox" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXQM19Uhk7ztj7IlGglFBIK9f65-3jVvAdwxrlF-aDKM-4qCHK14VFeGX0tQfIZ7R3wJpRSuPh6TOj3eaZZ4T_iasutdzsG149imkt1ofwfyybk3f3Hpp1tJvJVRJBHpZ-gZ3bHEo8HD15-tzvmdFMIwm1YXdtAb_FL2NK2o1kyEd0Df7TDBW_QXiAjmIHe7erCEVugkn4W5UgD7v8ABkSPM3RZhF2y6PrmzRZH5C_WusfGCsayxIXvg"/>
+<div class="absolute top-space-md left-space-md flex flex-col gap-1.5 items-start">
+<span class="px-space-md py-1 bg-secondary text-on-secondary rounded-full font-label-sm text-label-sm shadow-md uppercase tracking-wider font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">local_fire_department</span> Xả kho đặc biệt tuần này
+              </span>
+<span class="px-space-sm py-0.5 bg-surface-container-lowest/95 backdrop-blur-sm text-primary rounded-full font-label-sm text-[11px] shadow-sm font-bold border border-primary/20">
+                Độ mới: 95% - 98% • Giảm sốc -65%
+              </span>
+</div>
+<div class="absolute bottom-space-sm right-space-sm bg-surface-container-lowest/95 backdrop-blur-md px-space-md py-space-xs rounded-xl shadow-lg border border-secondary/20">
+<span class="font-body-sm text-body-sm text-outline line-through block">5.200.000đ</span>
+<span class="font-title-md text-title-md text-secondary font-extrabold">1.850.000đ</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-space-md rounded-xl flex flex-col gap-space-xs shadow-sm border border-outline-variant/30">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-sm text-lg font-bold text-primary">Combo Bàn Ăn Gỗ Tự Nhiên &amp; Đồ Bếp Xả Kho</h2>
+<span class="material-symbols-outlined text-secondary text-2xl">warehouse</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">
+              Tiết kiệm đến 65% - Bộ bàn ghế ăn gia đình bền chắc và chậu rửa inox 304 nguyên bản sáng bóng, dọn kho bán gấp trong tuần.
+            </p>
+<div class="pt-space-xs flex items-center justify-between border-t border-outline-variant/20 mt-1">
+<span class="font-label-sm text-label-sm text-tertiary-container font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">inventory</span> Hơn 150+ món mới về kho
+              </span>
+<a class="px-space-md py-1.5 bg-primary text-on-primary hover:bg-primary-container rounded-lg font-label-sm text-label-sm transition-colors shadow-sm font-semibold" href="#daily-drops">
+                Xem kho xả ngay
+              </a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 2: SHOP BY CATEGORY (6-CARD GRID) -->
+<section class="w-full bg-surface-container-lowest py-space-xl border-t border-b border-outline-variant/30" id="danh-muc">
+<div class="max-w-7xl mx-auto px-gutter">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-space-xl">
+<div>
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-widest block mb-space-xs font-bold">Danh mục xả kho thanh lý</span>
+<h2 class="font-headline-lg text-2xl md:text-3xl font-bold text-primary tracking-tight">Tuyển Chọn Đồ Dùng Gia Đình Giá Sốc</h2>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md mt-space-sm md:mt-0">
+            Kiểm định nghiêm ngặt từ kết cấu inox, gỗ thịt đến motor điện máy. Mua đồ cũ chất lượng như mới với giá xưởng.
+          </p>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-space-lg">
+<!-- Category 1 -->
+<a class="group block bg-surface-container-low rounded-2xl p-space-md hover:bg-surface-container border border-outline-variant/40 transition-all duration-300 shadow-sm hover:shadow-md" href="#">
+<div class="h-56 w-full rounded-xl overflow-hidden mb-space-md relative">
+<img alt="Đồ Gỗ &amp; Nội Thất Gia Đình" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDweJqKWX7Ti6WYXvT2a7R4j97c6gbYLcfgV0qLx6wEsj1ErlC9EzSG8xEPzYHkUxIol3IU3Y0drxQXqBe97ptqI5b0fKUObruGNAZUBhn1DKM2fDKnFLV1VsYHWQ3nUJLMK5mOmS6_Tq6unHfAqxipl4dnXMm_sCRh6sf3ZN65Wfjx7vm06U22PHmpwEgnaDKBgZgCRdXxhiXdDJ7OM2hpoyCijhjFGb0fRftZAE3jQGof_nw301S7Kw"/>
+<span class="absolute bottom-space-xs right-space-xs bg-surface-container-lowest/90 backdrop-blur-sm text-on-surface px-space-sm py-0.5 rounded-full font-label-sm text-label-sm font-semibold shadow-sm">142 món sẵn hàng</span>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<h3 class="font-title-md text-title-md text-primary group-hover:text-secondary transition-colors font-bold">Đồ Gỗ &amp; Nội Thất Gia Đình</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Sofa, bàn ăn, giường, tủ quần áo thanh lý giá kho</p>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-lg">arrow_outward</span>
+</div>
+</div>
+</a>
+<!-- Category 2 -->
+<a class="group block bg-surface-container-low rounded-2xl p-space-md hover:bg-surface-container border border-outline-variant/40 transition-all duration-300 shadow-sm hover:shadow-md" href="#">
+<div class="h-56 w-full rounded-xl overflow-hidden mb-space-md relative">
+<img alt="Đồ Inox Gia Dụng &amp; Bếp Nhà Hàng" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAogqWA63pCR_Tb6pmTWPACyt-H8DdVZUgVrYQ0yhS_9_mDkATB8oUBbN8kFLjuFTjU2GuNk_Iq_XdEdJS9t4kHFBHt0pixQDoiQm35-vNi6IQqeO5F7hCEHKpfuNGjfdf1vLLvYFyyVtDn-a-179VQCKbEtnxabpm_tdLLhGx1SWDQPAbnCXQf_jiLKm9NsHWiCwEPP6TRrEKeyveKQ6cc6AUrV3cojeaXCfODYQ1A4r2jWi4MWj93nQ"/>
+<span class="absolute bottom-space-xs right-space-xs bg-surface-container-lowest/90 backdrop-blur-sm text-secondary font-bold px-space-sm py-0.5 rounded-full font-label-sm text-label-sm shadow-sm">Inox SUS 304 Bền Bỉ</span>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<h3 class="font-title-md text-title-md text-primary group-hover:text-secondary transition-colors font-bold">Đồ Inox Gia Dụng &amp; Bếp Nhà Hàng</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Chậu rửa inox 304, bàn chặt sơ chế, giá kệ úp bát đĩa dày dặn</p>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-lg">arrow_outward</span>
+</div>
+</div>
+</a>
+<!-- Category 3 -->
+<a class="group block bg-surface-container-low rounded-2xl p-space-md hover:bg-surface-container border border-outline-variant/40 transition-all duration-300 shadow-sm hover:shadow-md" href="#">
+<div class="h-56 w-full rounded-xl overflow-hidden mb-space-md relative">
+<img alt="Điện Gia Dụng &amp; Điện Lạnh" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaHNTxBD8sTgnm2rLDIILXH9S73Rxp7B3qekl5BTKBMHVILMoY_ipB04Mb94Ov94nXnyVp_Ywk3UzLQ5qrcF9R3h4rL9uVVne9aO0hbvp5HipzvfzS9UoBHveh09QfxTcbqkOgEKvPBkyxg3lCHbMm-YvZ6OwCufjtHSUT30DmviUvzzLQwytL7PQLazCebk50_yQAo2txut7MNcrULDTiOX3WAxB_wMcyqvE5EZfOD1GlWxAAnfFbwg"/>
+<span class="absolute bottom-space-xs right-space-xs bg-surface-container-lowest/90 backdrop-blur-sm text-on-surface px-space-sm py-0.5 rounded-full font-label-sm text-label-sm font-semibold shadow-sm">86 thiết bị đã test máy</span>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<h3 class="font-title-md text-title-md text-primary group-hover:text-secondary transition-colors font-bold">Điện Gia Dụng &amp; Điện Lạnh</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Nồi chiên, lò vi sóng, máy giặt, tủ lạnh, quạt đã test máy kỹ càng</p>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-lg">arrow_outward</span>
+</div>
+</div>
+</a>
+<!-- Category 4 -->
+<a class="group block bg-surface-container-low rounded-2xl p-space-md hover:bg-surface-container border border-outline-variant/40 transition-all duration-300 shadow-sm hover:shadow-md" href="#">
+<div class="h-56 w-full rounded-xl overflow-hidden mb-space-md relative">
+<img alt="Đồ Dùng Bếp &amp; Đồ Gia Dụng Tiện Ích" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAv6qPk1Nsy6yjjb2jOQksQqJW8NnGRr277_laicTagfYtE3j87AL99hff_h6P1WnrP_HX1gAXbrkiLb3f-Ndwopqp6RECercnKg3oej9ysVTDNrJXc-CwrFduIl1Yiegj7c73vn0W1Bknvp5o1WOd2LEOyrZOSvl79q2QE_F1gGaQ0toLAv4CouJza8chB0qLWyjGz8WtE7DA280JqmBzvOuHYIOCNpxs9Uk-40L3bPtKc5AouQBBqEQ"/>
+<span class="absolute bottom-space-xs right-space-xs bg-surface-container-lowest/90 backdrop-blur-sm text-on-surface px-space-sm py-0.5 rounded-full font-label-sm text-label-sm font-semibold shadow-sm">208 món lướt đẹp</span>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<h3 class="font-title-md text-title-md text-primary group-hover:text-secondary transition-colors font-bold">Đồ Dùng Bếp &amp; Đồ Gia Dụng Tiện Ích</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Xoong chảo chống dính, bát đĩa gốm sứ, bình thuỷ, bếp ga</p>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-lg">arrow_outward</span>
+</div>
+</div>
+</a>
+<!-- Category 5 -->
+<a class="group block bg-surface-container-low rounded-2xl p-space-md hover:bg-surface-container border border-outline-variant/40 transition-all duration-300 shadow-sm hover:shadow-md" href="#">
+<div class="h-56 w-full rounded-xl overflow-hidden mb-space-md relative">
+<img alt="Kệ Sắt V Lỗ &amp; Tủ Đựng Đồ Kho" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABCJhRi355zIOXorXeN6TKRlGzkwJqkl3RlnMMFU9AQIh-RSZ-PCD5V3f7LrQRD2xFxndXolqjH7Li5yWAFbS3ihZZ2nGABXJlcG9xTMg0J2zmUjReztsQLc7isWeQ03LDwse5IaHWJAFCNrc8-n5ikHqUAT6RUgg05J_MiN3r6Ur8lpPikibwmUFmho5FioZ9ciUJg6x3jXaegfupJHqoT_8Z8q7bw_lUOAxWB2EY2DGFbfnIlb5tkg"/>
+<span class="absolute bottom-space-xs right-space-xs bg-surface-container-lowest/90 backdrop-blur-sm text-on-surface px-space-sm py-0.5 rounded-full font-label-sm text-label-sm font-semibold shadow-sm">64 món dọn kho</span>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<h3 class="font-title-md text-title-md text-primary group-hover:text-secondary transition-colors font-bold">Kệ Sắt V Lỗ &amp; Tủ Đựng Đồ Kho</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Kệ sắt đa năng chịu lực, bàn ghế học sinh, tủ hồ sơ</p>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-lg">arrow_outward</span>
+</div>
+</div>
+</a>
+<!-- Category 6: Đồng giá -->
+<a class="group block bg-secondary-fixed/40 rounded-2xl p-space-md hover:bg-secondary-fixed/70 border border-secondary/20 transition-all duration-300 shadow-sm hover:shadow-md" href="#" id="dong-gia">
+<div class="h-56 w-full rounded-xl overflow-hidden mb-space-md relative bg-secondary/10 flex items-center justify-center">
+<img alt="Khu Đồng Giá Xả Kho &lt; 150K" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyufdJtX55wPZ4e7_dlyhtSoPvHOJaiD9BWH3j--HvJswtFx1kRRNmAgaO3OxZHaJtaBqQid_mwzaAnJIolRTk9aZDCFZrnhG1dLM-IWXp1WHzCgRCXNisjeL7Bk7lqqPfgi7MIw61VPZ40C0KQAPXxJmI2S5hvaGTvtdj5GlFLrZzW8GjKoFSVQ-fwkMmmTTdjxS4SNtDJfPXmr2lgCZRQJ2V5GssdEcQ37zIsKYjste88Un77oheqQ"/>
+<span class="absolute top-space-xs left-space-xs bg-secondary text-on-secondary px-space-sm py-0.5 rounded-full font-label-sm text-label-sm font-bold shadow-sm">Đồng Giá &lt; 150.000đ</span>
+<span class="absolute bottom-space-xs right-space-xs bg-surface-container-lowest/95 backdrop-blur-sm text-secondary font-bold px-space-sm py-0.5 rounded-full font-label-sm text-label-sm shadow-sm">95 món dọn kho giá hời</span>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<h3 class="font-title-md text-title-md text-on-secondary-fixed group-hover:text-secondary transition-colors font-bold">Khu Đồng Giá Xả Kho &lt; 150K</h3>
+<p class="font-body-sm text-body-sm text-on-secondary-fixed-variant mt-0.5">Dọn kho giá rẻ, đồ dùng lặt vặt giá siêu hời</p>
+</div>
+<div class="w-8 h-8 rounded-full bg-secondary text-on-secondary flex items-center justify-center group-hover:scale-110 transition-transform shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-lg">savings</span>
+</div>
+</div>
+</a>
+</div>
+</div>
+</section>
+<!-- SECTION 3: 4-STEP QUALITY VERIFICATION SYSTEM -->
+<section class="w-full py-space-xl bg-surface-container-high relative overflow-hidden">
+<div class="max-w-7xl mx-auto px-gutter relative z-10">
+<div class="text-center max-w-3xl mx-auto mb-space-xl">
+<span class="px-space-md py-1 bg-primary text-on-primary rounded-full font-label-sm text-label-sm uppercase tracking-widest inline-block mb-space-xs font-semibold">
+            An tâm tuyệt đối khi mua đồ cũ
+          </span>
+<h2 class="font-headline-lg text-2xl md:text-3xl font-bold text-primary tracking-tight mb-space-sm">
+            Quy Trình 4 Bước Kiểm Định Vàng
+          </h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            Chúng tôi kiểm tra nghiêm ngặt kết cấu inox, mạch điện tử, khử khuẩn kỹ lưỡng trước khi bàn giao tới tay khách hàng.
+          </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-lg">
+<!-- Step 1 -->
+<div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm border border-outline-variant/30 flex flex-col justify-between relative group hover:shadow-md transition-shadow">
+<div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-low text-primary flex items-center justify-center mb-space-md shadow-inner">
+<span class="material-symbols-outlined text-2xl">content_paste_search</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary font-bold block mb-space-xs">BƯỚC 01</span>
+<h3 class="font-title-md text-title-md text-primary font-bold mb-space-xs">Tuyển chọn kỹ lưỡng</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                Kiểm tra mộng gỗ, độ dày inox SUS 304, độ chịu tải và phụ kiện nguyên bản. Chỉ tiếp nhận những vật dụng đạt tiêu chuẩn vận hành an toàn.
+              </p>
+</div>
+<div class="mt-space-md pt-space-xs text-outline font-label-sm text-[11px] flex items-center gap-1 border-t border-outline-variant/20">
+<span class="material-symbols-outlined text-sm text-primary">done_all</span> Không nứt gãy, mục ruỗng
+            </div>
+</div>
+<!-- Step 2 -->
+<div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm border border-outline-variant/30 flex flex-col justify-between relative group hover:shadow-md transition-shadow">
+<div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-low text-primary flex items-center justify-center mb-space-md shadow-inner">
+<span class="material-symbols-outlined text-2xl">cleaning_services</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary font-bold block mb-space-xs">BƯỚC 02</span>
+<h3 class="font-title-md text-title-md text-primary font-bold mb-space-xs">Vệ sinh &amp; Khử trùng kỹ càng</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                Đánh bóng inox chống ố bẩn, sấy khử khuẩn Ozone và hấp nhiệt loại bỏ dầu mỡ bám dính. Thiết bị điện máy được hút bụi, vệ sinh khoang máy.
+              </p>
+</div>
+<div class="mt-space-md pt-space-xs text-outline font-label-sm text-[11px] flex items-center gap-1 border-t border-outline-variant/20">
+<span class="material-symbols-outlined text-sm text-primary">done_all</span> Sạch sẽ thơm tho, an toàn
+            </div>
+</div>
+<!-- Step 3 -->
+<div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm border border-outline-variant/30 flex flex-col justify-between relative group hover:shadow-md transition-shadow">
+<div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-low text-primary flex items-center justify-center mb-space-md shadow-inner">
+<span class="material-symbols-outlined text-2xl">photo_camera</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary font-bold block mb-space-xs">BƯỚC 03</span>
+<h3 class="font-title-md text-title-md text-primary font-bold mb-space-xs">Ảnh chụp thực tế 100%</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                Không chỉnh sửa hình ảnh làm đẹp ảo. Cung cấp video test máy hoạt động, chỉ rõ tình trạng xước xát nhẹ nếu có để khách nắm rõ thông tin.
+              </p>
+</div>
+<div class="mt-space-md pt-space-xs text-outline font-label-sm text-[11px] flex items-center gap-1 border-t border-outline-variant/20">
+<span class="material-symbols-outlined text-sm text-primary">done_all</span> Minh bạch tình trạng thực tế
+            </div>
+</div>
+<!-- Step 4 -->
+<div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm border border-outline-variant/30 flex flex-col justify-between relative group hover:shadow-md transition-shadow">
+<div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-low text-secondary flex items-center justify-center mb-space-md shadow-inner">
+<span class="material-symbols-outlined text-2xl">verified_user</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary font-bold block mb-space-xs">BƯỚC 04</span>
+<h3 class="font-title-md text-title-md text-primary font-bold mb-space-xs">Bảo hành có tem phiếu</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                Bảo hành từ 3 đến 6 tháng đối với thiết bị điện gia dụng. Bao test đổi trả trong 7 ngày đầu tiên nếu phát sinh bất kỳ trục trặc kỹ thuật nào.
+              </p>
+</div>
+<div class="mt-space-md pt-space-xs text-outline font-label-sm text-[11px] flex items-center gap-1 border-t border-outline-variant/20">
+<span class="material-symbols-outlined text-sm text-secondary">done_all</span> Bảo hành tem phiếu minh bạch
+            </div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 4: DAILY FRESH DROPS & FLASH SALE -->
+<section class="w-full py-space-xl" id="daily-drops">
+<div class="max-w-7xl mx-auto px-gutter">
+<!-- Section Header with Countdown -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md mb-space-lg p-space-md bg-surface-container-low rounded-2xl border border-outline-variant/40 shadow-sm">
+<div>
+<div class="flex items-center gap-space-xs mb-1">
+<span class="inline-block w-2.5 h-2.5 rounded-full bg-secondary animate-pulse"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-bold">Mỗi món chỉ có duy nhất 01 chiếc</span>
+</div>
+<h2 class="font-headline-md text-2xl font-bold text-primary">Hàng Mới Lên Kệ &amp; Flash Sale Trong Ngày</h2>
+</div>
+<!-- Next Drop Counter -->
+<div class="flex items-center gap-space-md bg-surface-container-lowest px-space-lg py-space-sm rounded-xl border border-outline-variant/30 shadow-sm">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Đợt hàng kế tiếp:</span>
+<div class="flex items-center gap-1 font-label-lg text-label-lg font-bold text-primary">
+<span class="bg-surface-container-high px-2 py-1 rounded-lg">04</span>
+<span>:</span>
+<span class="bg-surface-container-high px-2 py-1 rounded-lg">28</span>
+<span>:</span>
+<span class="bg-surface-container-high px-2 py-1 rounded-lg">12</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary uppercase font-semibold">(18:00 Hôm nay)</span>
+</div>
+</div>
+<!-- Quick Filters -->
+<div class="flex items-center gap-2 overflow-x-auto pb-2 mb-space-lg scrollbar-none">
+<button class="px-4 py-1.5 rounded-full bg-primary text-on-primary font-label-sm text-label-sm font-semibold whitespace-nowrap shadow-sm">Tất cả sản phẩm</button>
+<button class="px-4 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm text-label-sm font-medium whitespace-nowrap transition-colors">Đồ Inox Bếp</button>
+<button class="px-4 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm text-label-sm font-medium whitespace-nowrap transition-colors">Đồ Gỗ Nội Thất</button>
+<button class="px-4 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm text-label-sm font-medium whitespace-nowrap transition-colors">Điện Gia Dụng</button>
+<button class="px-4 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm text-label-sm font-medium whitespace-nowrap transition-colors">Đồ Bếp &amp; Đồ Dùng</button>
+</div>
+<!-- Product Cards Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-lg">
+<!-- Card 1: Chậu Rửa Bát Đôi Inox 304 Dày 1.2mm -->
+<div class="bg-surface-container-lowest rounded-2xl p-space-md shadow-sm hover:shadow-xl border border-outline-variant/40 transition-all duration-300 flex flex-col justify-between group">
+<div>
+<div class="w-full aspect-[4/5] rounded-xl overflow-hidden relative mb-space-md bg-surface-container-low">
+<img alt="Chậu Rửa Bát Đôi Inox 304 Dày 1.2mm" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgErltI7mqZWsJ2xQCQCga4Zcu9pWhKjczwI6V6EvL6QUtI3gx1BAFpfmHwFP2y2e9frtLLAlAkX4zFDbF9Mg49ea9VVZxCY7M5BgmlQB6MCHJqU0fGg9HlpWz554VbzcWVRrPWeF2JT_2-lK13125NVENu398IRYBmWuXtEc8RH-zt0rYxW24Y4k5Gsb2NRaCuCc5i8271_C8Jltcx5yQBi863xOrDAHPc0Ay-F1MyVrtXeeCFxSRIQ"/>
+<div class="absolute top-space-xs left-space-xs flex flex-col gap-1 items-start">
+<span class="px-space-sm py-0.5 bg-secondary text-on-secondary rounded-full font-label-sm text-label-sm font-bold shadow-sm">Chỉ còn 1 chiếc</span>
+<span class="px-space-sm py-0.5 bg-surface-container-lowest/90 backdrop-blur-sm text-primary rounded-full font-label-sm text-label-sm shadow-sm font-semibold">Độ mới 95%</span>
+</div>
+<button aria-label="Lưu vào yêu thích" class="absolute top-space-xs right-space-xs w-8 h-8 rounded-full bg-surface-container-lowest/80 backdrop-blur-sm text-on-surface-variant hover:text-secondary flex items-center justify-center transition-colors shadow-sm">
+<span class="material-symbols-outlined text-lg">favorite</span>
+</button>
+</div>
+<div class="space-y-space-xs">
+<span class="font-label-sm text-label-sm text-tertiary font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">verified</span> Inox 304 không gỉ (Dày 1.2mm)
+                </span>
+<h3 class="font-title-sm text-title-sm text-primary group-hover:text-secondary transition-colors line-clamp-1 font-bold">Chậu Rửa Bát Đôi Inox 304 Dày 1.2mm</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Lòng chậu sâu 22cm chống bắn nước, tặng kèm bộ xi phông thoát nước ngăn mùi hôi hiệu quả.</p>
+</div>
+</div>
+<div class="pt-space-md border-t border-outline-variant/30 mt-space-sm">
+<div class="flex items-baseline justify-between mb-space-sm">
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-outline line-through">2.100.000đ</span>
+<span class="font-title-md text-title-md text-secondary font-extrabold">750.000đ</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-bold bg-surface-container px-2 py-0.5 rounded-md">Giảm 64%</span>
+</div>
+<div class="grid grid-cols-2 gap-space-xs">
+<button class="py-2 px-2 bg-surface-container hover:bg-surface-container-high rounded-xl font-label-sm text-label-sm transition-colors text-center font-medium">Xem chi tiết</button>
+<button class="py-2 px-2 bg-primary text-on-primary hover:bg-primary-container rounded-xl font-label-sm text-label-sm transition-colors text-center flex items-center justify-center gap-1 font-bold shadow-sm">
+<span class="material-symbols-outlined text-sm">shopping_cart</span> Chốt mua ngay
+                </button>
+</div>
+</div>
+</div>
+<!-- Card 2: Bộ Bàn Ăn Gỗ Sồi Nga 4 Ghế Xuất Khẩu -->
+<div class="bg-surface-container-lowest rounded-2xl p-space-md shadow-sm hover:shadow-xl border border-outline-variant/40 transition-all duration-300 flex flex-col justify-between group">
+<div>
+<div class="w-full aspect-[4/5] rounded-xl overflow-hidden relative mb-space-md bg-surface-container-low">
+<img alt="Bộ Bàn Ăn Gỗ Sồi Nga 4 Ghế Xuất Khẩu" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUditnJVX6xVxWl7gLfdH11n77Ao5Zquroj9339phMHRe3nybT4afBiEWeTsVk2jgg1zQnoMPuLTW5crHn4dqhThMcT7ht91FxvRBeRInAXsv9OIzwFTHQPX6JTSn6pG6AVEpdUVAARGo2CmdMX7ZzARXvP3dKAbKA-oxYDxSt22R3oqS4zo3Jj3ldoF7hwpD_xgFLiQF91zaSWuM5VRJxL7OFEFLUA0g0kwLLzZf24XauZ6-g7z9Tcw"/>
+<div class="absolute top-space-xs left-space-xs flex flex-col gap-1 items-start">
+<span class="px-space-sm py-0.5 bg-secondary text-on-secondary rounded-full font-label-sm text-label-sm font-bold shadow-sm">Chỉ còn 1 chiếc</span>
+<span class="px-space-sm py-0.5 bg-surface-container-lowest/90 backdrop-blur-sm text-primary rounded-full font-label-sm text-label-sm shadow-sm font-semibold">Độ mới 92%</span>
+</div>
+<button aria-label="Lưu vào yêu thích" class="absolute top-space-xs right-space-xs w-8 h-8 rounded-full bg-surface-container-lowest/80 backdrop-blur-sm text-on-surface-variant hover:text-secondary flex items-center justify-center transition-colors shadow-sm">
+<span class="material-symbols-outlined text-lg">favorite</span>
+</button>
+</div>
+<div class="space-y-space-xs">
+<span class="font-label-sm text-label-sm text-outline font-semibold">Bàn ghế ăn • Gỗ sồi Nga tự nhiên</span>
+<h3 class="font-title-sm text-title-sm text-primary group-hover:text-secondary transition-colors line-clamp-1 font-bold">Bộ Bàn Ăn Gỗ Sồi Nga 4 Ghế Xuất Khẩu</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Khung gỗ chắc nịch, mặt bàn phủ bóng 3 lớp kháng ẩm trầy xước, chịu lực rất đầm và êm.</p>
+</div>
+</div>
+<div class="pt-space-md border-t border-outline-variant/30 mt-space-sm">
+<div class="flex items-baseline justify-between mb-space-sm">
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-outline line-through">4.500.000đ</span>
+<span class="font-title-md text-title-md text-secondary font-extrabold">1.850.000đ</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-bold bg-surface-container px-2 py-0.5 rounded-md">Giảm 59%</span>
+</div>
+<div class="grid grid-cols-2 gap-space-xs">
+<button class="py-2 px-2 bg-surface-container hover:bg-surface-container-high rounded-xl font-label-sm text-label-sm transition-colors text-center font-medium">Xem chi tiết</button>
+<button class="py-2 px-2 bg-primary text-on-primary hover:bg-primary-container rounded-xl font-label-sm text-label-sm transition-colors text-center flex items-center justify-center gap-1 font-bold shadow-sm">
+<span class="material-symbols-outlined text-sm">shopping_cart</span> Chốt mua ngay
+                </button>
+</div>
+</div>
+</div>
+<!-- Card 3: Nồi Chiên Không Dầu Philips XXL -->
+<div class="bg-surface-container-lowest rounded-2xl p-space-md shadow-sm hover:shadow-xl border border-outline-variant/40 transition-all duration-300 flex flex-col justify-between group">
+<div>
+<div class="w-full aspect-[4/5] rounded-xl overflow-hidden relative mb-space-md bg-surface-container-low">
+<img alt="Nồi Chiên Không Dầu Philips XXL 1.4kg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC85X3kVuBfdq7KvCRE5v0d2FQOGex-P1WN2_nK9IYW5M5SNt9ZKgCxAJplZnLvOqVdRgt5FR8FLdkrZjjTO64ThCkPfnKVBigOwaL--Iv65k3Xp9AQL3gD8BP4IABm3yeH7SWM5wEZzrsfkYBYb9K7CRY-e9C1C3O8EYfRQ2e2fcQa8IQrJYXknWMdsqkyat_vtfLG_YaMUR69p-FeTi7rvi49xtAMdTx1QbHMBYs_FKVZHFRKXyjCAQ"/>
+<div class="absolute top-space-xs left-space-xs flex flex-col gap-1 items-start">
+<span class="px-space-sm py-0.5 bg-primary text-on-primary rounded-full font-label-sm text-label-sm font-bold shadow-sm">Bán chạy</span>
+<span class="px-space-sm py-0.5 bg-surface-container-lowest/90 backdrop-blur-sm text-primary rounded-full font-label-sm text-label-sm shadow-sm font-semibold">Độ mới 96%</span>
+</div>
+<button aria-label="Lưu vào yêu thích" class="absolute top-space-xs right-space-xs w-8 h-8 rounded-full bg-surface-container-lowest/80 backdrop-blur-sm text-on-surface-variant hover:text-secondary flex items-center justify-center transition-colors shadow-sm">
+<span class="material-symbols-outlined text-lg">favorite</span>
+</button>
+</div>
+<div class="space-y-space-xs">
+<span class="font-label-sm text-label-sm text-tertiary font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">verified</span> Đã test nhiệt • Bảo hành 6 tháng
+                </span>
+<h3 class="font-title-sm text-title-sm text-primary group-hover:text-secondary transition-colors line-clamp-1 font-bold">Nồi Chiên Không Dầu Philips XXL 1.4kg</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Lòng nồi tráng chống dính chuẩn zin, công suất nướng 2225W nhanh giòn, đã khử trùng Ozone thơm tho.</p>
+</div>
+</div>
+<div class="pt-space-md border-t border-outline-variant/30 mt-space-sm">
+<div class="flex items-baseline justify-between mb-space-sm">
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-outline line-through">3.400.000đ</span>
+<span class="font-title-md text-title-md text-secondary font-extrabold">1.290.000đ</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-bold bg-surface-container px-2 py-0.5 rounded-md">Giảm 62%</span>
+</div>
+<div class="grid grid-cols-2 gap-space-xs">
+<button class="py-2 px-2 bg-surface-container hover:bg-surface-container-high rounded-xl font-label-sm text-label-sm transition-colors text-center font-medium">Xem chi tiết</button>
+<button class="py-2 px-2 bg-primary text-on-primary hover:bg-primary-container rounded-xl font-label-sm text-label-sm transition-colors text-center flex items-center justify-center gap-1 font-bold shadow-sm">
+<span class="material-symbols-outlined text-sm">shopping_cart</span> Chốt mua ngay
+                </button>
+</div>
+</div>
+</div>
+<!-- Card 4: Kệ Bếp Inox 4 Tầng Có Bánh Xe -->
+<div class="bg-surface-container-lowest rounded-2xl p-space-md shadow-sm hover:shadow-xl border border-outline-variant/40 transition-all duration-300 flex flex-col justify-between group">
+<div>
+<div class="w-full aspect-[4/5] rounded-xl overflow-hidden relative mb-space-md bg-surface-container-low">
+<img alt="Kệ Bếp Inox 4 Tầng Có Bánh Xe" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkerHN2q08LzWNengP5A5JHDR4-AA2i_VZyjzRKgLESsaO3My8HXTb_zKKUhZTQsJ3yiCcDYY76I1sBIjZK4fUsw77iYnUHb6ySR_sOqEXJ3jtn0hafz03uJ-YStkdrv_5Da3NfhmWyNHy0DtbQvENYVpWADWMnTen-yDvII4mAhVaNhQJDs3htTQRn_1HA7mIgzzuNKlj0KY8BqYoa2-7Io82F3AP0Ok4yPiiVslEyrdkFKMwQoMmaA"/>
+<div class="absolute top-space-xs left-space-xs flex flex-col gap-1 items-start">
+<span class="px-space-sm py-0.5 bg-surface-container-lowest/90 backdrop-blur-sm text-primary rounded-full font-label-sm text-label-sm shadow-sm font-semibold">Độ mới 98%</span>
+<span class="px-space-sm py-0.5 bg-secondary text-on-secondary rounded-full font-label-sm text-label-sm font-bold shadow-sm">Inox 304 sáng bóng</span>
+</div>
+<button aria-label="Lưu vào yêu thích" class="absolute top-space-xs right-space-xs w-8 h-8 rounded-full bg-surface-container-lowest/80 backdrop-blur-sm text-on-surface-variant hover:text-secondary flex items-center justify-center transition-colors shadow-sm">
+<span class="material-symbols-outlined text-lg">favorite</span>
+</button>
+</div>
+<div class="space-y-space-xs">
+<span class="font-label-sm text-label-sm text-outline font-semibold">Đồ inox • Thiết bị bếp chịu tải 80kg</span>
+<h3 class="font-title-sm text-title-sm text-primary group-hover:text-secondary transition-colors line-clamp-1 font-bold">Kệ Bếp Inox 4 Tầng Có Bánh Xe Chịu Lực</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Bánh xe có khóa chống trôi, thanh giằng chắc chắn để lò nướng, nồi cơm điện và hũ gia vị rất tiện.</p>
+</div>
+</div>
+<div class="pt-space-md border-t border-outline-variant/30 mt-space-sm">
+<div class="flex items-baseline justify-between mb-space-sm">
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-outline line-through">950.000đ</span>
+<span class="font-title-md text-title-md text-secondary font-extrabold">420.000đ</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-bold bg-surface-container px-2 py-0.5 rounded-md">Giảm 56%</span>
+</div>
+<div class="grid grid-cols-2 gap-space-xs">
+<button class="py-2 px-2 bg-surface-container hover:bg-surface-container-high rounded-xl font-label-sm text-label-sm transition-colors text-center font-medium">Xem chi tiết</button>
+<button class="py-2 px-2 bg-primary text-on-primary hover:bg-primary-container rounded-xl font-label-sm text-label-sm transition-colors text-center flex items-center justify-center gap-1 font-bold shadow-sm">
+<span class="material-symbols-outlined text-sm">shopping_cart</span> Chốt mua ngay
+                </button>
+</div>
+</div>
+</div>
+</div>
+<!-- View All CTA -->
+<div class="mt-space-xl text-center">
+<a class="inline-flex items-center gap-space-xs px-space-xl py-3.5 bg-surface-container-low text-primary hover:bg-surface-container hover:text-secondary rounded-xl font-label-lg text-label-lg font-bold transition-all shadow-sm border border-outline-variant/40" href="#">
+<span>Xem toàn bộ 150+ món hàng mới về hôm nay</span>
+<span class="material-symbols-outlined text-lg">arrow_forward</span>
+</a>
+</div>
+</div>
+</section>
+<!-- SECTION 5: BUYBACK & CONSIGNMENT SERVICE -->
+<section class="w-full bg-primary text-on-primary py-space-xl relative overflow-hidden" id="ky-gui-thu-mua">
+<div class="max-w-7xl mx-auto px-gutter relative z-10">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center">
+<!-- Left Content -->
+<div class="lg:col-span-7 space-y-space-md">
+<div class="inline-flex items-center gap-space-xs px-space-md py-1 bg-primary-container text-primary-fixed rounded-full">
+<span class="material-symbols-outlined text-base">cycle</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider font-bold">Dịch vụ thu mua &amp; dọn nhà trọn gói</span>
+</div>
+<h2 class="font-headline-lg text-2xl lg:text-3xl font-bold text-on-primary tracking-tight leading-snug">
+              Bạn Cần Thanh Lý Đồ Nội Thất, <br/>
+              Thiết Bị Gia Dụng, Đồ Inox Hoặc Trọn Gói Gia Đình?
+            </h2>
+<p class="font-body-lg text-body-lg text-on-primary-container max-w-xl leading-relaxed">
+              Tiệm đến tận nơi thu mua giá cao, tháo dỡ vận chuyển miễn phí trong ngày! Định giá minh bạch qua Zalo chỉ sau 15 phút, giải phóng không gian thần tốc.
+            </p>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-space-md pt-space-sm">
+<div class="flex items-start gap-space-xs">
+<div class="w-10 h-10 rounded-lg bg-surface-container-lowest/10 flex items-center justify-center text-secondary-container shrink-0">
+<span class="material-symbols-outlined text-2xl">speed</span>
+</div>
+<div>
+<h4 class="font-title-sm text-title-sm text-on-primary font-bold">Báo giá 15 phút</h4>
+<p class="font-body-sm text-body-sm text-on-primary-container">Gửi ảnh Zalo nhận giá ngay</p>
+</div>
+</div>
+<div class="flex items-start gap-space-xs">
+<div class="w-10 h-10 rounded-lg bg-surface-container-lowest/10 flex items-center justify-center text-secondary-container shrink-0">
+<span class="material-symbols-outlined text-2xl">local_shipping</span>
+</div>
+<div>
+<h4 class="font-title-sm text-title-sm text-on-primary font-bold">Đến bốc dỡ tận nơi</h4>
+<p class="font-body-sm text-body-sm text-on-primary-container">Miễn phí tháo lắp &amp; xe tải</p>
+</div>
+</div>
+<div class="flex items-start gap-space-xs">
+<div class="w-10 h-10 rounded-lg bg-surface-container-lowest/10 flex items-center justify-center text-secondary-container shrink-0">
+<span class="material-symbols-outlined text-2xl">payments</span>
+</div>
+<div>
+<h4 class="font-title-sm text-title-sm text-on-primary font-bold">Tiền mặt / CK 100%</h4>
+<p class="font-body-sm text-body-sm text-on-primary-container">Thanh toán sòng phẳng tại chỗ</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Quick Appraisal Form Card -->
+<div class="lg:col-span-5 bg-surface p-space-lg rounded-2xl text-on-surface shadow-2xl border border-outline-variant/30">
+<div class="flex items-center justify-between mb-space-sm">
+<h3 class="font-headline-sm text-xl font-bold text-primary">Gửi Ảnh Định Giá Nhanh</h3>
+<span class="material-symbols-outlined text-secondary text-2xl">camera_enhance</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">
+              Điền nhanh thông tin dưới đây, tư vấn viên của Kho sẽ kết nối Zalo gửi báo giá trong 15 phút.
+            </p>
+<form class="space-y-space-sm" onsubmit="event.preventDefault(); alert('Cảm ơn bạn! Kho Tổng sẽ liên hệ thẩm định qua Zalo trong 15 phút.');">
+<div>
+<label class="block font-label-sm text-label-sm text-primary font-bold mb-1.5">Loại món đồ cần thanh lý / ký gửi</label>
+<div class="grid grid-cols-3 gap-2">
+<label class="flex items-center justify-center p-2 rounded-xl bg-surface-container-low text-on-surface font-label-sm text-[12px] text-center cursor-pointer hover:bg-surface-container transition-colors has-[:checked]:bg-primary has-[:checked]:text-on-primary font-medium">
+<input checked="" class="sr-only" name="item-type" type="radio"/>
+<span>Nội thất gỗ</span>
+</label>
+<label class="flex items-center justify-center p-2 rounded-xl bg-surface-container-low text-on-surface font-label-sm text-[12px] text-center cursor-pointer hover:bg-surface-container transition-colors has-[:checked]:bg-primary has-[:checked]:text-on-primary font-medium">
+<input class="sr-only" name="item-type" type="radio"/>
+<span>Thiết bị điện</span>
+</label>
+<label class="flex items-center justify-center p-2 rounded-xl bg-surface-container-low text-on-surface font-label-sm text-[12px] text-center cursor-pointer hover:bg-surface-container transition-colors has-[:checked]:bg-primary has-[:checked]:text-on-primary font-medium">
+<input class="sr-only" name="item-type" type="radio"/>
+<span>Đồ inox &amp; bếp</span>
+</label>
+</div>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-primary font-bold mb-1">Số điện thoại có Zalo nhận định giá</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-outline text-lg">call</span>
+<input class="w-full pl-10 pr-space-md py-2.5 bg-surface-container-lowest rounded-xl font-body-md text-body-md text-on-surface border border-outline-variant/60 placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary" placeholder="Ví dụ: 0988.xxx.xxx" required="" type="tel"/>
+</div>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-primary font-bold mb-1">Khu vực sinh sống</label>
+<select class="w-full px-space-md py-2.5 bg-surface-container-lowest rounded-xl font-body-md text-body-md text-on-surface border border-outline-variant/60 focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary">
+<option>Hà Nội (Tây Hồ, Cầu Giấy, Đống Đa, Long Biên...)</option>
+<option>TP. Hồ Chí Minh (Quận 1, Thủ Đức, Bình Thạnh, Gò Vấp...)</option>
+<option>Tỉnh thành khác (Hỗ trợ định giá xe tải chở)</option>
+</select>
+</div>
+<div class="p-space-sm bg-surface-container-low rounded-xl text-center font-body-sm text-body-sm text-on-surface-variant flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-base text-secondary">lock</span>
+<span>Bảo mật thông tin khách hàng tuyệt đối</span>
+</div>
+<button class="w-full py-3 bg-secondary text-on-secondary hover:bg-on-secondary-container rounded-xl font-label-lg text-label-lg font-bold transition-all shadow-md flex items-center justify-center gap-space-xs" type="submit">
+<span>Gửi thông tin định giá ngay</span>
+<span class="material-symbols-outlined text-lg">send</span>
+</button>
+</form>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 6: COMMUNITY REVIEWS & REAL FEEDBACK -->
+<section class="w-full py-space-xl bg-surface-container-lowest">
+<div class="max-w-7xl mx-auto px-gutter">
+<div class="mb-space-lg text-center max-w-2xl mx-auto">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-widest block mb-space-xs font-bold">Trải nghiệm chân thực</span>
+<h2 class="font-headline-lg text-2xl md:text-3xl font-bold text-primary tracking-tight">Khách Hàng Nói Gì Về Kho Chúng Tôi?</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Đánh giá khách quan từ những khách hàng đã mua và ký gửi đồ cũ tại Kho.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-lg">
+<!-- Review 1 -->
+<div class="bg-surface-container-low p-space-lg rounded-2xl border border-outline-variant/40 shadow-sm flex flex-col justify-between">
+<div>
+<div class="h-48 w-full rounded-xl overflow-hidden mb-space-md bg-surface-container">
+<img alt="Bộ bàn ăn gỗ thực tế tại nhà khách hàng" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCF3ktM0PFXFdGTNglv07r5m7ZUf8k2oVURVdycdmLGL6xR-UntP2vF0mDPWJFUSRBJtSwyzHbNfgZXUrZdTsj-fLzU2CyBKgwUOesWU67NzyPFzIxJbLbHZ0F6vmbhpfUxPP3c_J4xzo7bj967dmpaZ0PapotoelY6araIuG1bfA-y9q0UsxpkoUVzmhlq2KhsIFjy2NN04Ylasx8ZE-jeOBp8CdRh3dfwPUuTzaKIySgToXy5VsLcJQ"/>
+</div>
+<div class="flex items-center gap-1 text-secondary mb-space-xs">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface italic mb-space-md">
+                "Bộ bàn ăn gỗ sồi mua thanh lý tại kho rất cứng cáp, bề mặt bóng bẩy không vết trầy. Tiết kiệm hơn 3 triệu so với mua ở tiệm mới mà chất lượng chẳng khác gì."
+              </p>
+</div>
+<div class="flex items-center gap-space-sm pt-space-xs border-t border-outline-variant/20">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-bold">
+                LN
+              </div>
+<div>
+<span class="font-title-sm text-title-sm text-primary block leading-tight font-bold">Chị Linh Nguyễn</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Chung cư Ngoại Giao Đoàn, Hà Nội</span>
+</div>
+</div>
+</div>
+<!-- Review 2 -->
+<div class="bg-surface-container-low p-space-lg rounded-2xl border border-outline-variant/40 shadow-sm flex flex-col justify-between">
+<div>
+<div class="h-48 w-full rounded-xl overflow-hidden mb-space-md bg-surface-container">
+<img alt="Chậu rửa và thiết bị inox nhà bếp tại gia đình" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8n2op1fXWJ73diCygCZG7Bi_DWdVm4wOsNLZ50MRby3_QGyDYDTwek826Doyi10iV54vB77scHZRlc3EkziISGYs--18hyi8nEWvnCafX8EMSk6Gs6QYgKdSbYgvNNQ4K1wZAT0Rd8ujAoApXfd6AwrLOmTj5-4xGMHbzyACRQv-ZO82d48gqImHa_M2kJY9AtHWpjAafxmL_YE_GRklgLjggembpcRU9mWAIqn1Rm5iYmZXj_2cPJA"/>
+</div>
+<div class="flex items-center gap-1 text-secondary mb-space-xs">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface italic mb-space-md">
+                "Chậu rửa inox 304 và kệ bếp 4 tầng rất dày, mối hàn kỹ không ọp ẹp. Nồi chiên không dầu hoạt động êm ru, có phiếu bảo hành 6 tháng nên gia đình rất an tâm."
+              </p>
+</div>
+<div class="flex items-center gap-space-sm pt-space-xs border-t border-outline-variant/20">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-bold">
+                TH
+              </div>
+<div>
+<span class="font-title-sm text-title-sm text-primary block leading-tight font-bold">Anh Tuấn Hưng</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Khu dân cư Miếu Nổi, Bình Thạnh, TP.HCM</span>
+</div>
+</div>
+</div>
+<!-- Review 3 -->
+<div class="bg-surface-container-low p-space-lg rounded-2xl border border-outline-variant/40 shadow-sm flex flex-col justify-between">
+<div>
+<div class="h-48 w-full rounded-xl overflow-hidden mb-space-md bg-surface-container">
+<img alt="Dịch vụ ký gửi và thu mua đồ đạc gia đình nhanh gọn" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAC06n9c7s_9mMPdg1xlUFe7Nub5hE-VqzscCphZAyvvxRsRpRxK9mXw9b0ck7fiRnCnFkducQLundvQf_626yfGAR75pWsfPWit9bYL0ExCXCKG6zULNLuFVPH9j-PCIOpbOk9iC-GvC9XpUCChbRmlNjrqVfGrAEXXn8jYZ7Kk5VYOSRX_8UIgOcLTz3Gs-Gak2-hmUP3Dm6RtFu_zkWvLT8yO-U5qhHJKZl5aCUf1_hz6daJdLwrMg"/>
+</div>
+<div class="flex items-center gap-1 text-secondary mb-space-xs">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface italic mb-space-md">
+                "Thanh lý đồ dọn nhà rất nhanh, các bạn qua bốc xếp chuyên nghiệp, thanh toán tiền mặt 100% trong 20 phút. Vừa đỡ tốn tiền thuê xe vừa dọn gọn căn hộ."
+              </p>
+</div>
+<div class="flex items-center gap-space-sm pt-space-xs border-t border-outline-variant/20">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-bold">
+                MA
+              </div>
+<div>
+<span class="font-title-sm text-title-sm text-primary block leading-tight font-bold">Chị Minh Anh</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Khách thanh lý trọn gói căn hộ</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 7: SHOWROOM VISITS & INTERACTIVE MAP -->
+<section class="w-full py-space-xl bg-surface-container-high border-t border-outline-variant/40">
+<div class="max-w-7xl mx-auto px-gutter">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center">
+<!-- Showroom Information (2 Locations) -->
+<div class="lg:col-span-7 flex flex-col justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-widest block mb-space-xs font-bold">Xem hàng trực tiếp tại kho bãi</span>
+<h2 class="font-headline-lg text-2xl lg:text-3xl font-bold text-primary tracking-tight mb-space-sm">
+                Mời Bạn Ghé Trải Nghiệm &amp; Thử Đồ Tại Kho
+              </h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-space-lg">
+                Mọi món đồ trên website đều được lưu trữ và trưng bày thực tế tại 2 kho tổng Hà Nội &amp; Sài Gòn. Quý khách có thể cắm điện test máy, sờ chất gỗ và kiểm tra inox trước khi quyết định mua. Mở cửa từ 8:00 - 21:30 hàng ngày.
+              </p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md mb-space-md">
+<!-- Location Hanoi -->
+<div class="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm border border-outline-variant/30 flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-space-xs mb-space-xs">
+<span class="material-symbols-outlined text-secondary">warehouse</span>
+<h3 class="font-title-sm text-title-sm text-primary font-bold">Kho Tổng Hà Nội</h3>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-xs">
+                      42 Ngõ 12 Đặng Thai Mai, P. Quảng An, Q. Tây Hồ (Bãi đỗ ô tô và xe tải rộng 200m²)
+                    </p>
+<span class="font-label-sm text-[12px] text-tertiary flex items-center gap-1 font-semibold">
+<span class="material-symbols-outlined text-sm">schedule</span> 8h00 - 21h30 (Cả Thứ 7, CN)
+                    </span>
+</div>
+<div class="mt-space-md pt-space-xs border-t border-outline-variant/20">
+<a class="font-label-sm text-label-sm text-secondary font-bold hover:underline flex items-center gap-1" href="#">
+<span>Chỉ đường Google Maps</span>
+<span class="material-symbols-outlined text-sm">directions</span>
+</a>
+</div>
+</div>
+<!-- Location Saigon -->
+<div class="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm border border-outline-variant/30 flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-space-xs mb-space-xs">
+<span class="material-symbols-outlined text-secondary">storefront</span>
+<h3 class="font-title-sm text-title-sm text-primary font-bold">Kho Tổng Sài Gòn</h3>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-xs">
+                      18B Nguyễn Thị Minh Khai, P. Đa Kao, Quận 1 (Mặt tiền thuận tiện bốc dỡ hàng)
+                    </p>
+<span class="font-label-sm text-[12px] text-tertiary flex items-center gap-1 font-semibold">
+<span class="material-symbols-outlined text-sm">schedule</span> 8h00 - 21h30 (Cả Thứ 7, CN)
+                    </span>
+</div>
+<div class="mt-space-md pt-space-xs border-t border-outline-variant/20">
+<a class="font-label-sm text-label-sm text-secondary font-bold hover:underline flex items-center gap-1" href="#">
+<span>Chỉ đường Google Maps</span>
+<span class="material-symbols-outlined text-sm">directions</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Map Visual Card -->
+<div class="lg:col-span-5 h-80 rounded-2xl shadow-md border border-outline-variant/40 bg-cover bg-center overflow-hidden flex flex-col justify-between p-space-md relative" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDzKAAtboyL1GrGss1zW2IWbvlBOcQkF4U4pGGp-IO73DOVuFurHJppYtd-2hzKZvhIyvqk8YdgMCgyvOvl2hIKzkn2vNalL6k17a-8aJ5peJaFXsrMgIqxOD2SgR2G3p6ALZNKeFNvrXCi4TDKdjALPlTnimUE2I8pzF9NHRHSI7HJvlOXWSjSf7OCeKXUOoxIDx9kThdqrmQaP3Ei-nD-iFamSNllJxE6sJYkRJS0C-2-opnAGVT3bg')">
+<div class="bg-surface-container-lowest/90 backdrop-blur-md px-space-md py-1.5 rounded-xl font-label-sm text-label-sm text-primary shadow-sm flex items-center gap-1 w-max border border-outline-variant/40">
+<span class="material-symbols-outlined text-sm text-secondary">pin_drop</span> Kho hàng mở cửa đón khách liên tục 7 ngày trong tuần
+            </div>
+<div class="bg-surface-container-lowest/95 backdrop-blur-md p-space-md rounded-xl shadow-lg border border-outline-variant/40">
+<span class="font-title-sm text-sm font-bold text-primary block">Hỗ trợ vận chuyển tận nhà:</span>
+<p class="font-body-sm text-[12px] text-on-surface-variant mt-0.5">Xe ba gác và xe tải của Kho hỗ trợ bốc xếp, lắp ráp tại chỗ trong nội thành chỉ từ 1 - 2 giờ.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- FOOTER -->
+<footer class="w-full bg-surface-container-high border-t border-outline-variant/40 pt-space-xl pb-space-lg text-on-surface">
+<div class="max-w-7xl mx-auto px-gutter">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-xl pb-space-xl">
+<!-- Col 1: Giới thiệu -->
+<div class="space-y-space-md">
+<div class="flex items-center gap-space-sm">
+<img alt="Logo Tiệm Nhà Cũ" class="h-9 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1VRupOzT_Mr57aPJ9zbr6PF8c9ZhaC2wBz3tMZm1Tz1Y3QHURLshXO8XQ2XSXm_mfxPEAOTntnIXsOojadGmENJz3i9X5Inps5RSOy200J5CTN1ExnYfAEjw29c5q_CYm8jBMgOZ4vTzUMKIzO5EDpuwSctCOYv3Fx-j1lPp_c3wa4AEqsN7N8N2KAJ9QAAQP7x9oZ-I7N1PqSzPd5XhWJXdy32pQauKhdTGgcBP1O89UV-oTJaieoRuGM3"/>
+<span class="font-headline-md text-xl font-bold text-primary">Kho Đồ Cũ &amp; Gia Dụng</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+          Tổng kho thanh lý đồ gỗ nội thất, thiết bị inox gia dụng bếp và điện máy tuyển chọn. Giúp gia đình tiết kiệm tối đa chi phí với các sản phẩm bền bỉ, an toàn.
+        </p>
+<div class="space-y-space-xs font-body-sm text-body-sm text-on-surface-variant">
+<div class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-base text-secondary shrink-0 mt-0.5">location_on</span>
+<span><strong>Kho Hà Nội:</strong> 42 Ngõ 12 Đặng Thai Mai, P. Quảng An, Q. Tây Hồ</span>
+</div>
+<div class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-base text-secondary shrink-0 mt-0.5">location_on</span>
+<span><strong>Kho TP.HCM:</strong> 18B Nguyễn Thị Minh Khai, P. Đa Kao, Quận 1</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-base text-secondary shrink-0">phone</span>
+<span>Hotline / Zalo: <strong class="text-secondary font-bold">0988.123.456</strong> (8h00 - 21h30)</span>
+</div>
+</div>
+</div>
+<!-- Col 2: Danh mục chính -->
+<div class="space-y-space-md">
+<h3 class="font-title-sm text-title-sm text-primary uppercase tracking-wider font-bold">Danh mục thanh lý</h3>
+<ul class="space-y-space-xs font-body-md text-body-md text-on-surface-variant">
+<li><a class="hover:text-secondary transition-colors" href="#">Nội thất gỗ tự nhiên, bàn ăn, sofa</a></li>
+<li><a class="hover:text-secondary transition-colors" href="#">Chậu rửa inox 304 &amp; giá kệ bếp</a></li>
+<li><a class="hover:text-secondary transition-colors" href="#">Điện gia dụng, lò vi sóng, nồi chiên</a></li>
+<li><a class="hover:text-secondary transition-colors" href="#">Kệ sắt V lỗ chịu lực &amp; tủ hồ sơ</a></li>
+<li><a class="hover:text-secondary transition-colors" href="#">Đồ dùng nhà bếp, xoong chảo chống dính</a></li>
+<li><a class="hover:text-secondary transition-colors" href="#">Khu vực đồng giá xả kho &lt; 150.000đ</a></li>
+</ul>
+</div>
+<!-- Col 3: Cam kết & Chính sách -->
+<div class="space-y-space-md">
+<h3 class="font-title-sm text-title-sm text-primary uppercase tracking-wider font-bold">Cam kết &amp; Chính sách</h3>
+<ul class="space-y-space-xs font-body-md text-body-md text-on-surface-variant">
+<li class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-base text-secondary">verified_user</span><span>Kiểm định vận hành chuẩn mực</span></li>
+<li class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-base text-secondary">build</span><span>Bảo hành 3 - 6 tháng cho đồ điện tử</span></li>
+<li class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-base text-secondary">local_shipping</span><span>Giao hàng tận nơi &amp; hỗ trợ bốc xếp</span></li>
+<li class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-base text-secondary">assignment_return</span><span>Đổi mới hoặc hoàn tiền trong 7 ngày</span></li>
+<li class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-base text-secondary">sanitizer</span><span>Vệ sinh khử khuẩn sạch sẽ trước khi giao</span></li>
+</ul>
+</div>
+<!-- Col 4: Thu mua ký gửi -->
+<div class="space-y-space-md">
+<h3 class="font-title-sm text-title-sm text-primary uppercase tracking-wider font-bold">Thu mua &amp; Dọn kho</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+          Nhận thanh lý trọn gói đồ đạc văn phòng, nhà hàng, căn hộ gia đình. Định giá chuẩn, thu mua nhanh trong ngày.
+        </p>
+<a class="inline-flex items-center gap-space-xs px-space-md py-2.5 bg-primary text-on-primary hover:bg-primary-container rounded-xl font-label-md text-label-md font-bold transition-colors shadow-sm" href="#ky-gui-thu-mua">
+<span class="material-symbols-outlined text-base">inventory_2</span>
+<span>Gửi ảnh định giá Zalo ngay</span>
+</a>
+<div class="pt-space-xs">
+<h4 class="font-label-sm text-label-sm text-primary font-bold mb-1">Đăng ký nhận thông báo xả kho:</h4>
+<div class="flex items-center gap-1.5">
+<input class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant/60 rounded-xl font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:ring-1 focus:ring-secondary" placeholder="Email của bạn..." type="email"/>
+<button class="px-4 py-2 bg-secondary text-on-secondary hover:bg-on-secondary-container rounded-xl font-label-sm text-label-sm font-bold shrink-0 transition-colors">Gửi</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Copyright -->
+<div class="pt-space-lg border-t border-outline-variant/30 flex flex-col md:flex-row items-center justify-between gap-space-md font-body-sm text-body-sm text-on-surface-variant">
+<div>
+<span>© 2025 Kho Tổng Xả Sale &amp; Thanh Lý Đồ Cũ, Đồ Inox Gia Dụng. Tất cả quyền được bảo lưu.</span>
+</div>
+<div class="flex items-center gap-space-md">
+<span class="text-outline font-label-sm text-label-sm uppercase font-semibold">Hình thức thanh toán:</span>
+<div class="flex items-center gap-space-sm text-on-surface">
+<span class="material-symbols-outlined text-xl" title="Chuyển khoản QR">qr_code_scanner</span>
+<span class="material-symbols-outlined text-xl" title="Thẻ tín dụng / Ghi nợ">credit_card</span>
+<span class="material-symbols-outlined text-xl" title="Tiền mặt khi nhận hàng (COD)">payments</span>
+<span class="material-symbols-outlined text-xl" title="Bảo chứng an toàn">shield</span>
+</div>
+</div>
+</div>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&amp;family=Plus+Jakarta+Sans:ital,wght@0,400..700;1,400..700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "tertiary-container": "#3a4838", "error": "#ba1a1a", "on-tertiary-fixed": "#111f11", "on-error": "#ffffff", "on-error-container": "#93000a", "surface-container-low": "#fff1ea", "inverse-primary": "#adcebe", "outline-variant": "#c1c8c3", "on-primary-fixed": "#022016", "on-secondary": "#ffffff", "primary": "#163328", "surface-dim": "#edd5c9", "on-tertiary-container": "#a6b6a1", "tertiary-fixed-dim": "#bbcbb6", "on-secondary-container": "#76270e", "secondary": "#9c4328", "primary-fixed-dim": "#adcebe", "surface-container": "#ffeadf", "surface-container-lowest": "#ffffff", "inverse-on-surface": "#ffede4", "on-surface": "#251911", "surface-container-high": "#fbe4d7", "on-primary-fixed-variant": "#304d40", "on-secondary-fixed": "#3a0a00", "inverse-surface": "#3b2d25", "secondary-fixed": "#ffdbd1", "primary-fixed": "#c9ead9", "primary-container": "#2d4a3e", "secondary-container": "#ff8f6e", "tertiary-fixed": "#d7e7d1", "surface": "#fff8f5", "surface-variant": "#f6ded1", "error-container": "#ffdad6", "on-tertiary": "#ffffff", "tertiary": "#243223", "on-primary": "#ffffff", "surface-bright": "#fff8f5", "on-surface-variant": "#424844", "surface-tint": "#476558", "background": "#fff8f5", "surface-container-highest": "#f6ded1", "outline": "#727974", "on-tertiary-fixed-variant": "#3c4b3a", "secondary-fixed-dim": "#ffb59f", "on-background": "#251911", "on-primary-container": "#99b9a9", "on-secondary-fixed-variant": "#7d2c13" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-xs": "0.25rem", "space-md": "1rem", "gutter": "1.5rem", "margin": "2rem", "space-lg": "1.5rem", "space-xl": "2.5rem", "space-sm": "0.5rem" }, "fontFamily": { "headline-lg": ["Newsreader"], "headline-md": ["Newsreader"], "body-lg": ["Plus Jakarta Sans"], "display-lg": ["Newsreader"], "title-sm": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "label-lg": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "display-lg-mobile": ["Newsreader"], "title-md": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Newsreader"], "headline-sm": ["Newsreader"] }, "fontSize": { "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.015em", "fontWeight": "500" }], "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "500" }], "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }], "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "500" }], "title-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }], "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }], "body-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "display-lg-mobile": ["34px", { "lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "500" }], "title-md": ["18px", { "lineHeight": "26px", "fontWeight": "600" }], "headline-lg-mobile": ["26px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "500" }], "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }] } } } };</script></head><body class="bg-background font-body-md text-on-surface antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed"><header class="fixed top-0 left-0 w-full z-50 bg-surface/95 backdrop-blur-md shadow-[0_2px_12px_rgba(74,59,50,0.08)]"><div class="bg-gradient-to-r from-secondary via-secondary to-primary text-on-secondary py-2 px-gutter"><div class="max-w-7xl mx-auto flex items-center justify-center gap-space-sm text-center font-label-md text-label-md"><span class="material-symbols-outlined text-base text-secondary-fixed animate-bounce">local_fire_department</span><span class="font-bold tracking-wide">ĐẠI HỘI XẢ KHO THANH LÝ ĐỒ CŨ &amp; ĐỒ DÙNG GIA ĐÌNH - GIẢM ĐẾN 70% | GIAO HÀNG TẬN NƠI - ĐỔI TRẢ 7 NGÀY</span></div></div><div class="h-20 max-w-7xl mx-auto px-gutter flex items-center justify-between gap-space-md lg:gap-space-lg"><a class="flex items-center gap-3 shrink-0 group" data-path="trang-chu" href="#"><img alt="Kho Đồ Cũ &amp; Gia Dụng" class="h-11 w-auto object-contain group-hover:scale-105 transition-transform" src="https://lh3.googleusercontent.com/aida/AEtjO1VRupOzT_Mr57aPJ9zbr6PF8c9ZhaC2wBz3tMZm1Tz1Y3QHURLshXO8XQ2XSXm_mfxPEAOTntnIXsOojadGmENJz3i9X5Inps5RSOy200J5CTN1ExnYfAEjw29c5q_CYm8jBMgOZ4vTzUMKIzO5EDpuwSctCOYv3Fx-j1lPp_c3wa4AEqsN7N8N2KAJ9QAAQP7x9oZ-I7N1PqSzPd5XhWJXdy32pQauKhdTGgcBP1O89UV-oTJaieoRuGM3"/><div class="flex flex-col"><span class="font-headline-md text-headline-md leading-tight text-primary font-bold tracking-tight">Kho Đồ Cũ &amp; Gia Dụng</span><span class="font-label-sm text-label-sm text-secondary font-bold tracking-widest uppercase">Xả Kho Giá Sỉ • Uy Tín</span></div></a><div class="flex-1 max-w-2xl hidden md:block"><div class="relative flex items-center"><span class="material-symbols-outlined absolute left-space-md text-outline text-xl pointer-events-none">search</span><input class="w-full pl-11 pr-24 py-2.5 bg-surface-container-lowest border border-outline-variant/60 rounded-xl font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all shadow-sm" placeholder="Tìm kiếm tủ lạnh, chậu inox 304, sofa, kệ sắt, máy giặt..." type="text"/><button class="absolute right-2 px-3 py-1 bg-secondary text-on-secondary rounded-lg font-label-sm text-label-sm font-semibold hover:bg-on-secondary-container transition-colors">Tìm kiếm</button></div></div><div class="flex items-center gap-space-md shrink-0"><div class="hidden xl:flex items-center gap-space-xs text-on-surface-variant"><div class="w-9 h-9 rounded-full bg-secondary-fixed/50 flex items-center justify-center text-secondary"><span class="material-symbols-outlined text-xl">call</span></div><div class="flex flex-col text-left"><span class="font-label-sm text-label-sm text-outline">Hotline 8:00 - 21:00</span><span class="font-label-lg text-label-lg text-secondary font-bold">0988.123.456</span></div></div><div class="flex items-center gap-space-xs"><button aria-label="Giỏ hàng" class="relative p-2 text-on-surface-variant hover:text-primary rounded-xl hover:bg-surface-container transition-colors"><span class="material-symbols-outlined text-2xl">shopping_cart</span><span class="absolute top-1 right-1 w-4 h-4 rounded-full bg-secondary text-on-secondary font-label-sm text-[10px] flex items-center justify-center font-bold">2</span></button></div><a class="flex items-center gap-1.5 px-space-md py-2.5 bg-secondary text-on-secondary hover:bg-on-secondary-container rounded-xl font-label-lg text-label-lg font-bold transition-all shadow-[0_2px_8px_rgba(156,67,40,0.25)] hover:shadow-md" data-path="thu-mua-thanh-ly" href="#thu-mua-thanh-ly"><span class="material-symbols-outlined text-lg">sync_alt</span><span class="whitespace-nowrap">Bán &amp; Ký Gửi Đồ Cũ Nhanh</span></a></div></div><div class="bg-surface-container-low border-t border-b border-outline-variant/40"><div class="max-w-7xl mx-auto px-gutter"><nav class="flex items-center gap-space-md lg:gap-space-lg overflow-x-auto py-2.5 scrollbar-none font-label-md text-label-md font-semibold text-on-surface-variant" data-active-classes="text-secondary border-b-2 border-secondary font-bold"><a class="py-1 whitespace-nowrap hover:text-secondary transition-colors" data-path="trang-chu" href="#">Trang chủ</a><a class="py-1 whitespace-nowrap hover:text-secondary transition-colors" data-path="danh-muc-noi-that" href="#danh-muc-noi-that">Xả kho Nội thất gỗ</a><a aria-current="page" class="py-1 whitespace-nowrap transition-colors text-secondary border-b-2 border-secondary font-bold" data-path="danh-muc-inox" href="#danh-muc-inox">Đồ Inox Bếp &amp; Chậu Rửa</a><a class="py-1 whitespace-nowrap hover:text-secondary transition-colors" data-path="danh-muc-dien-gia-dung" href="#danh-muc-dien-gia-dung">Điện gia dụng &amp; Điện lạnh</a><a class="py-1 whitespace-nowrap hover:text-secondary transition-colors" data-path="dong-gia-xa-kho" href="#dong-gia-xa-kho">Đồng giá xả kho &lt;199k</a><a class="py-1 whitespace-nowrap hover:text-secondary transition-colors" data-path="hang-moi-ve" href="#hang-moi-ve">Hàng mới về hôm nay</a><a class="py-1 whitespace-nowrap hover:text-secondary transition-colors" data-path="thu-mua-thanh-ly" href="#thu-mua-thanh-ly">Dịch vụ Thu Mua &amp; Ký Gửi</a></nav></div></div></header><main class="w-full pt-44 bg-background min-h-screen"><div class="flex flex-col w-full">
+<!-- BREADCRUMB & METADATA BAR -->
+<section class="w-full bg-surface-container-low px-gutter py-space-sm shadow-sm">
+<div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-space-sm">
+<nav aria-label="Breadcrumb" class="flex items-center gap-2 font-body-sm text-body-sm text-on-surface-variant flex-wrap">
+<a class="hover:text-secondary flex items-center gap-1 transition-colors" href="#">
+<span class="material-symbols-outlined text-base">home</span>
+<span>Trang chủ</span>
+</a>
+<span class="material-symbols-outlined text-xs text-outline">chevron_right</span>
+<a class="hover:text-secondary transition-colors" href="#danh-muc-inox">Đồ Inox Bếp &amp; Chậu Rửa</a>
+<span class="material-symbols-outlined text-xs text-outline">chevron_right</span>
+<span class="text-primary font-semibold truncate max-w-xs md:max-w-md">Chậu Rửa Bát Đôi Inox 304 Dày 1.2mm</span>
+</nav>
+<div class="flex items-center gap-3">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-surface-container rounded-full text-primary font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<span>Đang có 7 người cùng xem món này</span>
+</span>
+<button class="flex items-center gap-1 text-on-surface-variant hover:text-secondary font-label-sm text-label-sm transition-colors">
+<span class="material-symbols-outlined text-base">share</span>
+<span>Chia sẻ</span>
+</button>
+</div>
+</div>
+</section>
+<!-- MAIN PRODUCT HERO SECTION -->
+<section class="w-full py-space-lg lg:py-space-xl px-gutter">
+<div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-space-lg lg:gap-space-xl items-start">
+<!-- LEFT COLUMN: AUTHENTIC WAREHOUSE GALLERY -->
+<div class="lg:col-span-7 flex flex-col gap-space-md">
+<!-- Main Big Visual Stage -->
+<div class="relative bg-surface-container-lowest rounded-xl overflow-hidden shadow-md group">
+<!-- Verification Tag Overlay -->
+<div class="absolute top-4 left-4 z-20 flex flex-col gap-2">
+<div class="flex items-center gap-1.5 px-3 py-1.5 bg-primary text-on-primary rounded-full font-label-sm text-label-sm shadow-sm backdrop-blur-sm">
+<span class="material-symbols-outlined text-sm text-secondary-fixed">verified</span>
+<span>Ảnh chụp 100% tại kho thật • Không chỉnh sửa filter</span>
+</div>
+<div class="flex items-center gap-1.5 px-3 py-1 bg-surface-container text-on-surface rounded-full font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-sm text-secondary">photo_camera</span>
+<span>Chụp lúc 14:30 hôm qua bằng máy ảnh thực</span>
+</div>
+</div>
+<!-- Grade Badge Top Right -->
+<div class="absolute top-4 right-4 z-20">
+<span class="px-3.5 py-1.5 bg-secondary text-on-secondary rounded-full font-label-lg text-label-lg font-bold shadow-md tracking-wide">
+              ĐỘ MỚI 95%
+            </span>
+</div>
+<!-- Main Zoom Stage -->
+<div class="relative w-full aspect-[4/3] bg-surface-container-low overflow-hidden cursor-crosshair" id="main-image-container">
+<img class="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105" data-alt="Close up high-resolution real warehouse photograph of a dual bowl stainless steel 304 kitchen sink. Brushed matte finish metallic surface, deep 220mm basin, crisp 1.2mm thick folded edges, drainage basket installed. Bright ambient natural workshop lighting, authentic textures without filters, showcasing excellent well-preserved condition with subtle soft reflection and clean industrial aesthetic." id="main-product-image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5O16Lj78zoxr6u4Ja-jXIRYo_R2Chjqj5EFOERTjOozkueqVp_p8rXHsl1rzidVWKhQhuPjORz8wBBk-iZ5k_pQibqAWo42Ry52B6XGRm0ypJ3sTKti5xFhp1tAchlgrC-k6MBVdJgHUZ64dq-EkbL-Rmceqm2OGmLyvZvhsDbMT76BOriyTf6BCy-kRmILswPEdK6r50QkrApoQWQh5O4a4getwZTYWGQdJh1m5HkVSE_K7rhZKr5Q"/>
+<!-- Inspection Zoom Hint -->
+<div class="absolute bottom-3 right-3 bg-surface/85 backdrop-blur-md px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-primary font-label-sm text-label-sm shadow-sm pointer-events-none">
+<span class="material-symbols-outlined text-base">zoom_in</span>
+<span>Rê chuột phóng to chi tiết gờ 1.2mm</span>
+</div>
+</div>
+<!-- Warehouse Location Stamped Ribbon -->
+<div class="bg-surface-container-high px-4 py-2.5 flex items-center justify-between font-label-sm text-label-sm text-on-surface">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-base text-secondary">warehouse</span>
+<span>Kho lưu trữ: <strong>Kệ Inox A4 - Chi nhánh Quảng An, Tây Hồ, Hà Nội</strong></span>
+</div>
+<span class="text-outline">Mã tem niêm phong: #CD-8849-SUS</span>
+</div>
+</div>
+<!-- 5 REAL THUMBNAILS ROW -->
+<div class="grid grid-cols-5 gap-space-xs sm:gap-space-sm">
+<button class="thumbnail-btn relative aspect-square bg-surface-container rounded-lg overflow-hidden shadow-sm hover:opacity-90 transition-all p-0.5 bg-secondary" data-index="0" onclick="switchImage(0, 'Mặt trước tổng thể chậu đôi inox 304')" type="button">
+<img class="w-full h-full object-cover rounded" data-alt="Wide front shot of pre-owned SUS304 double kitchen sink resting on clean wooden palette inside daylight warehouse. Clean brushed satin stainless steel, modern rectangular design with faucet holes and accessories. Real authentic lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkiUu0-_Sgd-Z_JI-XPT9iQJLdU1C3uXkoFGozMMrVVrHhmf9kGX2_7Dskk6IjDCOq2n0LFOix9tKruLO8TcDjconXKrjE4dLe_gz6kIpGkU3i5omAwe5siDyup4n9CiYoJf9Xq4tPLjp2XSblXFHHW5tX6hblKQqQLrKWnjy3LQsN-2nLkbILJEtrvFY0wm6xHu51LEY8vn67WMPCyOEdMkeEDgXSzSeEyBLr4XhUhBQI1wVW4pAHhw"/>
+<span class="absolute bottom-0 inset-x-0 bg-primary/75 text-on-primary text-[10px] font-label-sm py-0.5 text-center leading-tight truncate px-1">Tổng thể</span>
+</button>
+<button class="thumbnail-btn relative aspect-square bg-surface-container rounded-lg overflow-hidden shadow-sm hover:opacity-90 transition-all p-0.5" data-index="1" onclick="switchImage(1, 'Chi tiết viền mép dày dặn sáng bóng')" type="button">
+<img class="w-full h-full object-cover rounded" data-alt="Extreme macro shot of the 1.2mm thickened rim and folded corners of stainless steel sink. Flawless smooth metallic grain, showing no dents or rust, clean craftsmanship and pristine reflection under warm diffuse light." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBju062fHYGQeJqPyoqli0FvEsn9JvYuWIYfsnKzNxOz3_YEvtt9qRybJA55jiUgK-txtpqr3TK6vstXZb1RY4EElbQ3EV5I83ezXV39Ffm8J1990qFAcYVUL24WQhMzXbQwMRreVlHx1f0rajQTaOpLMpy5vmrVwUn7KODUZdzPy7A09p6fqGL2ZX_ov9qxDiF2_UxIAdIdcY1oh511I8FjrIuQYCNMEAFkJvwBdOnGH881dTAOQVsXw"/>
+<span class="absolute bottom-0 inset-x-0 bg-primary/75 text-on-primary text-[10px] font-label-sm py-0.5 text-center leading-tight truncate px-1">Gờ mép 1.2mm</span>
+</button>
+<button class="thumbnail-btn relative aspect-square bg-surface-container rounded-lg overflow-hidden shadow-sm hover:opacity-90 transition-all p-0.5" data-index="2" onclick="switchImage(2, 'Lòng chậu sâu 22cm có rãnh thoát')" type="button">
+<img class="w-full h-full object-cover rounded" data-alt="Top down overhead angle looking into 22cm deep dual sink basins with laser etched X-grooves water channel. Spotless sanitary condition, extremely minor micro surface rubs visible only on close scrutiny, sanitized finish." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTW_CySQJvSR5-Zw-QKvb1hpWYnZwoOC2T8rMQRjp4xr5Z827JgkDYOR5u7d3KZtTGDrnzUtkh25V8LfbhSma0Eqz8J8L6z1YTujQYyrMM--bF6YEQh99Pn_fGt4aGGiVQrta1MfuMr0bl9JOcON8dJyQjW4XQeGgzU02bm65-nSM0zWl6uKQwPTCzjCCM5oZgmHuFvJxxL-lhciWRzD-hqGdsTNFXwYRPLv4Zaq87rPE-TlsEronO6g"/>
+<span class="absolute bottom-0 inset-x-0 bg-primary/75 text-on-primary text-[10px] font-label-sm py-0.5 text-center leading-tight truncate px-1">Lòng sâu 22cm</span>
+</button>
+<button class="thumbnail-btn relative aspect-square bg-surface-container rounded-lg overflow-hidden shadow-sm hover:opacity-90 transition-all p-0.5" data-index="3" onclick="switchImage(3, 'Bộ xả xi-phông &amp; khay ráo nước')" type="button">
+<img class="w-full h-full object-cover rounded" data-alt="Brand new unopened drainage siphon kit with odor trap and high grade flexible corrugated pipes laid beside an expandable stainless steel dish drying rack basket. Completely new accessories provided with sink." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBb1yVfVI1awKWjY6SGgG_NWhNMG0MdvAyWffLdsRC5PTryko0QDCufieojqEFgcK1vgBtyGZuPdciUVl7AN7jYNUCc_CiEum16jbPA1LVaoZ81YXZsnEMGNvnMQf-Rv-71c3t8LuE-U_YgtA89BGjeKRiRZgFC6bOSoy28wrY00Gyp7FSSeC0b207U8n8QptVziaO555Cu_3s_T0YZPLKDeZ6HeT0ULKT9RsrNes4KXUVwoOgJ2D_LOg"/>
+<span class="absolute bottom-0 inset-x-0 bg-primary/75 text-on-primary text-[10px] font-label-sm py-0.5 text-center leading-tight truncate px-1">Phụ kiện mới</span>
+</button>
+<button class="thumbnail-btn relative aspect-square bg-surface-container rounded-lg overflow-hidden shadow-sm hover:opacity-90 transition-all p-0.5" data-index="4" onclick="switchImage(4, 'Thước đo kẹp cơ khí kiểm tra 1.2mm')" type="button">
+<img class="w-full h-full object-cover rounded" data-alt="Digital vernier caliper clamping the edge of the stainless steel sink showing precise 1.20mm thickness reading. Industrial inspection proof shot with technician hands wearing protective cotton gloves in workshop." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDz2ZSAg6SN2yRMnAESQmI5RbB3_w8ut8xjykxSGbqGl75hq81a7YhfiKncpjNzklqeQ0AXW3uCrKiIInmRL0x2h4k9xiHN-1iu3Hs0AZr-G3lq7S3svk6o3b3ydkK1Zb0B2JDfK_Xd6e5MP6_aIObZO_lvmLFn6WtXK9b8e6f6WPv6TO3Fi2W0KrXc2AaSfqC8w1GibeMjQKoeEK12-c4Vmjp_kC37PmGpYJ-jmtR8EFMOkb3sGLQs4w"/>
+<span class="absolute bottom-0 inset-x-0 bg-primary/75 text-on-primary text-[10px] font-label-sm py-0.5 text-center leading-tight truncate px-1">Đo 1.20mm</span>
+</button>
+</div>
+<!-- Macro Transparency Box: What the buyer MUST know -->
+<div class="bg-surface-container rounded-xl p-space-md shadow-sm">
+<div class="flex items-center gap-2 mb-space-sm text-primary">
+<span class="material-symbols-outlined text-xl text-secondary">manage_search</span>
+<h3 class="font-title-sm text-title-sm font-bold">Báo Cáo Minh Bạch Hiện Trạng Thực Tế (Không Che Giấu Khuyết Điểm)</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3 font-body-sm text-body-sm">
+<div class="bg-surface-container-lowest p-3 rounded-lg flex flex-col gap-1 shadow-sm">
+<div class="flex items-center gap-1.5 text-primary font-bold">
+<span class="material-symbols-outlined text-base text-secondary">check_circle</span>
+<span>Mặt thành &amp; Mép gờ:</span>
+</div>
+<p class="text-on-surface-variant">Thẳng tắp, không cấn móp, mép viền dập phẳng khít với mặt đá bếp.</p>
+</div>
+<div class="bg-surface-container-lowest p-3 rounded-lg flex flex-col gap-1 shadow-sm">
+<div class="flex items-center gap-1.5 text-primary font-bold">
+<span class="material-symbols-outlined text-base text-secondary">info</span>
+<span>Lòng chậu rửa:</span>
+</div>
+<p class="text-on-surface-variant">Sáng sạch, có xước dăm siêu nhẹ đáy chậu do trưng bày căn hộ mẫu, nhìn gần mới thấy.</p>
+</div>
+<div class="bg-surface-container-lowest p-3 rounded-lg flex flex-col gap-1 shadow-sm">
+<div class="flex items-center gap-1.5 text-primary font-bold">
+<span class="material-symbols-outlined text-base text-secondary">new_releases</span>
+<span>Phụ kiện ruột gà:</span>
+</div>
+<p class="text-on-surface-variant">Được Tiệm thay mới 100% bằng bộ xi-phông bầu to ngăn mùi cao cấp nguyên bọc.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT COLUMN: PRODUCT VALUATION & TRANSACTION -->
+<div class="lg:col-span-5 flex flex-col gap-space-md">
+<!-- Header Info Card -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-md flex flex-col gap-space-sm">
+<div class="flex items-center justify-between gap-2">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">MÃ KHO: <strong class="text-primary">KCD-INOX-304-082</strong></span>
+<div class="flex items-center gap-1 text-secondary font-label-sm text-label-sm font-bold">
+<span class="material-symbols-outlined text-base fill-1" style="font-variation-settings: 'FILL' 1;">star</span>
+<span>4.9 / 5</span>
+<span class="text-outline font-normal">(18 khách đã nhận hàng)</span>
+</div>
+</div>
+<h1 class="font-headline-md text-headline-md text-primary font-bold leading-snug">
+            Chậu Rửa Bát Đôi Inox 304 Dày 1.2mm Kèm Bộ Xả Chống Hôi &amp; Khay Inox Đa Năng
+          </h1>
+<div class="flex items-center gap-2 flex-wrap">
+<span class="px-2.5 py-1 bg-surface-container-high text-primary rounded-md font-label-sm text-label-sm">
+              Nguồn gốc: Thanh lý căn hộ mẫu Vinhomes
+            </span>
+<span class="px-2.5 py-1 bg-tertiary-fixed text-on-tertiary-fixed rounded-md font-label-sm text-label-sm font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">sanitizer</span> Đã hấp nhiệt khử trùng 100°C
+            </span>
+</div>
+<!-- Price & Savings Bento -->
+<div class="bg-surface-container-low p-space-md rounded-xl mt-space-xs flex flex-col gap-2">
+<div class="flex items-baseline gap-3 flex-wrap">
+<span class="font-display-lg text-display-lg font-bold text-secondary tracking-tight">750.000<span class="text-2xl font-normal underline ml-0.5">đ</span></span>
+<span class="font-title-sm text-title-sm text-outline line-through">2.100.000 đ</span>
+<span class="px-2.5 py-1 bg-secondary text-on-secondary rounded-lg font-label-md text-label-md font-bold">
+                -64% TIẾT KIỆM
+              </span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm text-on-surface-variant">
+<span>Giá gốc mua mới thị trường: 2.100.000 đ</span>
+<span class="text-secondary font-semibold">Giữ lại 1.350.000 đ cho gia đình</span>
+</div>
+</div>
+<!-- Fast Spec Badges -->
+<div class="flex flex-wrap gap-2 pt-1">
+<span class="inline-flex items-center gap-1 px-3 py-1.5 bg-surface-container rounded-lg font-label-sm text-label-sm text-primary">
+<span class="material-symbols-outlined text-sm text-secondary">shield</span> Inox SUS 304 chuẩn (Bao thử axit)
+            </span>
+<span class="inline-flex items-center gap-1 px-3 py-1.5 bg-surface-container rounded-lg font-label-sm text-label-sm text-primary">
+<span class="material-symbols-outlined text-sm text-secondary">straighten</span> Dày 1.2mm đúc viền chắc chắn
+            </span>
+<span class="inline-flex items-center gap-1 px-3 py-1.5 bg-surface-container rounded-lg font-label-sm text-label-sm text-primary">
+<span class="material-symbols-outlined text-sm text-secondary">verified_user</span> Bảo hành 6 tháng không hoen gỉ
+            </span>
+<span class="inline-flex items-center gap-1 px-3 py-1.5 bg-surface-container rounded-lg font-label-sm text-label-sm text-primary">
+<span class="material-symbols-outlined text-sm text-secondary">inventory_2</span> Tặng xi-phông + Khay ráo nước inox
+            </span>
+</div>
+<!-- Real-Time Stock Status -->
+<div class="bg-surface-container-high/60 rounded-xl p-3 flex flex-col gap-2 mt-2">
+<div class="flex items-center justify-between text-label-sm font-label-sm">
+<span class="font-bold text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-base text-secondary">location_on</span>
+                KHO ĐANG CÓ SẴN (Chỉ còn 2 chiếc duy nhất):
+              </span>
+<span class="text-secondary font-bold">Số lượng có hạn</span>
+</div>
+<div class="space-y-1.5 text-body-sm font-body-sm">
+<label class="flex items-center justify-between p-2 rounded-lg bg-surface-container-lowest cursor-pointer hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-2">
+<input checked="" class="text-primary focus:ring-primary h-4 w-4" name="kho_select" type="radio"/>
+<span><strong>Kho 1 Hà Nội:</strong> 42 Ngõ 12 Đặng Thai Mai, Tây Hồ</span>
+</div>
+<span class="px-2 py-0.5 bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm rounded font-bold">Còn 1 chiếc</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg bg-surface-container-lowest cursor-pointer hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-2">
+<input class="text-primary focus:ring-primary h-4 w-4" name="kho_select" type="radio"/>
+<span><strong>Kho 2 TP.HCM:</strong> 18B Nguyễn Thị Minh Khai, P. Đa Kao, Q.1</span>
+</div>
+<span class="px-2 py-0.5 bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm rounded font-bold">Còn 1 chiếc</span>
+</label>
+</div>
+</div>
+<!-- CTAs -->
+<div class="flex flex-col gap-3 pt-space-xs">
+<button class="w-full py-4 px-6 bg-secondary text-on-secondary hover:bg-on-secondary-container rounded-xl font-title-sm text-title-sm font-bold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all" onclick="handleQuickOrder()" type="button">
+<span class="material-symbols-outlined text-2xl">local_shipping</span>
+<span>CHỐT MUA NGAY - GIAO HÀNG TẬN NHÀ</span>
+</button>
+<p class="text-center font-body-sm text-body-sm text-outline -mt-1">
+              ✓ Kiểm tra hàng thoải mái trước khi thanh toán • Không ưng trả lại không mất phí
+            </p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+<button class="py-3 px-4 bg-primary text-on-primary hover:bg-primary-container rounded-xl font-label-md text-label-md font-bold flex items-center justify-center gap-1.5 transition-colors shadow-sm" onclick="handleHoldProduct()" type="button">
+<span class="material-symbols-outlined text-lg">timer</span>
+<span>Cọc giữ hàng (Giữ 24h)</span>
+</button>
+<a class="py-3 px-4 bg-surface-container-high text-primary hover:bg-surface-container-highest rounded-xl font-label-md text-label-md font-bold flex items-center justify-center gap-1.5 transition-colors" href="https://zalo.me" rel="noopener" target="_blank">
+<span class="material-symbols-outlined text-lg text-secondary">videocam</span>
+<span>Zalo xem video quay trực tiếp</span>
+</a>
+</div>
+</div>
+<!-- Reassurance Guarantee Ribbon -->
+<div class="grid grid-cols-3 gap-2 pt-space-xs border-t border-outline-variant/30 text-center">
+<div class="p-2 flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-secondary text-xl">published_with_changes</span>
+<span class="font-label-sm text-label-sm text-primary font-bold">Đổi trả 7 ngày</span>
+<span class="font-body-sm text-[11px] text-outline">Nếu đổi ý hoặc không vừa tủ</span>
+</div>
+<div class="p-2 flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-secondary text-xl">bolt</span>
+<span class="font-label-sm text-label-sm text-primary font-bold">Ship 2h nội thành</span>
+<span class="font-body-sm text-[11px] text-outline">Nhận ngay trong ngày</span>
+</div>
+<div class="p-2 flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-secondary text-xl">handyman</span>
+<span class="font-label-sm text-label-sm text-primary font-bold">Hỗ trợ lắp đặt</span>
+<span class="font-body-sm text-[11px] text-outline">Phí thợ hỗ trợ chỉ 100k</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SPECIFICATIONS & 5-STEP INSPECTION CHECKLIST (BENTO STYLE) -->
+<section class="w-full bg-surface-container-low py-space-xl px-gutter">
+<div class="max-w-7xl mx-auto flex flex-col gap-space-lg">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-sm">
+<div>
+<span class="font-label-sm text-label-sm uppercase font-bold tracking-widest text-secondary">DỮ LIỆU KHO MINH BẠCH</span>
+<h2 class="font-headline-lg text-headline-lg font-bold text-primary">Thông Số Kỹ Thuật &amp; Quy Trình Kiểm Định</h2>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-xl">
+          Mỗi chiếc chậu thanh lý tại Kho Đồ Cũ đều phải vượt qua 5 bài test nghiêm ngặt trước khi dán tem xuất kho, đảm bảo sử dụng bền bỉ từ 10 - 15 năm tiếp theo.
+        </p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+<!-- Table Spec (7 Cols) -->
+<div class="lg:col-span-7 bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-2 mb-space-md text-primary font-title-sm text-title-sm font-bold">
+<span class="material-symbols-outlined text-secondary">tune</span>
+<span>Bảng Thông Số Kỹ Thuật Đã Đo Đạc Thực Tế</span>
+</div>
+<div class="divide-y divide-outline-variant/30 text-body-sm font-body-sm">
+<div class="py-3 flex items-center justify-between">
+<span class="text-outline">Loại sản phẩm</span>
+<span class="font-bold text-primary">Chậu rửa bát 2 hố cân có bàn cài dao / lỗ vòi chờ</span>
+</div>
+<div class="py-3 flex items-center justify-between">
+<span class="text-outline">Chất liệu thân chậu</span>
+<span class="font-bold text-primary">Inox SUS 304 chuẩn (Không nhiễm từ tính, không rỉ sét)</span>
+</div>
+<div class="py-3 flex items-center justify-between">
+<span class="text-outline">Độ dày thành viền / đáy</span>
+<span class="font-bold text-secondary">1.2mm mép đúc (Thị trường hàng mỏng giá rẻ chỉ 0.6mm - 0.8mm)</span>
+</div>
+<div class="py-3 flex items-center justify-between">
+<span class="text-outline">Kích thước phủ bì (D x R x S)</span>
+<span class="font-bold text-primary">780 x 430 x 220 mm (Lòng sâu chống bắn nước)</span>
+</div>
+<div class="py-3 flex items-center justify-between">
+<span class="text-outline">Kích thước khoét đá mặt bếp</span>
+<span class="font-bold text-primary">750 x 400 mm</span>
+</div>
+<div class="py-3 flex items-center justify-between">
+<span class="text-outline">Lớp xử lý mặt sau</span>
+<span class="font-bold text-primary">Sơn chống ngưng tụ ẩm + Đệm cao su giảm ồn tiếng xả nước</span>
+</div>
+<div class="py-3 flex items-center justify-between">
+<span class="text-outline">Trọn bộ phụ kiện đi kèm</span>
+<span class="font-bold text-primary">02 Bầu lọc rác inox + Bộ xả xi-phông mới + Khay inox ráo nước</span>
+</div>
+</div>
+</div>
+<div class="mt-space-md p-3 bg-surface-container rounded-lg flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary text-2xl shrink-0">architecture</span>
+<p class="font-body-sm text-body-sm text-on-surface">
+<strong>Lưu ý thợ đá:</strong> Có thể lắp âm bàn hoặc lắp nổi gờ mép đều rất đẹp vì bản viền chậu đúc vuông vức phẳng lì.
+            </p>
+</div>
+</div>
+<!-- 5-Step Inspection Completed (5 Cols) -->
+<div class="lg:col-span-5 bg-surface-container-high rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2 text-primary font-title-sm text-title-sm font-bold">
+<span class="material-symbols-outlined text-secondary">fact_check</span>
+<span>Checklist 5 Bước Kiểm Tra Kho</span>
+</div>
+<span class="px-2.5 py-0.5 bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-bold rounded-full">
+              ĐẠT 5/5 TIÊU CHÍ
+            </span>
+</div>
+<!-- Step Cards -->
+<div class="flex flex-col gap-3 font-body-sm text-body-sm">
+<div class="bg-surface-container-lowest p-3 rounded-lg flex items-start gap-3 shadow-xs">
+<span class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">1</span>
+<div>
+<span class="font-bold text-primary">Test hóa chất axit &amp; máy đo quang phổ Inox 304:</span>
+<p class="text-on-surface-variant">Dung dịch thử không đổi màu hồng, xác nhận thành phần Crom và Niken đúng chuẩn SUS304 trọn đời.</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-3 rounded-lg flex items-start gap-3 shadow-xs">
+<span class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">2</span>
+<div>
+<span class="font-bold text-primary">Kiểm tra độ phẳng bằng thước thủy &amp; cân lực:</span>
+<p class="text-on-surface-variant">Không cong vênh 4 góc cạnh gờ, ôm khít mặt đá hoa cương mà không bị bập bênh xì keo.</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-3 rounded-lg flex items-start gap-3 shadow-xs">
+<span class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">3</span>
+<div>
+<span class="font-bold text-primary">Thử tải xả nước chống ứ đọng lòng chậu:</span>
+<p class="text-on-surface-variant">Các đường dập tạo độ dốc chữ X thoát kiệt nước trong vòng 12 giây, không đọng vũng rêu bẩn.</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-3 rounded-lg flex items-start gap-3 shadow-xs">
+<span class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">4</span>
+<div>
+<span class="font-bold text-primary">Kiểm tra đệm mút cao su chống ồn mặt đáy:</span>
+<p class="text-on-surface-variant">Lớp mút và sơn tĩnh điện còn nguyên bản 98%, triệt tiêu 85% tiếng ồn khi xả nước xối mạnh.</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-3 rounded-lg flex items-start gap-3 shadow-xs">
+<span class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">5</span>
+<div>
+<span class="font-bold text-primary">Tẩy cặn canxi &amp; Khử khuẩn áp suất hơi nước:</span>
+<p class="text-on-surface-variant">Làm sạch sâu từng kẽ gioăng, đóng bọc màng PE bảo vệ sạch sẽ sẵn sàng mang về gắn tủ dùng ngay.</p>
+</div>
+</div>
+</div>
+<div class="text-center font-label-sm text-label-sm text-outline">
+            Người kiểm định ký duyệt: <em>Kỹ thuật viên Trương Hoàng Lâm - 14/10/2024</em>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- CLOSE-UP MACRO & VIDEO SHOWCASE -->
+<section class="w-full py-space-xl px-gutter">
+<div class="max-w-7xl mx-auto flex flex-col gap-space-lg">
+<div class="flex flex-col gap-1">
+<span class="font-label-sm text-label-sm uppercase font-bold tracking-widest text-secondary">CẬN CẢNH ĐỘ HOÀN THIỆN</span>
+<h2 class="font-headline-lg text-headline-lg font-bold text-primary">Góc Nhìn Thực Tế Tại Kho Trước Khi Đóng Gói</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<!-- Close up 1 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm flex flex-col">
+<div class="aspect-[16/10] bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" data-alt="Close up photograph showing the underside of the stainless steel sink with grey acoustic anti-condensation coating and thick black rubber sound deadening pads. Workshop daylight background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAG5HUjnDPYBhy_FUUHRmxVG3ARZaSkBgzrju7r9nKNii2wOq9nyrSOSE4jYG4Qh2DZZBbnB4wv3hvMLPdAJGfBLjTWEqCuTwnFDCeamgu3iut8ZgjmfVx7-syEzlEq66zICksA335cZUFo7--Qd4JVPOV_vrXpYQ0JBBrNcW103_szEKD8Xj2_uS4E2lXpZT3jhBMFah8lmFofmhuFZBJAp_bGp-1J_B-Q6JelgVe6mv2D9-U9Ay21og"/>
+</div>
+<div class="p-space-md flex flex-col gap-1">
+<h4 class="font-title-sm text-title-sm font-bold text-primary">Lớp Sơn Chống Mồ Hôi &amp; Mút Chống Ồn</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Mặt sau nguyên lớp đệm mút cao su dán nhiệt, giúp đáy tủ bếp khô ráo, không bị nhỏ giọt mốc gỗ ẩm ướt.</p>
+</div>
+</div>
+<!-- Close up 2 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm flex flex-col">
+<div class="aspect-[16/10] bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" data-alt="Detailed photograph of the drain strainer basket made of polished stainless steel 304 with silicone gasket and spring stopper. Clean, pristine and tested without leaks." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJU2hsxkwyksBJmDapWsdHPZXcuuzKTxfJP6BSJdSCRrsddANlwBA9ePg8mzsQUMaUFqESzQiCDnrB9pHSVXhzdI2UUbEFYtPOaEtu00pvzyP2ggVuUwxkh_AJAvSHRkRC2iH-49_pmxx0BTRSRguO8oCnMbzKVNT7sEVzncH8HLH83L5XL8rFB1DGrw6LKwKVVxMhZGPP6rut9OUFI8HTdap2byiHcQUTiMByLaZ6W9Togx6NGGgTYQ"/>
+</div>
+<div class="p-space-md flex flex-col gap-1">
+<h4 class="font-title-sm text-title-sm font-bold text-primary">Bầu Lọc Rác 2 Lớp Bằng Inox 304</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Lưới lọc rác sâu, chặn sạch cặn bẩn chống tắc đường cống mỡ, có nắp đậy khít giữ nước ngâm rửa rau củ.</p>
+</div>
+</div>
+<!-- Close up 3 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm flex flex-col">
+<div class="aspect-[16/10] bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" data-alt="Real photo of the multi-functional extendable stainless steel drying rack sitting comfortably over one bowl of the sink with freshly washed glasses. Practical home lifestyle showcase." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAla9HSZMf8Cx80fHQiLJPvD0VMavOIdNz610_MQ1bNCswGEnakBuF874fGYmW1bFY1BS21ZdZ_tW7xGmNIbKa8uRh8Bbq49wpoPCuAxvbLkkh1hM7kibPCt2zq2nC4A3_5UukAJzTn0s39yQxIhKpoT-J5o7HqwgSn5XrwbMz6ECEZ9QRicWFSsfIpCNhu5Coqk9kP1Vg3Y8oCZgHsBXLi2I9rZVr-FuJwplJKHS1jcQVnGDc3EVtoqg"/>
+</div>
+<div class="p-space-md flex flex-col gap-1">
+<h4 class="font-title-sm text-title-sm font-bold text-primary">Khay Inox Rút Đa Năng Tặng Kèm</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Khay co giãn linh hoạt gác ngang miệng chậu để úp bát đĩa, cốc chén hoặc ráo nước rau củ ngay sau khi rửa.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- MATCHING / RELATED SURPLUS CLEARANCE ITEMS -->
+<section class="w-full bg-surface-container-low py-space-xl px-gutter">
+<div class="max-w-7xl mx-auto flex flex-col gap-space-lg">
+<div class="flex items-center justify-between flex-wrap gap-space-sm">
+<div>
+<span class="font-label-sm text-label-sm uppercase font-bold tracking-widest text-secondary">TIỆN MUA CÙNG MỘT CHUYẾN XE</span>
+<h2 class="font-headline-lg text-headline-lg font-bold text-primary">Đồ Inox Bếp Đang Cùng Xả Kho Hôm Nay</h2>
+</div>
+<a class="flex items-center gap-1 text-secondary font-label-lg text-label-lg font-bold hover:underline" href="#danh-muc-inox">
+<span>Xem tất cả 45 món Inox</span>
+<span class="material-symbols-outlined text-base">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-space-md">
+<!-- Related 1 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col">
+<div class="relative aspect-[4/3] bg-surface-container overflow-hidden">
+<span class="absolute top-3 left-3 z-10 px-2.5 py-1 bg-surface-container text-primary font-label-sm text-label-sm rounded-full font-bold">
+              Mới 98%
+            </span>
+<img class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" data-alt="Heavy duty 4-tier commercial grade stainless steel storage rack shelf in clean warehouse setting. Stainless steel polish reflecting light, ideal for kitchen restaurant pantry organizing." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWyQM-j4uJD5-hxT_7CahNK6aug3nWMw__wZcowC5QKzjIiU-1C4mjOmFo3kdc-CkVVVb-qNmOEl4KQOmaDSDTkX1y2gnkJsz5lEa_ATa9OHnvE-RxKTfEXWYzoNgzhBz9MpQYMh6o40DoKR3qB28FFZNwsB1ue-0uBSnE5UTscDfb3vBYMYZbIzBzP60OVqHaNcPraz8G6eAnozhTOtAJK9zrmbybO0_vakwBbcw8Ji1F8fVvSOG6EA"/>
+</div>
+<div class="p-space-md flex flex-col flex-1 justify-between gap-3">
+<div>
+<span class="font-label-sm text-label-sm text-outline uppercase">Mã: KCD-KE-04T</span>
+<h3 class="font-title-sm text-title-sm font-bold text-primary line-clamp-2 mt-0.5">
+                Kệ Inox 304 Dày 4 Tầng Để Nồi Niêu Bếp (Dài 1.2m)
+              </h3>
+</div>
+<div class="flex items-baseline justify-between pt-2 border-t border-outline-variant/30">
+<div>
+<span class="font-headline-sm text-headline-sm font-bold text-secondary">580.000 đ</span>
+<span class="font-body-sm text-body-sm text-outline line-through ml-1.5">1.450.000 đ</span>
+</div>
+<button class="px-3 py-1.5 bg-primary text-on-primary hover:bg-primary-container rounded-lg font-label-sm text-label-sm font-bold transition-colors" onclick="alert('Đã thêm Kệ Inox vào giỏ hàng!')" type="button">
+                Gộp đơn
+              </button>
+</div>
+</div>
+</div>
+<!-- Related 2 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col">
+<div class="relative aspect-[4/3] bg-surface-container overflow-hidden">
+<span class="absolute top-3 left-3 z-10 px-2.5 py-1 bg-secondary text-on-secondary font-label-sm text-label-sm rounded-full font-bold">
+              Thanh lý Showroom 99%
+            </span>
+<img class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" data-alt="Modern pull-out spray hose kitchen faucet made of brushed SUS 304 stainless steel. Sleek gooseneck high-arc spout with braided flexible hose shown on clean wooden display stand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6xjD32HxEPj5GNFgHXmr4ObXl9VkRr5uo0p3CU6G0_bbUNh-gF4Dl38kHB6wwIsI5TPPWbqeNZMP4QN6wKYbIPR-bo3rZIrzYhJE-b1boWLI6soY-oSOCe_kmZhd0MvyjB8Qf6vtONPZhXuKBXjf2j4xr_OlP6hErUKSFUysQL5tLxPyuaeuUBAeVMZREABOjM7_mz1SrUOtxso79AkXKtonbYLf9DQoPHxvChZyQycvNzbQQgAZDug"/>
+</div>
+<div class="p-space-md flex flex-col flex-1 justify-between gap-3">
+<div>
+<span class="font-label-sm text-label-sm text-outline uppercase">Mã: KCD-VOI-304R</span>
+<h3 class="font-title-sm text-title-sm font-bold text-primary line-clamp-2 mt-0.5">
+                Vòi Rửa Bát Nóng Lạnh Inox 304 Dây Rút Tiện Lợi (Gắn vừa chậu trên)
+              </h3>
+</div>
+<div class="flex items-baseline justify-between pt-2 border-t border-outline-variant/30">
+<div>
+<span class="font-headline-sm text-headline-sm font-bold text-secondary">390.000 đ</span>
+<span class="font-body-sm text-body-sm text-outline line-through ml-1.5">950.000 đ</span>
+</div>
+<button class="px-3 py-1.5 bg-primary text-on-primary hover:bg-primary-container rounded-lg font-label-sm text-label-sm font-bold transition-colors" onclick="alert('Đã thêm Vòi Rút vào giỏ hàng!')" type="button">
+                Gộp đơn
+              </button>
+</div>
+</div>
+</div>
+<!-- Related 3 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col">
+<div class="relative aspect-[4/3] bg-surface-container overflow-hidden">
+<span class="absolute top-3 left-3 z-10 px-2.5 py-1 bg-surface-container text-primary font-label-sm text-label-sm rounded-full font-bold">
+              Mới 95%
+            </span>
+<img class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" data-alt="2-tier stainless steel over the sink dish rack with hooks, utensil holder and cutting board stand. Clean domestic kitchen backdrop with gleaming metallic bars and solid construction." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQMvjMwthcsHaCVtG03s7vJBJ7Wv68DEOSXyEtpEbT5XCqYoRzt27fGTLDkfZSM_ijXYyBPUXtZOKCyZUc-P9Cs1y445EKiEQlXkKvr-0h1BIN3CgMcFkqpGZk_G8QhhWVgf40kGj23uMrptUq0hWAR4UjQDtHuRiqXgvot3KWpwVDSB4gEhQuZlGBWcJuV1PKisr_P9dc13roHs3exUfBiIZCYf7bfKWWROMk94RkSiYaUpPtp4xrkA"/>
+</div>
+<div class="p-space-md flex flex-col flex-1 justify-between gap-3">
+<div>
+<span class="font-label-sm text-label-sm text-outline uppercase">Mã: KCD-GIA-UP2T</span>
+<h3 class="font-title-sm text-title-sm font-bold text-primary line-clamp-2 mt-0.5">
+                Giá Úp Bát Đĩa Inox 304 2 Tầng Có Khay Hứng Nước Dưới
+              </h3>
+</div>
+<div class="flex items-baseline justify-between pt-2 border-t border-outline-variant/30">
+<div>
+<span class="font-headline-sm text-headline-sm font-bold text-secondary">260.000 đ</span>
+<span class="font-body-sm text-body-sm text-outline line-through ml-1.5">620.000 đ</span>
+</div>
+<button class="px-3 py-1.5 bg-primary text-on-primary hover:bg-primary-container rounded-lg font-label-sm text-label-sm font-bold transition-colors" onclick="alert('Đã thêm Giá Úp Bát vào giỏ hàng!')" type="button">
+                Gộp đơn
+              </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- REAL CUSTOMER FEEDBACK & INSTALLED PHOTOS -->
+<section class="w-full py-space-xl px-gutter">
+<div class="max-w-7xl mx-auto flex flex-col gap-space-lg">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-sm">
+<div>
+<span class="font-label-sm text-label-sm uppercase font-bold tracking-widest text-secondary">HÌNH ẢNH KHÁCH LẮP THỰC TẾ</span>
+<h2 class="font-headline-lg text-headline-lg font-bold text-primary">Đánh Giá Của Khách Hàng Đã Mua Chậu Inox</h2>
+</div>
+<div class="flex items-center gap-2 bg-surface-container p-2.5 rounded-xl text-primary font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-secondary">verified</span>
+<span>100% đánh giá từ khách hàng có hóa đơn mua thanh lý tại kho</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<!-- Feedback 1 -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between gap-space-md">
+<div class="flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-9 h-9 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-bold text-sm">
+                  HN
+                </div>
+<div>
+<h4 class="font-title-sm text-title-sm font-bold text-primary">Anh Hoàng Nam</h4>
+<span class="font-body-sm text-body-sm text-outline">Chung cư Ngoại Giao Đoàn, HN</span>
+</div>
+</div>
+<div class="flex text-secondary text-xs">
+<span class="material-symbols-outlined text-base fill-1" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-base fill-1" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-base fill-1" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-base fill-1" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-base fill-1" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant italic">
+              "Lúc đầu mua đồ thanh lý cũng sợ cũ bẩn, ai ngờ nhận hàng bóng loáng như mới đập hộp. Inox gõ vào nghe đanh chắc nịch, dày dặn hơn hẳn mấy chậu ngoài cửa hàng bán tiền triệu. Bác thợ của kho qua lắp lấy có 100k mà làm cẩn thận phết!"
+            </p>
+</div>
+<!-- Customer installed photo preview -->
+<div class="aspect-[16/9] rounded-lg overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Real customer home photo of the stainless steel sink successfully installed into a white quartz kitchen countertop. Warm ambient under-cabinet LED light reflecting off the brushed metal sink with clean dish rack on top." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3re3dIjYYTe4cxudcxgXtlosrgn1gpmQmYdxseyILkl9xTEzTIFJLbecN9gXtH1c05z4SH8FCFnB4Xv0Id1p5FiGSOXSm3fKw43UZVO6r_fixndB950_7GLCbmKWpY7wSZAyo3HdDGtv0dXkI-5LRXf6s6gA0Ex02Kk0-luGKK1ChGNu5NgllcacphRrCtDhNoLh-msr8zPlF-C4M_u3fFUlawNp_N_ANiBbglR8EtZFsY5Cu27qw1Q"/>
+</div>
+</div>
+<!-- Feedback 2 -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between gap-space-md">
+<div class="flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-9 h-9 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-sm">
+                  TL
+                </div>
+<div>
+<h4 class="font-title-sm text-title-sm font-bold text-primary">Chị Thùy Linh</h4>
+<span class="font-body-sm text-body-sm text-outline">KDC Trung Sơn, Bình Chánh, HCM</span>
+</div>
+</div>
+<div class="flex text-secondary text-xs">
+<span class="material-symbols-outlined text-base fill-1" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-base fill-1" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-base fill-1" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-base fill-1" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-base fill-1" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant italic">
+              "Mình gọi Zalo shop quay cận cảnh từng góc trước khi cọc. Tiệm nói sao thì hàng đến y chang vậy, đáy có vệt xước xíu nhưng gắn vào bếp nhìn không thấy luôn. Tiết kiệm được hơn một triệu mua bỉm sữa cho con, rất ưng cách bán hàng thật thà của tiệm."
+            </p>
+</div>
+<div class="aspect-[16/9] rounded-lg overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Clean domestic kitchen photo showing the sink filled with fresh vegetables and water. Natural daylight illuminating the kitchen corner, displaying realistic clean home usage." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1naoI20fxxkgzsRsLT11gREmZvsQdNHBgkbyU4mpA7f78lWKRmMc7RGoA6RBfs7uQFDwp2jt7D9h7Gj_gCCoiqL6-Jtc4Hfhgtw1qv4WU-1tptXSC7RHpDLcpxwM_ZXBQKEKi2wphyU0vQqlbbTlCsFLiN9lgk-TMVjzmmlgM384IPsXYVKF-y2_KlavmgLDvQaCerPus0FDQ6JOmIAadKDBNNaxH1mP0jw_PV5mRi4RB6_Rw-BZmPQ"/>
+</div>
+</div>
+<!-- Feedback 3 -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between gap-space-md">
+<div class="flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-9 h-9 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center font-bold text-sm">
+                  ĐV
+                </div>
+<div>
+<h4 class="font-title-sm text-title-sm font-bold text-primary">Chú Đoàn Văn Phúc</h4>
+<span class="font-body-sm text-body-sm text-outline">Phố Đội Cấn, Ba Đình, HN</span>
+</div>
+</div>
+<div class="flex text-secondary text-xs">
+<span class="material-symbols-outlined text-base fill-1" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-base fill-1" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-base fill-1" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-base fill-1" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">star_half</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant italic">
+              "Mua thay thế cho cái chậu tôn mỏng của nhà trọ cũ bị thủng đáy. Chậu này đúc 1.2 ly đè tay lên không bị lún tí nào. Bộ xi phông kèm theo ngăn mùi hôi cống rất hiệu quả. Cho kho 5 sao vì giao nhanh trong 2 tiếng."
+            </p>
+</div>
+<div class="aspect-[16/9] rounded-lg overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Detailed shot beneath the sink inside kitchen cabinet showcasing newly fitted clean plastic drainage pipe and siphon odor seal trap connected neatly without dripping." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9nOU3B56YM1FMbSR4TIXO59Pcz3NIWFgXKqtcsa8_EeonuwPxxelGKWfCQwQJOUZW9sb3aN7d8npomXmrRArZEW4gFNYlkt56gNoCMJwW1FPZ26-JLELDsRyqFSALla8jYSf8UJFUKDKq_LrVYQWpE9U9aQAFsyAhXUEbPH-r08B4AEEJngwqPScHjKqOD3iSAArygysujE2RlO-hp2lKjMuNCS59dkodi84xskEcR1-DcjsoYJvdiQ"/>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- QUICK PURCHASE MODAL / FLOATING CONFIRMATION -->
+<div class="fixed inset-0 z-50 bg-inverse-surface/60 backdrop-blur-sm hidden items-center justify-center p-gutter" id="order-modal">
+<div class="bg-surface-container-lowest max-w-lg w-full rounded-2xl shadow-2xl p-space-lg flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-2xl">check_box</span>
+<h3 class="font-headline-sm text-headline-sm font-bold text-primary">Xác Nhận Đặt Giao Hàng Kiểm Tra</h3>
+</div>
+<button class="text-outline hover:text-on-surface p-1" onclick="closeModal()">
+<span class="material-symbols-outlined text-2xl">close</span>
+</button>
+</div>
+<div class="p-3 bg-surface-container-low rounded-xl flex items-center gap-3">
+<div class="w-16 h-16 rounded-lg bg-surface overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="Small thumbnail preview of dual sink 304 stainless steel" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD19SoEHHtYecFG_MPgqiJbU-mbCYCG2l_GcbUwLpKFaSOxsU4zutz_qFNMCUiawPdptgC-yM0RtAY2cZ2IpSWbFkuVMT7Qw86AP8M4K_sqzjd8mCO3UfiihZ5XXVQ932KEg_U_fvpu8Sc7waiWGdbRe8jc0EnL32NxkKMI66FyUXyVAc4zlB58bjbU4O4vnRKIVPqnFPcRs0bHXpiqfbTyxMiEic4wYo87Sc-4YP2256g786VZ_O8BMg"/>
+</div>
+<div class="flex flex-col">
+<h4 class="font-title-sm text-title-sm font-bold text-primary line-clamp-1">Chậu Rửa Bát Đôi Inox 304 Dày 1.2mm</h4>
+<span class="font-label-sm text-label-sm text-secondary font-bold">750.000 đ (Tiết kiệm 64%)</span>
+<span class="font-body-sm text-[11px] text-outline">Bao gồm: Chậu đôi + Xi phông mới + Khay inox</span>
+</div>
+</div>
+<form class="space-y-3 font-body-sm text-body-sm" onsubmit="submitFastOrder(event)">
+<div>
+<label class="block font-bold text-on-surface mb-1">Số điện thoại nhận hàng (hoặc Zalo):</label>
+<input class="w-full px-3 py-2.5 bg-surface-container-lowest border border-outline-variant/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-secondary/40 text-on-surface" placeholder="Ví dụ: 0912 345 678" required="" type="tel"/>
+</div>
+<div>
+<label class="block font-bold text-on-surface mb-1">Địa chỉ giao hàng:</label>
+<input class="w-full px-3 py-2.5 bg-surface-container-lowest border border-outline-variant/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-secondary/40 text-on-surface" placeholder="Số nhà, tên ngõ, đường, quận/huyện..." required="" type="text"/>
+</div>
+<div class="flex items-center gap-2 pt-1">
+<input class="rounded text-primary focus:ring-primary h-4 w-4" id="lap-dat" type="checkbox"/>
+<label class="cursor-pointer text-on-surface" for="lap-dat">Cần hỗ trợ thợ đến lắp đặt tận nhà (+100.000đ công thợ)</label>
+</div>
+<div class="pt-2">
+<button class="w-full py-3.5 bg-secondary text-on-secondary hover:bg-on-secondary-container rounded-xl font-title-sm text-title-sm font-bold transition-all shadow-md" type="submit">
+            GỬI ĐƠN HÀNG - NHẬN HÀNG KIỂM TRA MỚI TRẢ TIỀN
+          </button>
+</div>
+<p class="text-center font-body-sm text-[11px] text-outline">
+          Nhân viên kho sẽ gọi lại trong 5 phút để xác nhận khung giờ giao thuận tiện cho bạn!
+        </p>
+</form>
+</div>
+</div>
+</div>
+<script>
+  function switchImage(index, title) {
+    const buttons = document.querySelectorAll('.thumbnail-btn');
+    buttons.forEach((btn, idx) => {
+      if (idx === index) {
+        btn.classList.add('bg-secondary');
+      } else {
+        btn.classList.remove('bg-secondary');
+      }
+    });
+
+    // Provide visual feedback on change
+    const mainImg = document.getElementById('main-product-image');
+    if (mainImg) {
+      mainImg.style.opacity = '0.5';
+      setTimeout(() => {
+        mainImg.style.opacity = '1';
+      }, 150);
+    }
+  }
+
+  function handleQuickOrder() {
+    const modal = document.getElementById('order-modal');
+    if (modal) {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+  }
+
+  function closeModal() {
+    const modal = document.getElementById('order-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  }
+
+  function handleHoldProduct() {
+    const phone = prompt('Vui lòng nhập Số điện thoại hoặc Zalo để Tiệm niêm phong dán tên giữ chậu inox này trong 24 giờ:');
+    if (phone) {
+      alert('ĐÃ GIỮ CHỖ THÀNH CÔNG!\nKho đã niêm phong chiếc chậu mã KCD-INOX-304-082 cho số điện thoại ' + phone + ' trong 24 giờ tới.');
+    }
+  }
+
+  function submitFastOrder(e) {
+    e.preventDefault();
+    alert('ĐÃ TẠO ĐƠN THÀNH CÔNG!\nKho Đồ Cũ sẽ liên hệ trực tiếp để xác nhận khung giờ giao hàng thuận tiện nhất cho bạn.');
+    closeModal();
+  }
+</script></main><footer class="w-full bg-surface-container-high border-t border-outline-variant/40 pt-space-xl pb-space-lg text-on-surface"><div class="max-w-7xl mx-auto px-gutter"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-xl pb-space-xl"><div class="space-y-space-md"><div class="flex items-center gap-space-sm"><img alt="Kho Đồ Cũ &amp; Gia Dụng" class="h-9 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1VRupOzT_Mr57aPJ9zbr6PF8c9ZhaC2wBz3tMZm1Tz1Y3QHURLshXO8XQ2XSXm_mfxPEAOTntnIXsOojadGmENJz3i9X5Inps5RSOy200J5CTN1ExnYfAEjw29c5q_CYm8jBMgOZ4vTzUMKIzO5EDpuwSctCOYv3Fx-j1lPp_c3wa4AEqsN7N8N2KAJ9QAAQP7x9oZ-I7N1PqSzPd5XhWJXdy32pQauKhdTGgcBP1O89UV-oTJaieoRuGM3"/><span class="font-headline-md text-headline-md font-bold text-primary">Kho Đồ Cũ &amp; Gia Dụng</span></div><p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">Tổng kho thanh lý đồ gỗ nội thất, thiết bị inox gia dụng bếp và điện máy tuyển chọn. Giúp gia đình tiết kiệm tối đa chi phí với các sản phẩm bền bỉ, an toàn và minh bạch chất lượng.</p><div class="space-y-space-xs font-body-sm text-body-sm text-on-surface-variant"><div class="flex items-start gap-space-xs"><span class="material-symbols-outlined text-base text-secondary shrink-0 mt-0.5">location_on</span><span><strong>Kho Hà Nội:</strong> 42 Ngõ 12 Đặng Thai Mai, P. Quảng An, Q. Tây Hồ</span></div><div class="flex items-start gap-space-xs"><span class="material-symbols-outlined text-base text-secondary shrink-0 mt-0.5">location_on</span><span><strong>Kho TP.HCM:</strong> 18B Nguyễn Thị Minh Khai, P. Đa Kao, Quận 1</span></div><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-base text-secondary shrink-0">phone</span><span>Hotline / Zalo: <strong class="text-secondary font-bold">0988.123.456</strong> (8h00 - 21h30)</span></div></div></div><div class="space-y-space-md"><h3 class="font-title-sm text-title-sm text-primary uppercase tracking-wider font-bold">Danh mục thanh lý</h3><ul class="space-y-space-xs font-body-md text-body-md text-on-surface-variant"><li><a class="hover:text-secondary transition-colors" data-path="danh-muc-noi-that" href="#danh-muc-noi-that">Nội thất gỗ tự nhiên, bàn ăn, sofa</a></li><li><a class="hover:text-secondary transition-colors" data-path="danh-muc-inox" href="#danh-muc-inox">Chậu rửa inox 304 &amp; giá kệ bếp</a></li><li><a class="hover:text-secondary transition-colors" data-path="danh-muc-dien-gia-dung" href="#danh-muc-dien-gia-dung">Điện gia dụng, lò vi sóng, nồi chiên</a></li><li><a class="hover:text-secondary transition-colors" data-path="danh-muc-dien-gia-dung" href="#danh-muc-dien-gia-dung">Điện lạnh, tủ đông &amp; máy giặt đã test</a></li><li><a class="hover:text-secondary transition-colors" data-path="dong-gia-xa-kho" href="#dong-gia-xa-kho">Khu vực đồng giá xả kho &lt; 199.000đ</a></li><li><a class="hover:text-secondary transition-colors" data-path="hang-moi-ve" href="#hang-moi-ve">Hàng tuyển chọn mới về trong ngày</a></li></ul></div><div class="space-y-space-md"><h3 class="font-title-sm text-title-sm text-primary uppercase tracking-wider font-bold">Cam kết &amp; Chính sách</h3><ul class="space-y-space-xs font-body-md text-body-md text-on-surface-variant"><li class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-base text-secondary">verified_user</span><span>Kiểm định vận hành chuẩn mực</span></li><li class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-base text-secondary">build</span><span>Bảo hành 3 - 6 tháng cho đồ điện gia dụng</span></li><li class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-base text-secondary">local_shipping</span><span>Giao hàng tận nơi &amp; hỗ trợ bốc xếp</span></li><li class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-base text-secondary">assignment_return</span><span>Đổi mới hoặc hoàn tiền trong 7 ngày</span></li><li class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-base text-secondary">sanitizer</span><span>Vệ sinh khử khuẩn sạch sẽ trước khi giao</span></li></ul></div><div class="space-y-space-md"><h3 class="font-title-sm text-title-sm text-primary uppercase tracking-wider font-bold">Thu mua &amp; Dọn kho</h3><p class="font-body-md text-body-md text-on-surface-variant">Nhận thanh lý trọn gói đồ đạc văn phòng, nhà hàng, căn hộ gia đình. Định giá chuẩn, thu mua nhanh trong ngày, thanh toán tiền mặt liền tay.</p><a class="inline-flex items-center gap-space-xs px-space-md py-2.5 bg-primary text-on-primary hover:bg-primary-container rounded-xl font-label-md text-label-md font-bold transition-colors shadow-sm" data-path="thu-mua-thanh-ly" href="#thu-mua-thanh-ly"><span class="material-symbols-outlined text-base">inventory_2</span><span>Gửi ảnh định giá Zalo ngay</span></a><div class="pt-space-xs"><h4 class="font-label-sm text-label-sm text-primary font-bold mb-1">Đăng ký nhận thông báo xả kho:</h4><div class="flex items-center gap-1.5"><input class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant/60 rounded-xl font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:ring-1 focus:ring-secondary" placeholder="Email của bạn..." type="email"/><button class="px-4 py-2 bg-secondary text-on-secondary hover:bg-on-secondary-container rounded-xl font-label-sm text-label-sm font-bold shrink-0 transition-colors">Gửi</button></div></div></div></div><div class="pt-space-lg border-t border-outline-variant/30 flex flex-col md:flex-row items-center justify-between gap-space-md font-body-sm text-body-sm text-on-surface-variant"><div><span>© 2025 Kho Tổng Xả Sale &amp; Thanh Lý Đồ Cũ, Đồ Inox Gia Dụng. Tất cả quyền được bảo lưu.</span></div><div class="flex items-center gap-space-md"><span class="text-outline font-label-sm text-label-sm uppercase font-semibold">Hình thức thanh toán:</span><div class="flex items-center gap-space-sm text-on-surface"><span class="material-symbols-outlined text-xl" title="Chuyển khoản QR">qr_code_scanner</span><span class="material-symbols-outlined text-xl" title="Thẻ tín dụng / Ghi nợ">credit_card</span><span class="material-symbols-outlined text-xl" title="Tiền mặt khi nhận hàng (COD)">payments</span><span class="material-symbols-outlined text-xl" title="Bảo chứng an toàn">shield</span></div></div></div></div></footer></body></html>

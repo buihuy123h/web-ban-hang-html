@@ -1,69 +1,83 @@
+/* ===== Design tokens — NGUỒN SỰ THẬT DUY NHẤT của toàn site =====
+   Áp dụng ĐÚNG palette "Warm Earthy Japandi Editorial" của Stitch
+   (stitch_secondhand_home_goods_marketplace/warm_earthy_japandi_editorial/DESIGN.md):
+   nền kem #fff8f5, rêu forest #163328 làm màu tương tác chính, terracotta
+   #9c4328 cho CTA/giá/sale, line #e5ddd0, bo góc mềm 8–24px. */
 :root {
-  font-family: 'Nunito', 'Be Vietnam Pro', system-ui, sans-serif;
-  color: #283618;
-  background: #f7f4e9;
+  font-family: 'Plus Jakarta Sans', 'Be Vietnam Pro', system-ui, sans-serif;
+  color: #251911;
+  background: #fff8f5;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  /* Bảng màu "Earth" (Coolors trending): #606C38 #283618 #FEFAE0 #DDA15E #BC6C25
-     — diễn giải theo ngôn ngữ "Editorial Circular Commerce" (Warm Architectural
-     Minimalism): chiều sâu bằng tách lớp sắc độ (tonal layering) + hairline 1px,
-     olive là màu tương tác chính, graphite-olive cho CTA, đất nung chỉ dành cho
-     khuyến mãi. Một số giá trị được đậm hóa để đạt tương phản WCAG AA trên nền kem. */
-  --canvas: #f7f4e9;
-  --surface: #fffdf6;
-  --surface-low: #efe9d8;
-  --surface-high: #e9e2cc;
-  --surface-highest: #ddd4b4;
-  --ink: #283618;
-  --muted: #5f6553;
-  --line: #e4decb;
-  --line-strong: #cfc7a9;
-  --primary: #606c38;
-  --primary-dark: #4f5a2c;
-  --primary-soft: #e0e5c9;
+
+  /* Nền & bề mặt (tonal layering) */
+  --canvas: #fff8f5;
+  --surface: #ffffff;        /* thẻ sản phẩm / panel trắng như surface-container-lowest */
+  --surface-low: #fff1ea;    /* surface-container-low */
+  --surface-high: #ffeadf;   /* surface-container */
+  --surface-highest: #f6ded1;/* surface-container-highest */
+
+  /* Chữ & đường kẻ */
+  --ink: #251911;
+  --muted: #736357;
+  --line: #e5ddd0;
+  --line-strong: #d4c9b8;
+
+  /* Màu thương hiệu: olive đậm chính, đất nung accent */
+  --primary: #163328;
+  --primary-dark: #0f241d;
+  --primary-container: #2d4a3e; /* hover nút rêu — sáng hơn nền như bản Stitch */
   --on-primary: #ffffff;
-  --accent: #a8581c;
-  --accent-soft: #f4e3d3;
-  --on-accent: #6e3a11;
+  --primary-soft: #eaf0e9;      /* pale sage cho badge "đã test" */
+  --accent: #9c4328;            /* secondary terracotta — giá, CTA, sale */
+  --accent-soft: #ffdbd1;       /* secondary-fixed */
+  --on-accent: #7d2c13;         /* on-secondary-fixed-variant */
+
+  /* Trạng thái */
   --success: #356138;
   --success-soft: #e2e9d2;
-  --inverse: #222c16;
-  --inverse-hover: #31411f;
-  --on-inverse: #f5f4e6;
-  --on-inverse-muted: rgba(245, 244, 230, .72);
-  --on-inverse-accent: #c4d19b;
-  --error: #b3261e;
-  --error-soft: #f7e2dd;
-  --r-sm: 10px;
-  --r-md: 16px;
-  --r-lg: 22px;
-  --r-xl: 28px;
+  --error: #ba1a1a;
+  --error-soft: #ffdad6;
+
+  /* Nền tối (footer, CTA inverse) */
+  --inverse: #3b2d25;
+  --inverse-hover: #2d4a3e;
+  --on-inverse: #ffede4;
+  --on-inverse-muted: rgba(255, 237, 228, .76);
+  --on-inverse-accent: #adcebe; /* inverse-primary */
+
+  /* Bán kính — Japandi sắc gọn */
+  --r-sm: 8px;   /* rounded-md: input, pill điều kiện, nút nhỏ */
+  --r-md: 12px;  /* rounded-xl: nút chính, search */
+  --r-lg: 16px;  /* rounded-2xl: thẻ sản phẩm, panel */
+  --r-xl: 24px;  /* container lớn: hero, CTA banner */
   --r-pill: 999px;
-  --font-display: 'Quicksand', sans-serif;
-  --font-mono: ui-monospace, 'Cascadia Mono', 'SF Mono', Consolas, 'Courier New', monospace;
-  /* Bóng "sticker" ấm — tông nâu-olive thay vì xám đen, mềm và dễ thương hơn.
-     Card: nền tĩnh · Ambient: hover/phần tử nổi · Float: toast. */
-  --shadow-card: 0 1px 2px rgba(86, 80, 48, .05), 0 5px 18px -8px rgba(86, 80, 48, .1);
-  --shadow-ambient: 0 3px 8px rgba(86, 80, 48, .05), 0 18px 40px -14px rgba(86, 80, 48, .16);
-  --shadow-float: 0 22px 54px -18px rgba(53, 56, 30, .38);
-  --shadow-focus: 0 0 0 4px rgba(96, 108, 56, .18);
+
+  /* Chữ: display serif Newsreader, thân/mono Plus Jakarta Sans */
+  --font-display: 'Newsreader', Georgia, serif;
+  --font-mono: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+
+  /* Bóng ấm tông olive-nâu: Card tĩnh · Ambient hover/nổi · Float toast */
+  --shadow-card: 0 2px 8px -2px rgba(74, 59, 50, .05), 0 1px 3px rgba(74, 59, 50, .03);
+  --shadow-ambient: 0 12px 24px -6px rgba(74, 59, 50, .08), 0 4px 8px -2px rgba(74, 59, 50, .04);
+  --shadow-float: 0 20px 32px -8px rgba(74, 59, 50, .14);
+  --shadow-focus: 0 0 0 3px rgba(45, 74, 62, .14);
 }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body {
-  margin: 0; min-width: 320px; min-height: 100vh; overflow-x: clip;
+  margin: 0; min-width: 320px; min-height: 100vh; overflow-x: hidden;
   line-height: 1.58;
   /* Chấm bi siêu nhẹ trên nền kem — kết cấu vải ấm cho tổng thể "xinh xắn" */
-  background:
-    radial-gradient(rgba(96, 108, 56, .05) 1.2px, transparent 1.3px) 0 0 / 26px 26px,
-    var(--canvas);
+  background: var(--canvas); font-family: var(--font-body);
 }
 button, input, select, textarea { font: inherit; }
 button { border: 0; }
 button, a { -webkit-tap-highlight-color: transparent; }
 img { display: block; max-width: 100%; }
-::selection { background: #dfe4c2; color: var(--ink); }
+::selection { background: #ffdbd1; color: var(--ink); }
 :focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; box-shadow: var(--shadow-focus); }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .icon { flex: none; }

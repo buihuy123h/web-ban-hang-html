@@ -23,6 +23,9 @@
 export const resolveImg = (path) => {
   if (!path) return '';
   if (/^(https?:|data:|blob:)/i.test(path)) return path;
+  // Một số bản ghi cũ chỉ lưu `/products/...`; server phục vụ ảnh dưới `/images`.
+  if (path.startsWith('/products/')) return `/images${path}`;
+  if (path.startsWith('products/')) return `/images/${path}`;
   if (path.startsWith('/')) return path;
   return path;
 };

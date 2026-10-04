@@ -1,5 +1,5 @@
 /* ===== Layout primitives ===== */
-.container { width: min(100% - 96px, 1440px); margin-inline: auto; padding-block: 42px 72px; }
+.container { width: min(100% - 96px, 1320px); margin-inline: auto; padding-block: 46px 78px; overflow: clip; }
 h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); letter-spacing: -.01em; }
 /* ===== Trạng thái tải dữ liệu từ backend ===== */
 .catalog-loading {
@@ -46,7 +46,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); letter-spa
 .text-link:hover { text-decoration-thickness: 1.5px; }
 
 /* ===== Section head ===== */
-.section-head { margin: 14px 0 36px; max-width: 760px; }
+.section-head { margin: 14px 0 40px; max-width: 760px; }
 .section-head h2 { margin: 0; font-size: clamp(2rem, 4vw, 3.4rem); line-height: 1.06; }
 .section-head p { margin: 16px 0 0; max-width: 62ch; color: var(--muted); line-height: 1.7; }
 
@@ -102,7 +102,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); letter-spa
   display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap;
   overflow: hidden; border-radius: var(--r-xl); background: var(--inverse); color: var(--on-inverse);
 }
-.cta-glow { position: absolute; right: -80px; bottom: -110px; width: 340px; height: 340px; border-radius: 50%; background: rgba(96, 108, 56, .38); filter: blur(70px); pointer-events: none; animation: cta-breathe 7s ease-in-out infinite; }
+.cta-glow { position: absolute; right: -80px; bottom: -110px; width: 340px; height: 340px; border-radius: 50%; background: rgba(156, 67, 40, .32); filter: blur(70px); pointer-events: none; animation: cta-breathe 7s ease-in-out infinite; }
 /* Ánh sáng "thở" chậm — banner bớt tĩnh mà vẫn tiết chế */
 @keyframes cta-breathe { 0%, 100% { transform: scale(1); opacity: .78; } 50% { transform: scale(1.15); opacity: 1; } }
 /* Chấm bi phủ nhẹ trên banner — decor dễ thương, không chắn nội dung */
@@ -209,6 +209,16 @@ h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); letter-spa
   .reveal.is-in { animation: none; }
 }
 
+/* Stitch layout base: header is fixed and content starts below the two-level shell. */
+.container { width: min(100% - 48px, 1280px); padding-block: 42px 80px; }
+.home, .products-page { padding-top: 148px; }
+.btn { border-radius: 8px; }
+.section-head h2 { font-family: var(--font-display); font-weight: 500; }
+@media (max-width: 760px) {
+  .container { width: min(100% - 32px, 1280px); }
+  .home, .products-page { padding-top: 128px; }
+}
+
 /* Stagger cho lưới reveal — các phần tử cùng hàng vào viewport lệch nhịp nhẹ
    (selectornth-child specificity cao hơn nên đè animation-delay 0s của .reveal.is-in) */
 @media (prefers-reduced-motion: no-preference) {
@@ -297,3 +307,93 @@ html { scrollbar-color: var(--line-strong) var(--canvas); }
 ::-webkit-scrollbar-track { background: var(--canvas); }
 ::-webkit-scrollbar-thumb { background: var(--line-strong); border: 3px solid var(--canvas); border-radius: 999px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+
+/* ===== Stitch marketplace refresh: quiet Japandi shell ===== */
+.container { width: min(calc(100% - 64px), 1280px); padding-block: 40px 92px; }
+.home, .products-page { padding-top: 142px; }
+.btn { border-radius: 8px; font-weight: 700; letter-spacing: .01em; }
+.eyebrow { border-radius: 4px; padding: 6px 10px; background: var(--accent-soft); color: var(--accent); letter-spacing: .16em; }
+.section-head h2 { font-weight: 500; letter-spacing: -.035em; }
+@media (max-width: 760px) {
+  .container { width: min(calc(100% - 32px), 1280px); }
+  .home, .products-page { padding-top: 124px; }
+}
+
+/* Final shared layout alignment: header height is 106px, not a page-sized spacer. */
+.container { width: min(calc(100% - 48px), 1240px); padding-block: 36px 80px; }
+.home, .products-page { padding-top: 112px; }
+.page-hero { padding: 42px 0 46px; }
+.page-hero h1 { font-size: clamp(2.25rem, 5vw, 4.25rem); }
+.section-head { margin-bottom: 28px; }
+.section-head h2 { font-size: clamp(1.8rem, 3.4vw, 2.8rem); }
+.btn { min-height: 44px; border-radius: var(--r-md); }
+.btn-primary, .btn-olive { background: var(--accent); }
+.btn-primary:hover, .btn-olive:hover { background: var(--on-accent); }
+.eyebrow { border-radius: 999px; background: var(--accent-soft); color: var(--on-accent); }
+@media (max-width: 760px) {
+  .container { width: min(calc(100% - 32px), 1240px); padding-block: 28px 56px; }
+  .home, .products-page { padding-top: 96px; }
+  .page-hero { padding-top: 28px; }
+}
+
+/* ============================================================
+   LUXURY POLISH PASS — lớp tinh chỉnh cuối: sang, xịn, mịn
+   Chỉ dùng token sẵn có; mọi hiệu ứng là transition/keyframe nhẹ,
+   `prefers-reduced-motion` ở index.css đã tắt toàn bộ khi cần.
+   ============================================================ */
+
+/* Nền nhiều tầng: quầng sáng đất nung góc phải-trên + olive trái-giữa
+   trên nền giấy kem → chiều sâu "phòng trưng bày" thay vì nền phẳng.
+   Chỉ áp dụng màn hình lớn (background-attachment fixed tốn pin mobile). */
+@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+  body {
+    background:
+      radial-gradient(1100px 560px at 88% -120px, rgba(180, 87, 56, .09), transparent 62%),
+      radial-gradient(900px 640px at -8% 34%, rgba(31, 73, 59, .075), transparent 58%),
+      radial-gradient(700px 500px at 70% 110%, rgba(201, 155, 95, .06), transparent 60%),
+      var(--canvas);
+    background-attachment: fixed;
+  }
+}
+
+/* Nút chính: gradient đất nung + bóng sâu ấm → nhấn mắt thấy được */
+.btn-primary, .btn-olive {
+  background: linear-gradient(165deg, #b05a3e, var(--accent) 55%, #7d2c13);
+  box-shadow: 0 12px 26px -14px rgba(122, 52, 26, .65);
+}
+.btn-primary:hover, .btn-olive:hover {
+  background: linear-gradient(165deg, #c86446, #9c4328 55%, #7d2c13);
+  box-shadow: 0 16px 32px -14px rgba(122, 52, 26, .72);
+}
+
+/* Thẻ sản phẩm: hover nâng thêm + quầng viền ấm lan nhẹ */
+.p-card:hover {
+  border-color: rgba(156, 67, 40, .35);
+  box-shadow: 0 24px 44px -20px rgba(74, 59, 50, .3), 0 0 0 1px rgba(156, 67, 40, .06);
+}
+.p-add {
+  background: linear-gradient(165deg, #b05a3e, var(--accent));
+  box-shadow: 0 8px 18px -10px rgba(125, 44, 19, .55);
+}
+.p-add:hover { background: linear-gradient(165deg, #c86446, #7d2c13); }
+
+/* Giá: in đậm sắc đất nung, giữ chữ đặc (không gradient-text) */
+.p-price { text-shadow: 0 1px 0 rgba(255, 248, 240, .6); }
+
+/* Section heading: gạch chân bút chì mảnh dưới chữ — nét "hand-crafted" */
+.section-head h2 { position: relative; }
+.section-head h2::after {
+  content: ''; position: absolute; left: 2px; bottom: -.35em; width: 58px; height: 3px;
+  border-radius: 99px; background: linear-gradient(90deg, var(--accent), rgba(180, 87, 56, 0));
+}
+
+/* Eyebrow: viền hairline + chấm đổi màu accent → tinh hơn */
+.eyebrow { border: 1px solid rgba(180, 87, 56, .22); }
+.eyebrow::before { background: var(--accent); }
+
+/* Breadcrumb & panel: bóng mềm hơn cho cảm giác nổi khối thanh lịch */
+.breadcrumbs-list { box-shadow: 0 6px 18px -12px rgba(40, 54, 24, .4); }
+
+/* Back-to-top & FAB: vòng sáng viền vàng đồng nhẹ khi hover */
+.back-to-top:hover, .cf-toggle:hover { box-shadow: 0 14px 30px -12px rgba(18, 51, 40, .6), 0 0 0 3px rgba(201, 155, 95, .28); }

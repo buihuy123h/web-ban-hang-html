@@ -1,9 +1,9 @@
 .footer {
-  margin-top: 48px; background: var(--inverse); color: var(--on-inverse-muted);
-  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  margin-top: 64px; background: var(--inverse); color: var(--on-inverse-muted);
+  border-radius: 0; /* Editorial footer: cạnh vuông, cùng hệ bề mặt ấm với shell */
 }
 .footer-inner {
-  width: min(100% - 96px, 1440px); margin: 0 auto; padding: 70px 0 52px;
+  width: min(calc(100% - 48px), 1240px); margin: 0 auto; padding: 64px 0 48px;
   display: grid; grid-template-columns: 2fr 1fr 1.2fr 1.35fr; gap: 48px;
 }
 .f-logo { margin-bottom: 14px; color: var(--on-inverse); font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; }
@@ -38,9 +38,25 @@
 }
 .f-news button:hover { background: var(--surface-low); }
 
+/* ===== Dải kết nối đa kênh: icon tròn màu thương hiệu ===== */
+.f-social { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.fs {
+  width: 40px; height: 40px; display: grid; place-items: center; flex: none;
+  border-radius: 50%; color: #fff; background: rgba(245, 244, 230, .12);
+  border: 1px solid rgba(245, 244, 230, .16);
+  transition: transform .18s ease, background-color .18s ease, box-shadow .18s ease;
+}
+.fs:hover, .fs:focus-visible { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 0, 0, .28); }
+.fs-facebook:hover { background: #1877f2; }
+.fs-zalo:hover { background: #0068ff; }
+.fs-messenger:hover { background: radial-gradient(circle at 12% 92%, #00b2ff, #7638fa 45%, #ff5280 78%, #ff7061 100%); }
+.fs-tiktok:hover { background: #111114; }
+.fs-phone:hover { background: linear-gradient(160deg, var(--primary), var(--accent)); }
+
 @media (max-width: 900px) {
-  .footer-inner { width: min(100% - 40px, 1440px); grid-template-columns: 1fr 1fr; gap: 36px 24px; }
-  .f-bottom { width: min(100% - 40px, 1440px); flex-direction: column; }
+  .footer-inner { grid-template-columns: 1fr 1fr; gap: 36px 24px; }
+  .footer-inner, .f-bottom { width: min(calc(100% - 32px), 1240px); }
+  .f-bottom { flex-direction: column; }
 }
 @media (max-width: 480px) {
   .footer-inner { grid-template-columns: 1fr; }

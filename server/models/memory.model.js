@@ -32,7 +32,11 @@ const createMemoryRepositories = ({ categories = [], products = [], posts = [] }
 
   const orders = [];
   const postItems = posts;
+  const feedbackItems = [];
   let store = { store_id: 1, name: 'Đồ Cũ Quang Huy', phone: '', address: '', description: '', opening_hours: '', facebook_url: '' };
+  let systemSettings = { setting_id: 1, shipping_fee: 30000, free_shipping_threshold: 500000, maintenance_mode: false, announcement: '', updated_at: new Date().toISOString() };
+  const estimateCost = (item) => { const product = productMap.get(Number(item.id)); const cost = product && product.costPrice != null ? product.costPrice : Math.round(item.price * 0.7); return item.qty * cost; };
+  const categoryItems = categories;
   const adminRepository = {
     async listProducts() { return products.map((item) => ({ ...item })); },
     async createProduct(input) { const product = { id: Math.max(0, ...products.map((item) => Number(item.id))) + 1, ...input, oldPrice: input.oldPrice || null, rating: input.rating || 0, sold: 0, images: [], specs: [] }; products.push(product); productMap.set(product.id, product); return { ...product }; },
@@ -63,6 +67,83 @@ const createMemoryRepositories = ({ categories = [], products = [], posts = [] }
     async updateOrderStatus(id, status) { const order = orders.find((item) => item.id === Number(id)); if (!order) return null; order.status = status; return { ...order }; },
     async getStore() { return { ...store }; },
     async updateStore(input) { store = { ...store, name: input.name, phone: input.phone, address: input.address, description: input.description, opening_hours: input.openingHours, facebook_url: input.facebookUrl }; return { ...store }; },
+    async listAdminCategories() { return categoryItems.map((item) => ({ ...item, productCount: products.filter((product) => product.category === item.key).length })); },
+    async createCategory(input) {
+      if (categoryItems.some((item) => item.key === input.key)) { const error = new Error('Mã danh mục đã tồn tại.'); error.code = '23505'; throw error; }
+      const category = { key: input.key, label: input.label, image: input.image || null };
+      categoryItems.push(category);
+      return { ...category, productCount: 0 };
+    },
+    async updateCategory(key, input) {
+      const category = categoryItems.find((item) => item.key === key);
+      if (!category) return null;
+      Object.assign(category, { label: input.label, image: input.image || null });
+      return { ...category, productCount: products.filter((product) => product.category === key).length };
+    },
+    async listCustomers() {
+      const byPhone = new Map();
+      for (const order of orders) {
+        const phone = order.customer?.phone || '';
+        const current = byPhone.get(phone) || { phone, name: order.customer?.name || 'Không tên', orderCount: 0, totalSpent: 0, lastOrderAt: null };
+        current.orderCount += 1;
+        if (order.status !== 'cancelled') current.totalSpent += Number(order.total || 0);
+        if (!current.lastOrderAt || new Date(order.createdAt) > new Date(current.lastOrderAt)) { current.lastOrderAt = order.createdAt; if (order.customer?.name) current.name = order.customer.name; }
+        byPhone.set(phone, current);
+      }
+      return [...byPhone.values()].sort((a, b) => new Date(b.lastOrderAt) - new Date(a.lastOrderAt));
+    },
+    async listFeedback() { return feedbackItems.map((item) => ({ ...item })).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); },
+    async createFeedback(input) {
+      const item = { id: Math.max(0, ...feedbackItems.map((entry) => entry.id)) + 1, customerName: input.customerName, phone: input.phone || '', message: input.message, rating: input.rating || 5, status: 'new', createdAt: new Date().toISOString() };
+      feedbackItems.push(item);
+      return { ...item };
+    },
+    async updateFeedbackStatus(id, status) { const item = feedbackItems.find((entry) => entry.id === Number(id)); if (!item) return null; item.status = status; return { ...item }; },
+    async deleteFeedback(id) { const index = feedbackItems.findIndex((entry) => entry.id === Number(id)); if (index < 0) return false; feedbackItems.splice(index, 1); return true; },
+    async getProfitReport() {
+      const valid = orders.filter((order) => order.status !== 'cancelled');
+      const allItems = valid.flatMap((order) => order.items || []);
+      const revenue = allItems.reduce((sum, item) => sum + item.price * item.qty, 0);
+      const cost = allItems.reduce((sum, item) => sum + estimateCost(item), 0);
+      const byMonth = new Map();
+      for (const order of valid) {
+        const month = String(order.createdAt).slice(0, 7);
+        const bucket = byMonth.get(month) || { month, orderCount: 0, revenue: 0, cost: 0 };
+        bucket.orderCount += 1;
+        for (const item of order.items || []) { bucket.revenue += item.price * item.qty; bucket.cost += estimateCost(item); }
+        byMonth.set(month, bucket);
+      }
+      const byProduct = new Map();
+      for (const item of allItems) {
+        const bucket = byProduct.get(item.name) || { name: item.name, qty: 0, revenue: 0, cost: 0 };
+        bucket.qty += item.qty; bucket.revenue += item.price * item.qty; bucket.cost += estimateCost(item);
+        byProduct.set(item.name, bucket);
+      }
+      const topProducts = [...byProduct.values()].sort((a, b) => b.revenue - a.revenue).slice(0, 5)
+        .map((item) => ({ ...item, profit: item.revenue - item.cost }));
+      return {
+        totals: { orderCount: valid.length, revenue, shipping: valid.reduce((s, o) => s + o.shippingFee, 0), discount: valid.reduce((s, o) => s + o.discount, 0), cost, profit: revenue - cost },
+        monthly: [...byMonth.values()].sort((a, b) => b.month.localeCompare(a.month)).slice(0, 12).map((item) => ({ ...item, profit: item.revenue - item.cost })),
+        topProducts,
+      };
+    },
+    async getSystem() { return { ...systemSettings }; },
+    async updateSystem(input) {
+      systemSettings = { ...systemSettings, shipping_fee: input.shippingFee, free_shipping_threshold: input.freeShippingThreshold, maintenance_mode: !!input.maintenanceMode, announcement: input.announcement || '', updated_at: new Date().toISOString() };
+      return { ...systemSettings };
+    },
+    async deleteCategory(key) {
+      if (products.some((product) => product.category === key)) {
+        const error = new Error('Không thể xóa danh mục đang có sản phẩm. Hãy chuyển sản phẩm sang danh mục khác trước.');
+        error.status = 409;
+        error.isBusinessError = true;
+        throw error;
+      }
+      const index = categoryItems.findIndex((item) => item.key === key);
+      if (index < 0) return false;
+      categoryItems.splice(index, 1);
+      return true;
+    },
   };
 
   const orderRepository = {

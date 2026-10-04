@@ -51,6 +51,8 @@
 .cf-zalo .cf-bubble { background: linear-gradient(160deg, #3a90ff, #0068ff); }
 .cf-messenger { --tone: #a033ff; }
 .cf-messenger .cf-bubble { background: radial-gradient(circle at 12% 92%, #00b2ff, #7638fa 45%, #ff5280 78%, #ff7061 100%); }
+.cf-facebook { --tone: #1877f2; }
+.cf-facebook .cf-bubble { background: linear-gradient(160deg, #4c9bff, #1877f2); }
 .cf-tiktok { --tone: #111114; }
 .cf-tiktok .cf-bubble { background: linear-gradient(160deg, #2a2a32, #0d0d12); }
 .cf-link:hover .cf-bubble,
@@ -92,8 +94,8 @@
 .cf-ping { position: absolute; inset: 0; border-radius: 50%; pointer-events: none; }
 .contact-fab:not(.open) .cf-ping { animation: cf-ping 2.6s cubic-bezier(0, 0, .2, 1) infinite; }
 @keyframes cf-ping {
-  0% { box-shadow: 0 0 0 0 rgba(96, 108, 56, .42); }
-  70%, 100% { box-shadow: 0 0 0 18px rgba(96, 108, 56, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(22, 51, 40, .38); }
+  70%, 100% { box-shadow: 0 0 0 18px rgba(22, 51, 40, 0); }
 }
 @media (prefers-reduced-motion: reduce) {
   .cf-ping { animation: none !important; }

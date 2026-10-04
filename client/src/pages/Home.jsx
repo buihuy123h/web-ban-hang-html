@@ -1,441 +1,64 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCatalog } from '../context/CatalogContext';
+import { useCart } from '../context/CartContext';
 import ProductCard from '../components/ProductCard';
 import Icon from '../components/Icon';
-import { useCart } from '../context/CartContext';
-import { categoryImages, categoryImagePositions, HERO_IMAGE } from '../data/productImages';
+import { categoryImages, HERO_IMAGE, resolveImg } from '../data/productImages';
 import '../App.css';
 import './Home.css';
 
-const categoryTiles = [
-  { key: 'ban-ghe', title: 'Bàn ghế & ghế nhựa', note: 'Ghế bành, ghế cao Duy Tân cho quán nhậu, tiệc ngoài trời' },
-  { key: 'noi-that', title: 'Nội thất phòng trọ', note: 'Giường tầng, tủ nhựa, bàn học — giá tốt cho người thuê trọ' },
-  { key: 'noi-chao', title: 'Nồi, chảo quán ăn', note: 'Nồi soup, chảo sâu lòng cho quán nấu nền mỗi ngày' },
-  { key: 'bat-dia', title: 'Bát đĩa & khay', note: 'Bát đĩa inox, khay phục vụ lớn cho quán và gia đình' },
-  { key: 'dung-cu', title: 'Dụng cụ bếp', note: 'Dao, thớt, muỗng nĩa — đủ việc sơ chế và phục vụ' },
-  { key: 'luu-tru', title: 'Kệ inox & lưu trữ', note: 'Kệ 4 tầng, hộp, rổ — sắp gọn kho và bếp quán' },
-];
+const benefits = [['verified', 'Tuyển chọn kỹ lưỡng', 'Hàng được kiểm tra trước khi đăng bán.'], ['shield', 'Đã vệ sinh & khử trùng', 'Sạch sẽ, dùng được ngay tại nhà.'], ['spark', 'Mức giá hợp lý', 'Tiết kiệm hơn so với mua mới.'], ['truck', 'Giao hàng tận nơi', 'Hỏi shop cách gửi phù hợp từng món.']];
 
-const quickTerms = ['Ghế nhựa', 'Kệ inox', 'Giường tầng', 'Nồi chảo'];
-
-const trustItems = [
-  { icon: 'shield', title: 'Hỏi rõ tình trạng từng món', desc: 'Shop đăng hàng thanh lý; hãy hỏi chi tiết tình trạng trước khi chốt.' },
-  { icon: 'refresh', title: 'Xem hàng trước khi chốt', desc: 'Liên hệ shop để hỏi cách xem hàng trực tiếp hoặc nhận thông tin món.' },
-  { icon: 'truck', title: 'Hỏi cách nhận hàng', desc: 'Shop có đề cập việc gửi qua nhà xe; phí và cách nhận tùy từng món.' },
-];
-
-/* Dải USP chạy ngang (marquee) — items được nhân đôi trong JSX để cuộn liền mạch */
-const uspItems = [
-  { icon: 'shield', text: 'Kiểm tra kỹ từng món trước khi bán' },
-  { icon: 'refresh', text: 'Xem hàng tại kho hoặc qua video' },
-  { icon: 'truck', text: 'Có hỗ trợ gửi qua nhà xe' },
-  { icon: 'pin', text: 'Kho tại Gò Vấp, TP.HCM' },
-  { icon: 'spark', text: 'Mua bán đồ cũ thanh lý' },
-  { icon: 'check', text: 'Hỏi shop để biết tình trạng từng món' },
-];
-
-const standards = [
-  {
-    num: '01', icon: 'refresh', title: 'Thu mua chắt lọc',
-    desc: 'Các bài đăng công khai cho biết shop mua bán đồ cũ thanh lý cho gia đình, phòng trọ và quán ăn.',
-    note: 'Hỏi nguồn và tình trạng từng món', noteIcon: 'check',
-  },
-  {
-    num: '02', icon: 'shield', title: 'Kiểm tra & vệ sinh',
-    desc: 'Xem bài đăng và nhắn shop để xác nhận ảnh, tình trạng và thông tin thực tế của món đang quan tâm.',
-    note: 'Xác nhận thông tin trước khi mua', noteIcon: 'check',
-  },
-  {
-    num: '03', icon: 'truck', title: 'Giá thanh lý, giao nhanh',
-    desc: 'Giá và cách nhận hàng cần trao đổi theo từng món; shop công khai số điện thoại để khách liên hệ.',
-    note: 'Liên hệ để hỏi giá và cách nhận', noteIcon: 'phone',
-  },
-];
-
-const featuredStories = [
-  {
-    quote: 'Ghế nhựa bành lớn về nhiều, còn như mới. Bài đăng mời khách cần thì inbox để được tư vấn.',
-    name: 'Bài đăng Facebook',
-    city: '12 tháng 7',
-    bought: 'Ghế nhựa bành lớn',
-  },
-  {
-    quote: 'Shop đăng thanh lý bốn bộ giường tầng ngang 1 m, phù hợp cho phòng trọ; liên hệ theo số điện thoại công khai để hỏi hàng.',
-    name: 'Bài đăng Facebook',
-    city: '8 tháng 6',
-    bought: 'Giường tầng ngang 1 m',
-  },
-  {
-    quote: 'Nội dung công khai cho biết shop có đồ dùng dành cho gia đình, quán ăn và nhận liên hệ để xem các món đang có.',
-    name: 'Giới thiệu từ Facebook',
-    city: 'Đồ Cũ Quang Huy',
-    bought: 'Đồ dùng quán ăn & gia đình',
-  },
-];
-
-const faqs = [
-  { q: 'Làm sao biết tình trạng món đồ?', a: 'Hãy nhắn hoặc gọi shop trước khi chốt để hỏi tình trạng, ảnh và thông tin cụ thể của món đang quan tâm.' },
-  { q: 'Shop có gửi hàng qua nhà xe không?', a: 'Các bài đăng công khai có đề cập việc liên hệ shop và gửi hàng qua nhà xe. Hãy hỏi phí, bến nhận và cách đóng gói theo từng món.' },
-  { q: 'Muốn hỏi giá thì liên hệ ở đâu?', a: 'Gọi số 0374 034 430 hoặc nhắn Đồ Cũ Quang Huy trên Facebook để hỏi giá và tình trạng hàng.' },
-  { q: 'Địa chỉ shop ở đâu?', a: 'Địa chỉ được công khai là 707 Tân Sơn, phường An Hội Tây, Gò Vấp, TP.HCM. Nên gọi hoặc nhắn trước khi đến.' },
-  { q: 'Shop đang có những nhóm hàng nào?', a: 'Các bài đăng đã nêu ghế nhựa, giường tầng và đồ dùng cho gia đình, quán ăn. Danh sách thực tế thay đổi theo từng đợt thanh lý.' },
-];
+const CategorySlider = ({ children }) => {
+  const trackRef = useRef(null);
+  const [canPrev, setCanPrev] = useState(false);
+  const [canNext, setCanNext] = useState(false);
+  const update = () => {
+    const el = trackRef.current;
+    if (!el) return;
+    setCanPrev(el.scrollLeft > 4);
+    setCanNext(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+  };
+  useEffect(() => {
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, [children]);
+  const scroll = (dir) => {
+    const el = trackRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * el.clientWidth, behavior: 'smooth' });
+  };
+  return (
+    <div className="hcp-slider">
+      <div className="hcp-track" ref={trackRef} onScroll={update}>{children}</div>
+      <button type="button" className="hcp-nav hcp-nav-prev" onClick={() => scroll(-1)} disabled={!canPrev} aria-label="Xem sản phẩm phía trước"><Icon name="chevronLeft" size={16} /></button>
+      <button type="button" className="hcp-nav hcp-nav-next" onClick={() => scroll(1)} disabled={!canNext} aria-label="Xem sản phẩm tiếp theo"><Icon name="chevronRight" size={16} /></button>
+    </div>
+  );
+};
 
 const Home = () => {
   const { products, categories, loading, error, reload } = useCatalog();
-  const featured = products.filter((p) => p.badge === 'hot');
-  const navigate = useNavigate();
   const { showToast } = useCart();
-  const [openFaq, setOpenFaq] = useState(-1);
-  const [copied, setCopied] = useState(false);
+  const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [cat, setCat] = useState('');
+  const featured = useMemo(() => products.filter((p) => p.badge === 'hot').slice(0, 4), [products]);
+  const categoryBlocks = useMemo(() => categories.filter((c) => c.key !== 'all').map((category) => ({ ...category, products: products.filter((p) => p.category === category.key).slice(0, 8) })).filter((c) => c.products.length), [categories, products]);
+  const search = (event) => { event.preventDefault(); const params = new URLSearchParams(); if (query.trim()) params.set('q', query.trim()); if (cat) params.set('cat', cat); navigate(`/san-pham${params.toString() ? `?${params}` : ''}`); };
+  const copyCode = async () => { try { await navigator.clipboard.writeText('QUANGHUY10'); } catch { /* unavailable */ } showToast('Đã sao chép mã QUANGHUY10'); };
 
-  const goProducts = ({ q = '', cat: nextCat = '' } = {}) => {
-    const search = new URLSearchParams();
-    if (q) search.set('q', q);
-    if (nextCat) search.set('cat', nextCat);
-    const qs = search.toString();
-    navigate(qs ? `/san-pham?${qs}` : '/san-pham');
-  };
-
-  const submitSearch = (event) => {
-    event.preventDefault();
-    goProducts({ q: query.trim(), cat });
-  };
-
-  const copyPromo = async () => {
-    try {
-      await navigator.clipboard.writeText('QUANGHUY10');
-      showToast('Đã sao chép mã QUANGHUY10');
-    } catch {
-      showToast('Mã ưu đãi của bạn: QUANGHUY10');
-    }
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1800);
-  };
-
-  return (
-    <main className="container home">
-      {/* ===== SECTION 1: HERO + SEARCH CONSOLE ===== */}
-      <section className="hero" aria-labelledby="hero-title">
-        <span className="hero-blob" aria-hidden="true" />
-        <div className="hero-grid">
-          <div className="hero-copy">
-            <p className="hero-badge">
-              <span className="dot" aria-hidden="true" />
-              Đồ cũ thanh lý · Gò Vấp, TP.HCM
-            </p>
-            <h1 id="hero-title">Đồ cũ còn tốt,<br />giá thì như mới.</h1>
-            <p className="hero-sub">
-               Chuyên mua và bán đồ cũ thanh lý tại TP.HCM: ghế nhựa, giường tầng và đồ dùng cho gia đình, quán ăn.
-               Nhắn shop để hỏi tình trạng, giá và cách nhận hàng của từng món.
-            </p>
-
-            <form className="search-console" role="search" onSubmit={submitSearch}>
-              <label className="sc-field sc-query">
-                <Icon name="search" size={18} />
-                <span className="sr-only">Tìm sản phẩm</span>
-                <input
-                  type="search"
-                  placeholder="Tìm ghế nhựa, kệ inox, giường tầng..."
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                />
-              </label>
-              <label className="sc-field sc-cat">
-                <Icon name="grid" size={17} />
-                <span className="sr-only">Chọn danh mục</span>
-                <select value={cat} onChange={(event) => setCat(event.target.value)}>
-                  <option value="">Tất cả danh mục</option>
-                  {categories.filter((c) => c.key !== 'all').map((c) => (
-                    <option key={c.key} value={c.key}>{c.label}</option>
-                  ))}
-                </select>
-              </label>
-              <button type="submit" className="sc-submit">
-                <Icon name="search" size={16} strokeWidth={2} />
-                <span>Tìm kiếm</span>
-              </button>
-            </form>
-
-            <div className="quick-row">
-              <span className="quick-label">Tìm nhanh:</span>
-              <div className="quick-chips">
-                {quickTerms.map((term) => (
-                  <button
-                    type="button"
-                    key={term}
-                    className="quick-chip"
-                    onClick={() => goProducts({ q: term })}
-                  >
-                    {term}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="hero-visual">
-            <figure className="hero-photo">
-              <img src={HERO_IMAGE} alt="Kệ inox và đồ dùng nhà bếp tại kho Đồ Cũ Quang Huy" width={1774} height={887} fetchpriority="high" decoding="async" />
-              <figcaption className="hero-seal">
-                <span className="seal-icon"><Icon name="shield" size={22} /></span>
-                <span>
-                  <strong>Hàng thật — hình thật</strong>
-                  <small>Đã kiểm tra &amp; vệ sinh trước khi bán</small>
-                </span>
-              </figcaption>
-            </figure>
-            <div className="hero-widget">
-              <span className="hw-label">Hàng mới về</span>
-              <p className="hw-value">Mỗi tuần</p>
-              <span className="hw-desc">hàng thanh lý quán xá, nhà trọ về liên tục</span>
-              <p className="hw-note"><Icon name="refresh" size={14} /><span>Số lượng có hạn — nhanh tay kẻo lỡ</span></p>
-            </div>
-          </div>
-        </div>
-
-        <div className="trust-strip">
-          {trustItems.map((item) => (
-            <div className="trust-item" key={item.title}>
-              <span className="ts-icon"><Icon name={item.icon} size={20} /></span>
-              <div>
-                <strong>{item.title}</strong>
-                <span>{item.desc}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ===== BANNER QUẢNG BÁ CỬA HÀNG ===== */}
-      <section className="store-banner reveal" aria-labelledby="store-banner-title">
-        <div className="store-banner-image" aria-hidden="true" style={{ backgroundImage: `url("${HERO_IMAGE}")` }} />
-        <div className="store-banner-copy">
-          <p className="eyebrow">Ghé kho Đồ Cũ Quang Huy</p>
-          <h2 id="store-banner-title">Đến xem hàng thật, chọn món vừa ý.</h2>
-           <p>Địa chỉ được shop công khai: 707 Tân Sơn, phường An Hội Tây, Gò Vấp, TP.HCM. Nhắn hoặc gọi trước để hỏi món đang có, giá và cách xem hàng.</p>
-          <div className="store-banner-actions">
-            <Link to="/san-pham" className="btn btn-light">Xem hàng đang bán <Icon name="arrowRight" size={16} /></Link>
-            <Link to="/contact" className="store-banner-link">Hỏi đường đến kho <Icon name="arrowRight" size={15} /></Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== SECTION 2: DANH MỤC TUYỂN CHỌN ===== */}
-      <section className="category-band" aria-labelledby="categories-title">
-        <div className="section-head reveal">
-          <p className="eyebrow">Danh mục tuyển chọn</p>
-          <h2 id="categories-title">Sáu nhóm đồ luôn sẵn có</h2>
-          <p>Từ ghế nhựa quán nhậu đến kệ inox nhà bếp — hàng thanh lý về liên tục mỗi tuần.</p>
-        </div>
-        <div className="category-tiles">
-          {categoryTiles.map((tile) => {
-            const count = products.filter((p) => p.category === tile.key).length;
-            return (
-              <Link
-                to={`/san-pham?cat=${tile.key}`}
-                key={tile.key}
-                className="cat-tile reveal"
-              >
-                <img
-                  src={categoryImages[tile.key]}
-                  alt=""
-                  loading="lazy"
-                  style={{ objectPosition: categoryImagePositions[tile.key][0] }}
-                />
-                <span className="cat-tile-copy">
-                  <strong>{tile.title}</strong>
-                  <small>{tile.note}</small>
-                  <em>{count} sản phẩm <span className="cat-arrow" aria-hidden="true">→</span></em>
-                </span>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* ===== SECTION 3: SẢN PHẨM NỔI BẬT — dẫn sang /san-pham ===== */}
-      <section className="featured" aria-labelledby="featured-title">
-        <div className="featured-head">
-          <div className="section-head reveal">
-            <p className="eyebrow">Bán chạy nhất</p>
-            <h2 id="featured-title">Được khách chốt nhiều nhất</h2>
-            <p>Bốn món đang được chốt nhiều nhất — hàng thanh lý số lượng có hạn, ai nhanh tay người đó có.</p>
-          </div>
-          <Link to="/san-pham" className="btn btn-outline">Xem tất cả sản phẩm</Link>
-        </div>
-        {error ? (
-          <div className="empty-state">
-            <h3>Không tải được sản phẩm</h3>
-            <p>{error}</p>
-            <button type="button" className="btn btn-outline" onClick={reload}>
-              <Icon name="refresh" size={16} />
-              Thử lại
-            </button>
-          </div>
-        ) : loading ? (
-          <div className="product-grid" aria-hidden="true">
-            {Array.from({ length: 4 }, (_, index) => (
-              <div className="skel-card" key={index}>
-                <div className="skel skel-media" />
-                <div className="skel skel-line w40" />
-                <div className="skel skel-line w70" />
-                <div className="skel-strip">
-                  <div className="skel skel-line w40" />
-                  <div className="skel skel-chip" />
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="product-grid">
-            {featured.map((p) => <ProductCard key={p.id} product={p} />)}
-          </div>
-        )}
-      </section>
-
-      {/* ===== SECTION 4: TIÊU CHUẨN TUYỂN CHỌN ===== */}
-      <section className="standards" aria-labelledby="standards-title">
-        <div className="section-head reveal">
-          <p className="eyebrow">Tiêu chuẩn tuyển chọn</p>
-          <h2 id="standards-title">Mỗi món đồ qua ba vòng kiểm</h2>
-          <p>Mỗi món đều qua tay người thật: kiểm tra, vệ sinh, chụp ảnh thật trước khi lên web.</p>
-        </div>
-        <div className="standards-grid">
-          {standards.map((item) => (
-            <article className="std-card reveal" key={item.num}>
-              <header>
-                <span className="std-num">{item.num}</span>
-                <span className="std-icon"><Icon name={item.icon} size={20} /></span>
-              </header>
-              <h3>{item.title}</h3>
-              <p>{item.desc}</p>
-              <footer>
-                <Icon name={item.noteIcon} size={15} />
-                <span>{item.note}</span>
-              </footer>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      {/* ===== SECTION 5: CẢM NHẬN KHÁCH HÀNG ===== */}
-      <section className="testimonials" aria-labelledby="reviews-title">
-        <div className="section-head reveal">
-           <p className="eyebrow">Từ Facebook của shop</p>
-           <h2 id="reviews-title">Mặt hàng đã được đăng công khai</h2>
-            <p>Một vài mặt hàng và nội dung đã xuất hiện trong các bài đăng công khai của Đồ Cũ Quang Huy.</p>
-        </div>
-        <div className="t-grid">
-           {featuredStories.map((t) => (
-            <figure className="t-card reveal" key={t.name}>
-              <span className="t-quote" aria-hidden="true">“</span>
-               <span className="t-stars" aria-label="Nguồn Facebook công khai">● Facebook</span>
-              <blockquote>{t.quote}</blockquote>
-              <figcaption>
-                <span className="t-avatar" aria-hidden="true">{t.name.split(' ').pop().charAt(0)}</span>
-                <span className="t-who">
-                  <strong>{t.name}</strong>
-                  <span>{t.city} · {t.bought}</span>
-                </span>
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-      </section>
-
-      {/* ===== Dải USP chạy ngang — divider giữa trang ===== */}
-      <section className="usp-marquee" aria-label="Cam kết của chúng tôi">
-        <div className="usp-track">
-          {[...uspItems, ...uspItems].map((item, index) => (
-            <span className="usp-item" key={index}>
-              <Icon name={item.icon} size={15} />
-              {item.text}
-            </span>
-          ))}
-        </div>
-      </section>
-
-      {/* ===== SECTION 6: CÂU CHUYỆN NHÀ — dẫn sang /about ===== */}
-      <section className="story-strip" aria-labelledby="story-title">
-        <figure className="story-photo reveal">
-          <img src={categoryImages['luu-tru']} alt="Kệ inox và đồ dùng nhà bếp tại kho Đồ Cũ Quang Huy" />
-          <figcaption className="story-sticker">
-            <span className="story-dot" aria-hidden="true" />
-             Hàng được cập nhật trên Facebook
-          </figcaption>
-        </figure>
-        <div className="story-copy reveal">
-          <p className="eyebrow">Chuyện nhà</p>
-          <h2 id="story-title">Đồ cũ còn dùng tốt, bỏ đi thì tiếc.</h2>
-          <p>Quán xá thanh lý, nhà trọ trả phòng — bên mình đi thu mua từng đợt, chọn lại món còn dùng ổn, bán bằng giá thật cho người đang cần mở quán, thuê trọ.</p>
-          <ul className="story-points">
-            <li><Icon name="check" size={15} />Chuyên mua &amp; bán — nguồn hàng thanh lý quán xá, nhà trọ</li>
-            <li><Icon name="check" size={15} />Hỏi tình trạng và thông tin món trước khi mua</li>
-            <li><Icon name="check" size={15} />Liên hệ shop để hỏi cách xem hàng</li>
-            <li><Icon name="check" size={15} />Hỏi cách gửi hàng qua nhà xe nếu cần</li>
-          </ul>
-          <div className="story-actions">
-            <Link to="/about" className="btn btn-olive">Đọc câu chuyện của chúng tôi</Link>
-            <Link to="/contact" className="text-link">Gặp đội tư vấn</Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== SECTION 7: GIẢI ĐÁP NHANH — FAQ accordion ===== */}
-      <section className="faq" aria-labelledby="faq-title">
-        <div className="section-head reveal">
-          <p className="eyebrow">Giải đáp nhanh</p>
-          <h2 id="faq-title">Câu hỏi hay gặp</h2>
-          <p>Những điều khách hay hỏi trước khi chốt món đồ cũ đầu tiên.</p>
-        </div>
-        <div className="faq-list">
-          {faqs.map((item, index) => (
-            <article className={`faq-item${openFaq === index ? ' open' : ''}`} key={item.q}>
-              <button
-                type="button"
-                className="faq-q"
-                aria-expanded={openFaq === index}
-                onClick={() => setOpenFaq(openFaq === index ? -1 : index)}
-              >
-                <strong>{item.q}</strong>
-                <span className="faq-icon"><Icon name={openFaq === index ? 'minus' : 'plus'} size={16} strokeWidth={2.2} /></span>
-              </button>
-              <div className={`faq-a-wrap${openFaq === index ? ' open' : ''}`}>
-                <div className="faq-a-inner">
-                  <p className="faq-a">{item.a}</p>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-        <p className="faq-more">
-          Vẫn còn thắc mắc?
-          <Link to="/contact" className="btn btn-outline">Nhắn cho chúng tôi</Link>
-        </p>
-      </section>
-
-      {/* ===== SECTION 8: CTA BANNER ===== */}
-      <section className="cta-banner reveal">
-        <div className="cta-glow" aria-hidden="true" />
-        <div className="cta-content">
-          <p className="cta-badge"><Icon name="spark" size={13} /><span>Ưu đãi cho đơn đầu tiên</span></p>
-          <h3>Giảm 10% với mã QUANGHUY10</h3>
-          <p>Sao chép mã và nhập lúc thanh toán — áp dụng cho mọi món trong đơn.</p>
-        </div>
-        <div className="cta-actions">
-          <button type="button" className={`code-chip${copied ? ' copied' : ''}`} onClick={copyPromo}>
-            <span className="code-value">QUANGHUY10</span>
-            <span className="code-copy"><Icon name={copied ? 'check' : 'copy'} size={13} />{copied ? 'Đã sao chép' : 'Sao chép'}</span>
-          </button>
-          <Link to="/contact" className="btn btn-light">Nhận tư vấn</Link>
-        </div>
-      </section>
-    </main>
-  );
+  return <main className="home-page">
+    <section className="home-hero"><div className="home-hero-copy"><span className="home-kicker">ĐỒ CŨ QUANG HUY · THANH LÝ 50–70%</span><h1>KHO TỔNG XẢ SALE &<br /><em>THANH LÝ ĐỒ CŨ, NỘI THẤT,<br />ĐỒ DÙNG GIA ĐÌNH</em></h1><p>Hàng ngàn món đồ nội thất, gia dụng và đồ dùng quán xá đã qua sử dụng nhưng vẫn còn tốt, được chọn lọc với mức giá hợp lý.</p><form className="home-search" onSubmit={search}><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Bạn đang tìm món gì?" aria-label="Tìm sản phẩm" /><select value={cat} onChange={(e) => setCat(e.target.value)} aria-label="Chọn danh mục"><option value="">Tất cả danh mục</option>{categories.filter((c) => c.key !== 'all').map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}</select><button type="submit"><Icon name="search" size={16} /> Tìm kiếm</button></form><div className="hero-ctas"><Link className="hero-cta-main" to="/san-pham">Xem Đồ Đang Bán Ngay <span aria-hidden="true">→</span></Link><Link className="hero-cta-ghost" to="/lien-he">Đăng Bán / Thanh Lý Nội Thất Cũ</Link></div><div className="hero-stats"><div><b>500+</b><span>Món đồ cập nhật liên tục</span></div><div><b>1.200+</b><span>Nguồn hàng ổn định quanh năm</span></div><div><b>24H</b><span>Xử lý &amp; đăng bán nhanh</span></div><div><b>63</b><span>Tỉnh thành nhận giao hàng</span></div></div></div><div className="home-hero-image"><img src={resolveImg(HERO_IMAGE)} alt="Không gian đồ nội thất thanh lý" /><div className="hero-price">Xem từ<br /><b>185.000đ</b></div><div className="hero-range">Đa dạng mức giá từ 85K – 1 TRIỆU+</div></div><div className="hero-caption-card"><div className="hero-caption-copy"><b>Combo Bàn Ăn Gỗ Tự Nhiên &amp; Bộ Ghế Kha Xinh</b><small>Đẹp bền, giá tốt — chọn được món ưng ý ngay hôm nay.</small></div><Link className="hero-caption-btn" to="/san-pham">Xem chi tiết</Link></div></section>
+    <section className="home-section selection"><div className="home-section-head"><div><small>DANH MỤC ĐỒ CŨ CHỌN LỌC</small><h2>Tuyển Chọn Đồ Dùng Gia Đình Giá Sốc</h2></div><p>Đồ dùng được lựa chọn kỹ lưỡng, làm sạch và đăng tải rõ ràng tình trạng.</p></div><div className="category-grid">{categoryBlocks.slice(0, 6).map((category) => <Link className="category-card" to={`/san-pham?cat=${category.key}`} key={category.key}><img src={resolveImg(categoryImages[category.key] || category.products[0]?.image)} alt={category.label} /><strong>{category.label}</strong><small>{category.products.length} sản phẩm đang có <span>→</span></small></Link>)}</div><div className="home-more-row"><Link className="home-more" to="/san-pham">Xem đủ danh mục đang mở bán →</Link></div></section>
+    <section className="benefit-band"><div className="home-section-head centered"><div><small>ĐIỀU KHÁC BIỆT CỦA ĐỒ CŨ QUANG HUY</small><h2>Quy Trình 4 Bước Kiểm Định Vàng</h2></div><p>Chúng tôi kiểm tra nghiêm ngặt trước khi đưa món đồ đến tay khách hàng.</p></div><div className="benefit-grid">{benefits.map(([icon, title, text], index) => <article key={title}><span className="benefit-icon"><Icon name={icon} size={16} /></span><small>BƯỚC 0{index + 1}</small><h3>{title}</h3><p>{text}</p><b>✓ Cam kết từ Đồ Cũ Quang Huy</b></article>)}</div></section>
+    <section className="home-section featured-home"><div className="home-section-head"><div><small>HÀNG MỚI CÓ HÀNG · GIÁ FLASH SALE TRONG NGÀY</small><h2>Hàng Mới Lên Kệ & Flash Sale Trong Ngày</h2></div><Link className="home-outline" to="/san-pham">Xem tất cả sản phẩm →</Link></div>{error ? <div className="home-error">{error} <button onClick={reload}>Thử lại</button></div> : loading ? <div className="home-loading">Đang tải sản phẩm...</div> : <div className="featured-grid">{(featured.length ? featured : products.slice(0, 4)).map((p) => <ProductCard key={p.id} product={p} />)}</div>}<div className="home-more-row"><Link className="home-more" to="/san-pham">Xem thêm 150+ món mới mỗi ngày →</Link></div></section>
+    <section className="home-section cat-products" aria-label="Sản phẩm theo danh mục"><div className="home-section-head centered"><div><small>NGHE KỸ LÀ MUA ĐÚNG — Duyệt theo từng nhóm đồ</small><h2>Sản Phẩm Của Từng Danh Mục Đang Bán</h2></div><p>Mỗi danh mục đều có hàng chọn lọc riêng — bấm "Xem tất cả" để duyệt trọn bộ món đang có trong kho.</p></div>{loading ? <div className="home-loading">Đang tải sản phẩm...</div> : error ? <div className="home-error">{error} <button onClick={reload}>Thử lại</button></div> : categoryBlocks.map((category) => <div className="hcp-block" key={category.key}><header className="hcp-head"><span className="hcp-icon"><Icon name="grid" size={16} /></span><div><h3>{category.label}</h3><small>{category.products.length} món tiêu biểu · cập nhật hôm nay</small></div><Link className="hcp-link" to={`/san-pham?cat=${category.key}`}>Xem tất cả {category.label}<span aria-hidden="true">→</span></Link></header><CategorySlider>{category.products.map((product) => <ProductCard key={product.id} product={product} />)}</CategorySlider></div>)}{!loading && !error && <div className="home-more-row"><Link className="home-more" to="/san-pham">Duyệt toàn bộ kho — hơn 500 món đang mở bán →</Link></div>}</section>
+    <section className="home-cta"><div><small>ĐỒ CŨ VẪN CÓ THỂ ĐẸP</small><h2>Bạn Cần Thanh Lý Đồ Nội Thất,<br />Tiết Kiệm Giá Đúng, Đồ Món Hoặc Trọn Gói Gia Đình?</h2><p>Đừng để món đồ cũ nằm im — hãy để chúng tôi giúp bạn tìm người cần nó.</p><div className="cta-points"><span>● Báo giá tại chỗ</span><span>● Đăng bán đơn giản</span><span>● Thanh toán linh hoạt</span></div></div><div className="promo-card"><small>GỬI ẢNH ĐỂ NHẬN GIÁ NHANH</small><h3>Đăng bán đồ cũ của bạn</h3><p>Chụp ảnh món đồ và gửi cho shop, chúng tôi sẽ tư vấn trong ngày.</p><button onClick={copyCode}>Nhận tư vấn ngay →</button></div></section>
+    <section className="home-section stories"><div className="home-section-head centered"><div><small>THẬT HƠN TỪ NHỮNG GÌ CHÚNG TÔI BÁN</small><h2>Khách Hàng Nói Gì Về Kho Chúng Tôi?</h2></div></div><div className="story-grid">{[{ q: '“Món đồ đúng như hình, shop tư vấn rất nhiệt tình và giao hàng nhanh.”', n: 'Nguyễn Lan' }, { q: '“Giá hợp lý, hàng đã vệ sinh sạch sẽ. Sẽ quay lại mua thêm.”', n: 'Trần Minh' }, { q: '“Tìm được đúng chiếc bàn cần cho căn hộ, chất lượng vượt mong đợi.”', n: 'Hoàng Mai' }].map((t, i) => <article key={t.q}><img src={resolveImg(products[i]?.image || HERO_IMAGE)} alt="Khách hàng và sản phẩm" /><div className="story-body"><span className="story-stars" aria-label="Đánh giá 5 trên 5 sao">★★★★★</span><p>{t.q}</p><span className="story-who"><b className="story-avatar" aria-hidden="true">{t.n.charAt(0)}</b><span><strong>{t.n}</strong><small>Khách hàng thân thiết</small></span></span></div></article>)}</div></section>
+  </main>;
 };
 
 export default Home;

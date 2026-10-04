@@ -3,16 +3,15 @@ import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { formatPrice } from '../utils/format';
 import Icon from './Icon';
-import { getProductImage, getProductPosition, getProductBackgroundSize } from '../data/productImages';
+import { getProductImage, IMG_PLACEHOLDER, categoryImages } from '../data/productImages';
 import './ProductCard.css';
 
-const badgeMap = { hot: 'Được chọn nhiều', sale: 'Giá tốt', new: 'Mới về' };
-const badgeIcons = { hot: 'check', sale: 'spark', new: 'spark' };
 const ProductCard = ({ product }) => {
-  const { addToCart, showToast, toggleSaved, isSaved } = useCart();
-  const saved = isSaved(product.id);
+  const { addToCart, showToast } = useCart();
   const discount = product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : null;
-  /* Phản hồi "Đã thêm" trên nút trong ~1.6s — timer bị hủy khi thẻ unmount */
+  /* "Độ mới" & tồn kho mô phỏng ổn định theo id sản phẩm, giống nhãn trên thiết kế Stitch. */
+  const grade = 90 + ((product.id * 7) % 9);
+  const stock = Math.max(1, 5 - (product.id % 5));
   const [added, setAdded] = React.useState(false);
   const addedTimer = React.useRef(0);
   React.useEffect(() => () => window.clearTimeout(addedTimer.current), []);
@@ -25,62 +24,43 @@ const ProductCard = ({ product }) => {
     addedTimer.current = window.setTimeout(() => setAdded(false), 1600);
   };
 
-  const handleSave = () => {
-    toggleSaved(product.id);
-    showToast(saved ? 'Đã bỏ khỏi danh sách lưu' : 'Đã lưu sản phẩm để xem sau');
-  };
-
   return (
-    <article className="p-card reveal">
-      <div className="p-media">
-        <Link
-          to={`/product/${product.id}`}
-          className="p-media-link"
-          style={{ backgroundImage: `url("${getProductImage(product)}")`, backgroundSize: getProductBackgroundSize(product), backgroundPosition: getProductPosition(product) }}
-          aria-label={`Xem chi tiết ${product.name}`}
-        >
-          {product.badge && (
-            <span className="p-flag">
-              <Icon name={badgeIcons[product.badge]} size={12} strokeWidth={2} />
-              {badgeMap[product.badge]}
-            </span>
-          )}
-          <span className="p-score">
-            <Icon name="star" size={11} />
-            {product.rating.toFixed(1)}
-          </span>
-          <span className="p-view">Xem chi tiết</span>
-        </Link>
-        <button
-          className={`p-save ${saved ? 'saved' : ''}`}
-          onClick={handleSave}
-          aria-pressed={saved}
-          aria-label={`${saved ? 'Bỏ lưu' : 'Lưu'} ${product.name}`}
-        >
-          <Icon name="bookmark" size={15} strokeWidth={saved ? 2.2 : 1.7} />
-        </button>
-      </div>
-
-      <div className="p-body">
-        <p className="p-meta">
-          <span className="p-cat">{product.categoryLabel}</span>
-          <span>Đã bán {product.sold.toLocaleString('vi-VN')}</span>
-        </p>
-        <h3 className="p-name">
-          <Link to={`/product/${product.id}`}>{product.name}</Link>
-        </h3>
-      </div>
-
-      <div className="p-strip">
-        <div className="p-price-row">
-          <span className="p-price">{formatPrice(product.price)}</span>
-          {product.oldPrice && <span className="p-old">{formatPrice(product.oldPrice)}</span>}
-          {discount && <span className="p-off">−{discount}%</span>}
+    <article className="sp-card">
+      <Link to={`/product/${product.id}`} className="sp-media" aria-label={`Xem chi tiết ${product.name}`}>
+        <img
+          src={getProductImage(product)}
+          alt={product.name}
+          loading="lazy"
+          onError={(event) => {
+            const image = event.currentTarget;
+            if (image.dataset.fb) image.src = IMG_PLACEHOLDER;
+            else {
+              image.dataset.fb = '1';
+              image.src = categoryImages[product.category] || IMG_PLACEHOLDER;
+            }
+          }}
+        />
+        <div className="sp-badges">
+          <span className="sp-badge sp-badge-grade"><span className="sp-dot" aria-hidden="true" />Độ mới {grade}%</span>
+          <span className="sp-badge sp-badge-tag"><Icon name="verified" size={12} strokeWidth={1.9} />{product.categoryLabel}</span>
         </div>
-        <button className={`p-add${added ? ' added' : ''}`} type="button" onClick={handleAdd}>
-          <Icon name={added ? 'check' : 'cart'} size={15} strokeWidth={1.9} />
-          <span>{added ? 'Đã thêm vào giỏ' : 'Thêm vào giỏ'}</span>
-        </button>
+        {discount > 0 && <span className="sp-off">−{discount}%</span>}
+        <span className="sp-stock">Kho TP.HCM (Còn {stock} chiếc)</span>
+      </Link>
+      <div className="sp-body">
+        <h3 className="sp-name"><Link to={`/product/${product.id}`}>{product.name}</Link></h3>
+        <p className="sp-note"><Icon name="task" size={12} strokeWidth={1.9} />Đã kiểm tra & vệ sinh trước khi bán</p>
+        <div className="sp-prices">
+          <strong>{formatPrice(product.price)}</strong>
+          {product.oldPrice ? <s>{formatPrice(product.oldPrice)}</s> : null}
+        </div>
+        <div className="sp-ctas">
+          <Link to={`/product/${product.id}`} className="sp-view">Xem chi tiết</Link>
+          <button type="button" className={`sp-buy${added ? ' added' : ''}`} onClick={handleAdd} aria-label={`Chốt mua ${product.name}`}>
+            <Icon name={added ? 'check' : 'flash'} size={13} strokeWidth={1.9} />
+            <span>{added ? 'Đã thêm' : 'Chốt mua'}</span>
+          </button>
+        </div>
       </div>
     </article>
   );

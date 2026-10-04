@@ -63,7 +63,38 @@
   border-radius: var(--r-md); box-shadow: var(--shadow-card); background: var(--surface-low);
 }
 
-@media (max-width: 1000px) { .service-cards { grid-template-columns: repeat(2, 1fr); } }
+/* ===== Làm đẹp: dải CTA nhanh gọi / Zalo / chỉ đường ===== */
+.contact-quick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; padding: 8px 0 44px; }
+.cq-card { display: flex; align-items: center; gap: 13px; padding: 17px 18px; border-radius: var(--r-md); text-decoration: none; transition: transform .2s ease, box-shadow .2s ease; }
+.cq-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-ambient); }
+.cq-icon { display: grid; place-items: center; flex: none; width: 46px; height: 46px; border-radius: 14px; background: rgba(255, 248, 244, .18); color: #fff8f4; }
+.cq-copy { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.cq-copy b { color: #fff8f4; font-family: var(--font-display); font-size: .88rem; font-weight: 700; letter-spacing: -.01em; }
+.cq-copy small { color: rgba(255, 248, 244, .82); font-size: .66rem; line-height: 1.45; }
+.cq-arrow { margin-left: auto; flex: none; color: rgba(255, 248, 244, .85); font-size: 1.05rem; transition: transform .2s ease; }
+.cq-card:hover .cq-arrow { transform: translateX(4px); }
+.cq-call { background: linear-gradient(135deg, #12382c 0%, #1c4a3a 100%); }
+.cq-zalo { background: linear-gradient(135deg, #9c4328 0%, #b9542f 100%); }
+.cq-map { background: linear-gradient(135deg, #3e302a 0%, #5c4a40 100%); }
+
+/* Kênh hỗ trợ: từ list kẻ dòng → thẻ card riêng biệt, hover nổi nhẹ */
+.contact-info { position: sticky; top: 130px; display: flex; flex-direction: column; gap: 12px; }
+@media (max-width: 800px) { .contact-info { position: static; } }
+.channel {
+  display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px;
+  background: #fffaf7; border: 1px solid #ead5ca; border-radius: var(--r-md);
+  box-shadow: var(--shadow-card); transition: transform .18s ease, box-shadow .18s ease;
+}
+.contact-info .channel:first-of-type { border-top: 1px solid #ead5ca; }
+.channel:hover { transform: translateX(3px); box-shadow: var(--shadow-ambient); }
+.channel a { color: #12382c; }
+.channel a:hover { text-decoration: underline; }
+
+/* Form nằm trong panel trắng nổi bật hơn */
+.contact-form-wrap { padding: 28px; background: #fff8f4; border: 1px solid #ecd9cd; border-radius: var(--r-lg); box-shadow: 0 16px 40px -30px rgba(62, 48, 42, .6); }
+@media (max-width: 800px) { .contact-form-wrap { padding: 20px 16px; } }
+
+@media (max-width: 1000px) { .service-cards { grid-template-columns: repeat(2, 1fr); } .contact-quick { grid-template-columns: 1fr; } }
 @media (max-width: 800px) {
   .contact-grid { grid-template-columns: 1fr; gap: 44px; padding-bottom: 60px; }
   .contact-form { padding: 24px 20px; }
@@ -75,3 +106,12 @@
   .contact-form .btn { align-self: stretch; }
   .map-embed { height: 280px; }
 }
+
+/* Liên hệ là điểm kết của hành trình mua hàng: nền ấm, form rõ và CTA xanh sâu. */
+.contact-form-wrap, .contact-info { color: #251911; }
+.service-card, .contact-form input, .contact-form textarea, .map-embed { border-color: #ead5ca; }
+.service-card, .contact-form input, .contact-form textarea { background: #fffaf7; }
+.sc-icon, .ch-icon { background: #fae8de; color: #9c4328; }
+.channel a:hover { color: #9c4328; }
+.contact-form .btn { background: #12382c; }
+.contact-form .btn:hover { background: #0b2b21; }

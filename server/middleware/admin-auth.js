@@ -38,12 +38,19 @@ const getSession = (req) => {
   return { token, ...session };
 };
 
-const cookieSecurityAttributes = () => (process.env.NODE_ENV === 'production'
+// Cookie "Secure" chỉ khi request thật sự chạy HTTPS (kể cả sau reverse proxy).
+// Nếu bật Secure trên HTTP thuần (vd truy cập qua IP LAN), trình duyệt sẽ âm thầm
+// vứt cookie → login xong vẫn 401 ở mọi API admin.
+const isSecureRequest = (req) => Boolean(
+  req.secure
+  || String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim() === 'https',
+);
+const cookieSecurityAttributes = (req) => (isSecureRequest(req)
   ? 'SameSite=None; Secure'
   : 'SameSite=Lax');
 
-const setSessionCookie = (res, token) => res.set('Set-Cookie', `${cookieName}=${encodeURIComponent(token)}; HttpOnly; ${cookieSecurityAttributes()}; Path=/; Max-Age=${SESSION_TTL_MS / 1000}`);
-const clearSessionCookie = (res) => res.set('Set-Cookie', `${cookieName}=; HttpOnly; ${cookieSecurityAttributes()}; Path=/; Max-Age=0`);
+const setSessionCookie = (req, res, token) => res.set('Set-Cookie', `${cookieName}=${encodeURIComponent(token)}; HttpOnly; ${cookieSecurityAttributes(req)}; Path=/; Max-Age=${SESSION_TTL_MS / 1000}`);
+const clearSessionCookie = (req, res) => res.set('Set-Cookie', `${cookieName}=; HttpOnly; ${cookieSecurityAttributes(req)}; Path=/; Max-Age=0`);
 
 const requireAdmin = (req, res, next) => {
   const session = getSession(req);

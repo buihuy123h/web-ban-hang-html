@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../components/Icon';
-import Breadcrumbs from '../components/Breadcrumbs';
+import CatalogueBanner from '../components/CatalogueBanner';
 import CountUp from '../components/CountUp';
+import { PostsList } from './Posts';
 import { categoryImages } from '../data/productImages';
 import '../App.css';
 import './About.css';
@@ -51,10 +52,9 @@ const team = [
 
 const About = () => (
   <main className="container">
-    <Breadcrumbs items={[{ label: 'Câu chuyện' }]} />
-    <section className="page-hero">
+    <CatalogueBanner id="about-title" title="Về chúng tôi" description="Câu chuyện của Đồ Cũ Quang Huy và những ghi chép ngắn về chọn, kiểm tra, chăm đồ cũ — đọc nhanh, áp dụng được ngay." eyebrow="Đồ Cũ Quang Huy" />
+    <section className="page-hero about-page-hero">
       <div>
-        <p className="eyebrow">Câu chuyện</p>
         <h1>Đồ cũ còn tốt xứng đáng có cơ hội thứ hai.</h1>
         <p>Đồ Cũ Quang Huy chuyên mua và bán đồ cũ: đi thu mua từng đợt thanh lý quán xá, nhà trọ — rồi kiểm tra, vệ sinh và bán lại với giá thật cho người cần mở quán, thuê trọ. Kho tại Gò Vấp, gửi hàng qua nhà xe toàn quốc.</p>
         <div className="about-chips">
@@ -169,6 +169,15 @@ const About = () => (
           </article>
         ))}
       </div>
+    </section>
+
+    <section className="about-posts-wrap" aria-labelledby="about-posts-title">
+      <div className="section-head">
+        <p className="eyebrow">Ghi chép</p>
+        <h2 id="about-posts-title">Từ kho hàng của shop</h2>
+        <p>Những bài ngắn từ kho hàng: mẹo chọn, cách kiểm tra và cách chăm đồ cũ dùng bền.</p>
+      </div>
+      <PostsList embedded />
     </section>
 
     <section className="cta-banner">

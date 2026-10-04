@@ -10,6 +10,7 @@ import './ContactFab.css';
 const CONTACT_ITEMS = [
   { key: 'tiktok', icon: 'tiktok', label: 'TikTok · @cquanghuy8', href: 'https://www.tiktok.com/@cquanghuy8', tone: 'tiktok', delay: 3 },
   { key: 'messenger', icon: 'messenger', label: 'Nhắn tin Messenger', href: 'https://m.me/100090912844650', tone: 'messenger', delay: 2 },
+  { key: 'facebook', icon: 'facebook', label: 'Facebook · Đồ Cũ Quang Huy', href: 'https://www.facebook.com/profile.php?id=100090912844650', tone: 'facebook', delay: 2 },
   { key: 'zalo', icon: 'zalo', label: 'Nhắn tin Zalo', href: 'https://zalo.me/0374034430', tone: 'zalo', delay: 1 },
   { key: 'phone', icon: 'phone', label: 'Gọi 0374 034 430', href: 'tel:0374034430', tone: 'phone', delay: 0 },
 ];

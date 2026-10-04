@@ -351,11 +351,12 @@ test('order repository ánh xạ lỗi nghiệp vụ P0001 → 400, lỗi khác 
 test('migration PostgreSQL không destructive, không temp table và khóa quyền runtime', () => {
   const migrationsDir = path.resolve(__dirname, '..', 'database', 'postgres', 'migrations');
   const files = fs.readdirSync(migrationsDir).sort();
-  assert.deepEqual(files, ['001_initial_schema.sql', '002_runtime_permissions.sql', '003_admin_content.sql', '004_admin_customers_feedback_reports.sql']);
+  assert.deepEqual(files, ['001_initial_schema.sql', '002_runtime_permissions.sql', '003_admin_content.sql', '004_admin_customers_feedback_reports.sql', '005_admin_order_item_permissions.sql']);
   const schema = fs.readFileSync(path.join(migrationsDir, files[0]), 'utf8');
   const permissions = fs.readFileSync(path.join(migrationsDir, files[1]), 'utf8');
   const adminMigration = fs.readFileSync(path.join(migrationsDir, files[2]), 'utf8');
   const featuresMigration = fs.readFileSync(path.join(migrationsDir, files[3]), 'utf8');
+  const orderPermissionsMigration = fs.readFileSync(path.join(migrationsDir, files[4]), 'utf8');
   assert.doesNotMatch(schema, /\bDROP\s+(TABLE|SCHEMA|VIEW|FUNCTION)\b/i);
   assert.doesNotMatch(schema, /CREATE\s+TEMP/i);
   assert.match(schema, /CREATE OR REPLACE FUNCTION app\.fn_tao_don_hang/);
@@ -373,6 +374,8 @@ test('migration PostgreSQL không destructive, không temp table và khóa quy�
   assert.match(featuresMigration, /CREATE TABLE IF NOT EXISTS app\.feedback/);
   assert.match(featuresMigration, /CREATE TABLE IF NOT EXISTS app\.system_settings/);
   assert.doesNotMatch(featuresMigration, /\bDROP\s+(TABLE|SCHEMA|VIEW|FUNCTION)\b/i);
+  assert.match(orderPermissionsMigration, /GRANT SELECT ON app\.order_items TO app_runtime/);
+  assert.doesNotMatch(orderPermissionsMigration, /\bDROP\s+(TABLE|SCHEMA|VIEW|FUNCTION)\b/i);
 });
 
 test('migration runner dùng advisory lock/checksum và seed fixture đúng 6/21/1/84', () => {
